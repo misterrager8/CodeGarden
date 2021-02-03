@@ -2,6 +2,16 @@ import MySQLdb
 
 
 class DB:
+    """
+CREATE TABLE IF NOT EXISTS projects(
+project_id INT AUTO-INCREMENT,
+name,
+descrip,
+start_date,
+tools_used,
+status,
+PRIMARY KEY (project_id));
+    """
     def __init__(self):
         pass
 
@@ -25,21 +35,21 @@ class DB:
         except MySQLdb.Error as e:
             print(e)
 
-    def create(self, new_object):
-        stmt = "INSERT INTO - () VALUES ()" % new_object
+    def create(self, new_project):
+        stmt = "INSERT INTO projects() VALUES ()" % new_project
         self.db_write(stmt)
         print("Added.")
 
     def read(self):
-        stmt = "SELECT * FROM -"
+        stmt = "SELECT * FROM projects"
         self.db_read(stmt)
 
-    def update(self, object_id):
-        stmt = "UPDATE - SET - = - WHERE _id = '%d'" % object_id
+    def update(self, project_id):
+        stmt = "UPDATE projects SET - = - WHERE project_id = '%d'" % project_id
         self.db_write(stmt)
         print("Updated.")
 
-    def delete(self, object_id):
-        stmt = "DELETE FROM - WHERE _id = '%d'" % object_id
+    def delete(self, project_id):
+        stmt = "DELETE FROM projects WHERE project_id = '%d'" % project_id
         self.db_write(stmt)
         print("Deleted.")
