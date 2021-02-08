@@ -14,4 +14,4 @@ if __name__ == "__main__":
     ]
 
     # for i in test_data: db.create(i)
-    for i in db.read(): i.to_string()
+    for i in db.get_all_projects(): i.to_string()
