@@ -2,6 +2,9 @@ import os
 
 import MySQLdb
 from dotenv import load_dotenv
+from typing import List
+
+from modules.objects import Project
 
 
 class DB:
@@ -43,21 +46,28 @@ class DB:
         except MySQLdb.Error as e:
             print(e)
 
-    def create(self, new_project):
-        stmt = "INSERT INTO projects (name, descrip, start_date, tools_used, status) VALUES ()" % new_project
+        db.close()
+
+    def create(self, new_project: Project):
+        stmt = "INSERT INTO projects (name, descrip, start_date, tools_used, status) VALUES ('%s','%s','%s','%s','%s')" % (
+            new_project.name, new_project.descrip, new_project.start_date, new_project.tools_used, new_project.status)
         self.db_write(stmt)
         print("Added.")
 
-    def read(self):
+    def read(self) -> List[Project]:
+        results = []
         stmt = "SELECT * FROM projects"
-        self.db_read(stmt)
+        for row in self.db_read(stmt):
+            results.append(Project(row[1], row[2], row[3], row[4], row[5], row[0]))
 
-    def update(self, project_id):
+        return results
+
+    def update(self, project_id: int):
         stmt = "UPDATE projects SET - = - WHERE project_id = '%d'" % project_id
         self.db_write(stmt)
         print("Updated.")
 
-    def delete(self, project_id):
+    def delete(self, project_id: int):
         stmt = "DELETE FROM projects WHERE project_id = '%d'" % project_id
         self.db_write(stmt)
         print("Deleted.")

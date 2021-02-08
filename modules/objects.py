@@ -3,7 +3,7 @@ class Project:
                  name: str,
                  descrip: str,
                  start_date: str,
-                 tools_used: list,
+                 tools_used: str,
                  status: str = "In Progress",
                  project_id: int = None):
         self.name = name
@@ -14,9 +14,9 @@ class Project:
         self.project_id = project_id
 
     def to_string(self):
-        print(self.project_id,
-              self.name,
-              self.descrip,
-              self.start_date,
-              self.tools_used,
-              self.status)
+        print([self.project_id,
+               self.name,
+               self.descrip,
+               self.start_date,
+               self.tools_used,
+               self.status])
