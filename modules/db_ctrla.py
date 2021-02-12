@@ -11,45 +11,38 @@ from modules.objects import Project
 class DB:
     def __init__(self):
         load_dotenv()
-        create_table_stmt = "CREATE TABLE IF NOT EXISTS projects(" \
-                            "project_id INT AUTO_INCREMENT," \
-                            "name TEXT NOT NULL," \
-                            "descrip TEXT NOT NULL," \
-                            "start_date TEXT NOT NULL," \
-                            "tools_used TEXT NOT NULL," \
-                            "status TEXT NOT NULL," \
-                            "PRIMARY KEY (project_id));"
-        self.db_write(create_table_stmt)
+        self.conn = MySQLdb.connect(os.getenv("host"),
+                                    os.getenv("user"),
+                                    os.getenv("passwd"),
+                                    os.getenv("db"))
+        self.cursor = self.conn.cursor()
+        # create_table_stmt = "CREATE TABLE IF NOT EXISTS projects(" \
+        #                     "project_id INT AUTO_INCREMENT," \
+        #                     "name TEXT NOT NULL," \
+        #                     "descrip TEXT NOT NULL," \
+        #                     "start_date TEXT NOT NULL," \
+        #                     "tools_used TEXT NOT NULL," \
+        #                     "status TEXT NOT NULL," \
+        #                     "PRIMARY KEY (project_id));"
+        # self.db_write(create_table_stmt)
 
-    @staticmethod
-    def db_read(stmt: str) -> list:
+    def db_read(self, stmt: str) -> list:
         """Generic MySQL read query"""
-        db = MySQLdb.connect(os.getenv("host"),
-                             os.getenv("user"),
-                             os.getenv("passwd"),
-                             os.getenv("db"))
-        cursor = db.cursor()
         try:
-            cursor.execute(stmt)
-            return cursor.fetchall()
+            self.cursor.execute(stmt)
+            return self.cursor.fetchall()
         except MySQLdb.Error as e:
             print(e)
 
-    @staticmethod
-    def db_write(stmt: str):
+    def db_write(self, stmt: str):
         """Generic MySQL write query"""
-        db = MySQLdb.connect(os.getenv("host"),
-                             os.getenv("user"),
-                             os.getenv("passwd"),
-                             os.getenv("db"))
-        cursor = db.cursor()
         try:
-            cursor.execute(stmt)
-            db.commit()
+            self.cursor.execute(stmt)
+            self.conn.commit()
         except MySQLdb.Error as e:
             print(e)
 
-        db.close()
+        self.conn.close()
 
     def add_project(self, new_project: Project):
         """Add project to DB"""
