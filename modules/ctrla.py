@@ -5,7 +5,7 @@ from typing import List
 import MySQLdb
 from dotenv import load_dotenv
 
-from modules.objects import Project
+from modules.model import Project
 
 
 class DB:
@@ -28,20 +28,13 @@ class DB:
 
     def db_read(self, stmt: str) -> list:
         """Generic MySQL read query"""
-        try:
-            self.cursor.execute(stmt)
-            return self.cursor.fetchall()
-        except MySQLdb.Error as e:
-            print(e)
+        self.cursor.execute(stmt)
+        return self.cursor.fetchall()
 
     def db_write(self, stmt: str):
         """Generic MySQL write query"""
-        try:
-            self.cursor.execute(stmt)
-            self.conn.commit()
-        except MySQLdb.Error as e:
-            print(e)
-
+        self.cursor.execute(stmt)
+        self.conn.commit()
         self.conn.close()
 
     def add_project(self, new_project: Project):

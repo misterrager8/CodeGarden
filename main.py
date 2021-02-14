@@ -1,5 +1,6 @@
-from modules.db_ctrla import DB
-from modules.objects import Project
+from modules.ctrla import DB
+from modules.model import Project
+from modules.view import CmdLnInterface
 
 if __name__ == "__main__":
     db = DB()
@@ -14,4 +15,6 @@ if __name__ == "__main__":
     ]
 
     # for i in test_data: db.create(i)
-    for i in db.get_all_projects(): i.to_string()
+    # for i in db.get_all_projects(): i.to_string()
+
+    CmdLnInterface()
