@@ -1,8 +1,12 @@
 from PyInquirer import prompt
 
+from modules.ctrla import DB
+
 
 class CmdLnInterface:
     def __init__(self):
+        db_ctrla = DB()
+
         main_options = [{
             'type': 'list',
             'name': 'main_options',
@@ -13,9 +17,53 @@ class CmdLnInterface:
                 "Delete All Projects",
                 "Import Projects"]}]
 
-        # add_questions = [{
-        #     'type': 'input',
-        #     'name': 'project_name',
-        #     'message': 'Name?'}]
+        answer = prompt(main_options)
+        if answer["main_options"] == "Add Project":
+            pass
+        elif answer["main_options"] == "Delete Project":
+            pass
+        elif answer["main_options"] == "Delete All Projects":
+            pass
+        elif answer["main_options"] == "Import Projects":
+            pass
 
-        _ = prompt(main_options)
+    @staticmethod
+    def add():
+        questions = [{
+            'type': 'input',
+            'name': 'project_name',
+            'message': 'Name?'}]
+
+        answer = prompt(questions)
+        return answer
+
+    @staticmethod
+    def delete(self):
+        questions = [{
+            'type': 'input',
+            'name': 'delete_id',
+            'message': 'ID?'}]
+
+        answer = prompt(questions)
+        self.db_ctrla
+        return answer
+
+    @staticmethod
+    def delete_all():
+        questions = [{
+            'type': 'confirm',
+            'name': 'project_name',
+            'message': 'Sure?'}]
+
+        answer = prompt(questions)
+        return answer
+
+    @staticmethod
+    def import_projects():
+        questions = [{
+            'type': 'confirm',
+            'name': 'project_name',
+            'message': 'Import these?'}]
+
+        answer = prompt(questions)
+        return answer
