@@ -1,43 +1,66 @@
 from PyInquirer import prompt
 
-from modules.ctrla import DB
+import modules.ctrla
+from modules.model import Project
 
 
 class CmdLnInterface:
     def __init__(self):
-        db_ctrla = DB()
+        self.db = modules.ctrla.DB()
 
         main_options = [{
             'type': 'list',
             'name': 'main_options',
             'message': 'What do you want to do?',
             'choices': [
+                "View All Projects",
                 "Add Project",
                 "Delete Project",
                 "Delete All Projects",
                 "Import Projects"]}]
 
         answer = prompt(main_options)
-        if answer["main_options"] == "Add Project":
-            pass
+        if answer["main_options"] == "View All Projects":
+            self.view_all()
+        elif answer["main_options"] == "Add Project":
+            self.add()
         elif answer["main_options"] == "Delete Project":
-            pass
+            self.delete()
         elif answer["main_options"] == "Delete All Projects":
-            pass
+            self.delete_all()
         elif answer["main_options"] == "Import Projects":
-            pass
+            self.import_projects()
 
-    @staticmethod
-    def add():
-        questions = [{
-            'type': 'input',
-            'name': 'project_name',
-            'message': 'Name?'}]
+    def view_all(self):
+        for i in self.db.get_all_projects():
+            i.to_string()
+
+    def add(self):
+        questions = [
+            {
+                'type': 'input',
+                'name': 'project_name',
+                'message': 'Name?'
+            },
+            {
+                'type': 'input',
+                'name': 'project_descrip',
+                'message': 'Descrip?'
+            },
+            {
+                'type': 'input',
+                'name': 'project_tools',
+                'message': 'Tools used?'
+            }
+        ]
 
         answer = prompt(questions)
-        return answer
+        x = Project(answer["project_name"],
+                    answer["project_descrip"],
+                    "02/17/2021",
+                    answer["project_tools"])
+        self.db.add_project(x)
 
-    @staticmethod
     def delete(self):
         questions = [{
             'type': 'input',
@@ -45,25 +68,19 @@ class CmdLnInterface:
             'message': 'ID?'}]
 
         answer = prompt(questions)
-        self.db_ctrla
-        return answer
+        self.db.delete_project(int(answer["delete_id"]))
 
-    @staticmethod
-    def delete_all():
+    def delete_all(self):
         questions = [{
             'type': 'confirm',
-            'name': 'project_name',
+            'name': 'yesno',
             'message': 'Sure?'}]
 
         answer = prompt(questions)
-        return answer
+        if answer["yesno"]:
+            self.db.delete_all_projects()
+        else:
+            print("bye.")
 
-    @staticmethod
-    def import_projects():
-        questions = [{
-            'type': 'confirm',
-            'name': 'project_name',
-            'message': 'Import these?'}]
-
-        answer = prompt(questions)
-        return answer
+    def import_projects(self):
+        self.db.import_projects()

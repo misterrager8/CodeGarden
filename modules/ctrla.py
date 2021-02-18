@@ -77,7 +77,7 @@ class DB:
         with open("input.csv") as file:
             csv_data = csv.reader(file)
             for row in csv_data:
-                csv_proj = Project(row[0], row[1], row[2], row[3])
+                csv_proj = Project(row[0], row[1], row[2])
                 imported.append(csv_proj)
 
         print(str(len(imported)) + " project(s) found.")

@@ -1,9 +1,12 @@
+import datetime
+
+
 class Project:
     def __init__(self,
                  name: str,
                  descrip: str,
-                 start_date: str,
                  tools_used: str,
+                 start_date: str = datetime.datetime.now().strftime("%Y-%m-%d"),
                  status: str = "In Progress",
                  project_id: int = None):
         self.name = name
@@ -17,6 +20,6 @@ class Project:
         print([self.project_id,
                self.name,
                self.descrip,
-               self.start_date,
                self.tools_used,
+               self.start_date,
                self.status])
