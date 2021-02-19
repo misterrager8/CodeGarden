@@ -11,36 +11,43 @@ from modules.model import Project
 class DB:
     def __init__(self):
         load_dotenv()
-        self.conn = MySQLdb.connect(os.getenv("host"),
-                                    os.getenv("user"),
-                                    os.getenv("passwd"),
-                                    os.getenv("db"))
-        self.cursor = self.conn.cursor()
         # create_table_stmt = "CREATE TABLE IF NOT EXISTS projects(" \
         #                     "project_id INT AUTO_INCREMENT," \
         #                     "name TEXT NOT NULL," \
         #                     "descrip TEXT NOT NULL," \
-        #                     "start_date TEXT NOT NULL," \
         #                     "tools_used TEXT NOT NULL," \
+        #                     "start_date TEXT NOT NULL," \
         #                     "status TEXT NOT NULL," \
         #                     "PRIMARY KEY (project_id));"
         # self.db_write(create_table_stmt)
 
-    def db_read(self, stmt: str) -> list:
+    @staticmethod
+    def db_read(stmt: str) -> list:
         """Generic MySQL read query"""
-        self.cursor.execute(stmt)
-        return self.cursor.fetchall()
+        conn = MySQLdb.connect(os.getenv("host"),
+                               os.getenv("user"),
+                               os.getenv("passwd"),
+                               os.getenv("db"))
+        cursor = conn.cursor()
+        cursor.execute(stmt)
+        return cursor.fetchall()
 
-    def db_write(self, stmt: str):
+    @staticmethod
+    def db_write(stmt: str):
         """Generic MySQL write query"""
-        self.cursor.execute(stmt)
-        self.conn.commit()
-        self.conn.close()
+        conn = MySQLdb.connect(os.getenv("host"),
+                               os.getenv("user"),
+                               os.getenv("passwd"),
+                               os.getenv("db"))
+        cursor = conn.cursor()
+        cursor.execute(stmt)
+        conn.commit()
+        conn.close()
 
     def add_project(self, new_project: Project):
         """Add project to DB"""
-        stmt = "INSERT INTO projects (name, descrip, start_date, tools_used, status) VALUES ('%s','%s','%s','%s','%s')" % (
-            new_project.name, new_project.descrip, new_project.start_date, new_project.tools_used, new_project.status)
+        stmt = "INSERT INTO projects (name, descrip, tools_used, start_date, status) VALUES ('%s','%s','%s','%s','%s')" % (
+            new_project.name, new_project.descrip, new_project.tools_used, new_project.start_date, new_project.status)
         self.db_write(stmt)
         print("Added.")
 
@@ -71,7 +78,8 @@ class DB:
         self.db_write(stmt)
         print("All deleted.")
 
-    def import_projects(self):
+    @staticmethod
+    def import_projects():
         """Import multiple projects from CSV file into DB"""
         imported = []
         with open("input.csv") as file:
@@ -80,14 +88,7 @@ class DB:
                 csv_proj = Project(row[0], row[1], row[2])
                 imported.append(csv_proj)
 
-        print(str(len(imported)) + " project(s) found.")
-        for item in imported:
-            item.to_string()
-
-        answer = input("Add these projects? ")
-        if answer == "Y" or answer == "y":
-            for item in imported:
-                self.add_project(item)
+        return imported
 
     def get_project_by_id(self, project_id: int) -> list:
         """Find project w/ specified id"""

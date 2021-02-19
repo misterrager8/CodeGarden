@@ -1,3 +1,5 @@
+import sys
+
 from PyInquirer import prompt
 
 import modules.ctrla
@@ -13,23 +15,25 @@ class CmdLnInterface:
             'name': 'main_options',
             'message': 'What do you want to do?',
             'choices': [
-                "View All Projects",
                 "Add Project",
                 "Delete Project",
                 "Delete All Projects",
-                "Import Projects"]}]
+                "Import Projects",
+                "Exit"]}]
 
-        answer = prompt(main_options)
-        if answer["main_options"] == "View All Projects":
+        while True:
             self.view_all()
-        elif answer["main_options"] == "Add Project":
-            self.add()
-        elif answer["main_options"] == "Delete Project":
-            self.delete()
-        elif answer["main_options"] == "Delete All Projects":
-            self.delete_all()
-        elif answer["main_options"] == "Import Projects":
-            self.import_projects()
+            answer = prompt(main_options)
+            if answer["main_options"] == "Add Project":
+                self.add()
+            elif answer["main_options"] == "Delete Project":
+                self.delete()
+            elif answer["main_options"] == "Delete All Projects":
+                self.delete_all()
+            elif answer["main_options"] == "Import Projects":
+                self.import_projects()
+            elif answer["main_options"] == "Exit":
+                sys.exit()
 
     def view_all(self):
         for i in self.db.get_all_projects():
@@ -57,7 +61,6 @@ class CmdLnInterface:
         answer = prompt(questions)
         x = Project(answer["project_name"],
                     answer["project_descrip"],
-                    "02/17/2021",
                     answer["project_tools"])
         self.db.add_project(x)
 
@@ -83,4 +86,19 @@ class CmdLnInterface:
             print("bye.")
 
     def import_projects(self):
-        self.db.import_projects()
+        imported = self.db.import_projects()
+        print(str(len(imported)) + " project(s) found.")
+        for item in imported:
+            item.to_string()
+
+        questions = [{
+            'type': 'confirm',
+            'name': 'yesno',
+            'message': 'Import these?'}]
+
+        answer = prompt(questions)
+        if answer["yesno"]:
+            for item in imported:
+                self.db.add_project(item)
+        else:
+            print("bye.")
