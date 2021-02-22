@@ -39,7 +39,8 @@ class CmdLnInterface:
         for i in self.db.get_all_projects():
             i.to_string()
 
-    def add(self):
+    @staticmethod
+    def add():
         questions = [
             {
                 'type': 'input',
@@ -62,7 +63,7 @@ class CmdLnInterface:
         x = Project(answer["project_name"],
                     answer["project_descrip"],
                     answer["project_tools"])
-        self.db.add_project(x)
+        x.create()
 
     def delete(self):
         questions = [{

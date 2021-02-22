@@ -1,5 +1,8 @@
 import datetime
 
+import modules
+from modules.ctrla import DB
+
 
 class Project:
     def __init__(self,
@@ -15,6 +18,22 @@ class Project:
         self.start_date = start_date
         self.status = status
         self.project_id = project_id
+
+        self.pc = modules.ctrla.DB()
+
+    def create(self):
+        stmt = "INSERT INTO projects (name, descrip, tools_used, start_date, status) VALUES ('%s','%s','%s','%s','%s')" % (
+            self.name, self.descrip, self.tools_used, self.start_date, self.status)
+        self.pc.db_write(stmt)
+
+    def read(self):
+        pass
+
+    def update(self):
+        pass
+
+    def delete(self):
+        pass
 
     def to_string(self):
         print([self.project_id,
