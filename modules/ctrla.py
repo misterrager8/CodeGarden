@@ -1,96 +1,17 @@
-import csv
-import os
-from typing import List
-
-import MySQLdb
-from dotenv import load_dotenv
-
-from modules.model import Project
+import modules.base
+from modules.base import session_factory
+import modules.model
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 
 
-class DB:
+class DB(modules.base.Base):
     def __init__(self):
-        load_dotenv()
-        # create_table_stmt = "CREATE TABLE IF NOT EXISTS projects(" \
-        #                     "project_id INT AUTO_INCREMENT," \
-        #                     "name TEXT NOT NULL," \
-        #                     "descrip TEXT NOT NULL," \
-        #                     "tools_used TEXT NOT NULL," \
-        #                     "start_date TEXT NOT NULL," \
-        #                     "status TEXT NOT NULL," \
-        #                     "PRIMARY KEY (project_id));"
-        # self.db_write(create_table_stmt)
+        pass
 
     @staticmethod
-    def db_read(stmt: str) -> list:
-        """Generic MySQL read query"""
-        conn = MySQLdb.connect(os.getenv("host"),
-                               os.getenv("user"),
-                               os.getenv("passwd"),
-                               os.getenv("db"))
-        cursor = conn.cursor()
-        cursor.execute(stmt)
-        return cursor.fetchall()
-
-    @staticmethod
-    def db_write(stmt: str):
-        """Generic MySQL write query"""
-        conn = MySQLdb.connect(os.getenv("host"),
-                               os.getenv("user"),
-                               os.getenv("passwd"),
-                               os.getenv("db"))
-        cursor = conn.cursor()
-        cursor.execute(stmt)
-        conn.commit()
-        conn.close()
-
-    def add_project(self, new_project: Project):
-        """Add project to DB"""
-        stmt = "INSERT INTO projects (name, descrip, tools_used, start_date, status) VALUES ('%s','%s','%s','%s','%s')" % (
-            new_project.name, new_project.descrip, new_project.tools_used, new_project.start_date, new_project.status)
-        self.db_write(stmt)
-        print("Added.")
-
-    def get_all_projects(self) -> List[Project]:
-        """Get all projects in DB"""
-        results = []
-        stmt = "SELECT * FROM projects"
-        for row in self.db_read(stmt):
-            results.append(Project(row[1], row[2], row[3], row[4], row[5], row[0]))
-
-        return results
-
-    # def edit_project(self, project_id: int):
-    #     """Edit project"""
-    #     stmt = "UPDATE projects SET - = - WHERE project_id = '%d'" % project_id
-    #     self.db_write(stmt)
-    #     print("Updated.")
-
-    def delete_project(self, project_id: int):
-        """Delete project from DB"""
-        stmt = "DELETE FROM projects WHERE project_id = '%d'" % project_id
-        self.db_write(stmt)
-        print("Deleted.")
-
-    def delete_all_projects(self):
-        """Delete all projects from DB"""
-        stmt = "TRUNCATE table projects"
-        self.db_write(stmt)
-        print("All deleted.")
-
-    @staticmethod
-    def import_projects():
-        """Import multiple projects from CSV file into DB"""
-        imported = []
-        with open("input.csv") as file:
-            csv_data = csv.reader(file)
-            for row in csv_data:
-                csv_proj = Project(row[0], row[1], row[2])
-                imported.append(csv_proj)
-
-        return imported
-
-    def get_project_by_id(self, project_id: int) -> list:
-        """Find project w/ specified id"""
-        stmt = "SELECT * FROM projects WHERE project_id = '%d'" % project_id
-        return self.db_read(stmt)
+    def create(new_object):
+        session = modules.base.session_factory()
+        session.add(new_object)
+        session.commit()
+        session.close()

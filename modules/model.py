@@ -1,10 +1,19 @@
 import datetime
+from sqlalchemy import Column, Integer, String
 
-import modules
-from modules.ctrla import DB
+import modules.base
 
 
-class Project:
+class Project(modules.base.Base):
+    __tablename__ = "projects"
+
+    name = Column(String)
+    descrip = Column(String)
+    tools_used = Column(String)
+    start_date = Column(String)
+    status = Column(String)
+    project_id = Column(Integer, primary_key=True)
+
     def __init__(self,
                  name: str,
                  descrip: str,
@@ -18,22 +27,6 @@ class Project:
         self.start_date = start_date
         self.status = status
         self.project_id = project_id
-
-        self.pc = modules.ctrla.DB()
-
-    def create(self):
-        stmt = "INSERT INTO projects (name, descrip, tools_used, start_date, status) VALUES ('%s','%s','%s','%s','%s')" % (
-            self.name, self.descrip, self.tools_used, self.start_date, self.status)
-        self.pc.db_write(stmt)
-
-    def read(self):
-        pass
-
-    def update(self):
-        pass
-
-    def delete(self):
-        pass
 
     def to_string(self):
         print([self.project_id,

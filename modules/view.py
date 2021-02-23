@@ -22,7 +22,7 @@ class CmdLnInterface:
                 "Exit"]}]
 
         while True:
-            self.view_all()
+            # self.view_all()
             answer = prompt(main_options)
             if answer["main_options"] == "Add Project":
                 self.add()
@@ -35,9 +35,9 @@ class CmdLnInterface:
             elif answer["main_options"] == "Exit":
                 sys.exit()
 
-    def view_all(self):
-        for i in self.db.get_all_projects():
-            i.to_string()
+    # def view_all(self):
+    #     for i in self.db.get_all_projects():
+    #         i.to_string()
 
     @staticmethod
     def add():
