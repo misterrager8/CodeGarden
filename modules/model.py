@@ -1,8 +1,20 @@
 import datetime
+import os
+
+import dotenv
 from sqlalchemy import Column, Integer, String
 
 import modules.base
 
+
+dotenv.load_dotenv()
+
+host = os.getenv("host")
+user = os.getenv("user")
+passwd = os.getenv("passwd")
+db = os.getenv("db")
+
+engine = create_engine(f"mysql://{user}:{passwd}@{host}/{db}")
 
 class Project(modules.base.Base):
     __tablename__ = "projects"
