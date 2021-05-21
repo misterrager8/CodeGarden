@@ -1,70 +1,50 @@
-import datetime
-import os
+from datetime import datetime, date
 
-import dotenv
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Text, Integer, Date
+from sqlalchemy.orm import relationship
 
-import modules.base
+from modules import db
 
 
-dotenv.load_dotenv()
-
-host = os.getenv("host")
-user = os.getenv("user")
-passwd = os.getenv("passwd")
-db = os.getenv("db")
-
-engine = create_engine(f"mysql://{user}:{passwd}@{host}/{db}")
-
-class Project(modules.base.Base):
+class Project(db.Model):
     __tablename__ = "projects"
 
-    name = Column(String)
-    descrip = Column(String)
-    tools_used = Column(String)
-    start_date = Column(String)
-    status = Column(String)
-    project_id = Column(Integer, primary_key=True)
+    name = Column(Text)
+    descrip = Column(Text)
+    tools_used = relationship("tool", backref="project")
+    start_date = Column(Date)
+    status = Column(Text)
+    id = Column(Integer, primary_key=True)
 
     def __init__(self,
                  name: str,
-                 descrip: str,
-                 tools_used: str,
-                 start_date: str = datetime.datetime.now().strftime("%Y-%m-%d"),
-                 status: str = "In Progress",
-                 project_id: int = None):
+                 descrip: str = None,
+                 start_date: date = datetime.now().date(),
+                 status: str = "In Development"):
         self.name = name
         self.descrip = descrip
-        self.tools_used = tools_used
         self.start_date = start_date
         self.status = status
-        self.project_id = project_id
 
-    def to_string(self):
-        print([self.project_id,
-               self.name,
-               self.descrip,
-               self.tools_used,
-               self.start_date,
-               self.status])
+    def __str__(self):
+        return "%d\t%s" % (self.id, self.name)
 
 
-class Todo:
+class Tool(db.Model):
+    __tablename__ = "tools"
+
+    name = Column(Text)
+    color = Column(Text)
+    id = Column(Integer, primary_key=True)
+
     def __init__(self,
-                 todo_title: str,
-                 date_added: str = datetime.datetime.now().strftime("%Y-%m-%d"),
-                 done: bool = False,
-                 project_id: int = None,
-                 todo_id: int = None):
-        self.todo_title = todo_title
-        self.date_added = date_added
-        self.done = done
-        self.project_id = project_id
-        self.todo_id = todo_id
+                 name: str,
+                 color: str):
+        self.name = name
+        self.color = color
 
-    def to_string(self):
-        print([self.todo_id,
-               self.todo_title,
-               self.date_added,
-               self.done,
-               self.project_id])
+    def __str__(self):
+        return "%d\t%s" % (self.id, self.name)
+
+
+db.create_all()
