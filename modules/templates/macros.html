@@ -1,0 +1,7 @@
+{% macro title_div(txt) %}
+<h1 class="text-center m-5">{{ txt }}</h1>
+{% endmacro %}
+
+{% macro button(label, bg_color, txt_color, href) %}
+<a href="{{ href }}" class="btn" style="background-color:{{ bg_color }}; color:{{ txt_color }};">{{ label }}</a>
+{% endmacro %}
