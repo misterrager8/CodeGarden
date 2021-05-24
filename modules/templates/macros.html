@@ -5,3 +5,7 @@
 {% macro button(label, bg_color, txt_color, href) %}
 <a href="{{ href }}" class="btn" style="background-color:{{ bg_color }}; color:{{ txt_color }};">{{ label }}</a>
 {% endmacro %}
+
+{% macro tool_badge(tool) %}
+<a href=""><span class="badge" style="background-color:{{ tool.color }}; color:white;">{{ tool.name }}</span></a>
+{% endmacro %}
