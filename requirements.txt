@@ -1,4 +1,3 @@
-mysqlclient
-python-dotenv
-PyInquirer
 SQLAlchemy
+python-dotenv
+Flask
