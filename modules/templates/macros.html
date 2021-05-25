@@ -1,11 +1,60 @@
-{% macro title_div(txt) %}
-<h1 class="text-center m-5">{{ txt }}</h1>
+<!--Title Div-->
+{% macro title_div(txt, class='') %}
+<p class="text-center {{ class }}">{{ txt }}</p>
 {% endmacro %}
 
-{% macro button(label, bg_color, txt_color, href) %}
-<a href="{{ href }}" class="btn" style="background-color:{{ bg_color }}; color:{{ txt_color }};">{{ label }}</a>
+<!--Button-->
+{% macro button(txt, href, bg_color='black', txt_color='white') %}
+<a href="{{ href }}" class="btn" style="background-color:{{ bg_color }}; color:{{ txt_color }};">{{ txt }}</a>
 {% endmacro %}
 
+<!--Tool Badge-->
 {% macro tool_badge(tool) %}
 <a href=""><span class="badge" style="background-color:{{ tool.color }}; color:white;">{{ tool.name }}</span></a>
+{% endmacro %}
+
+<!--Brand Icon-->
+{% macro brand_icon() %}
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-code-slash" viewBox="0 0 16 16">
+  <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+</svg>
+{% endmacro %}
+
+<!--Unstyled Link-->
+{% macro unstyled_link(txt, class='', href='#', color='black') %}
+<a href="{{ href }}" class="{{ class }}" style="text-decoration:none;color:{{ color }};">{{ txt }}</a>
+{% endmacro %}
+
+<!--Unstyled Modal Link-->
+{% macro unstyled_modal_link(txt, id, class='', color='black') %}
+<a href="" class="{{ class }}" style="text-decoration:none;color:{{ color }};" data-toggle="modal" data-target="#{{ id }}">{{ txt }}</a>
+{% endmacro %}
+
+<!--Add Project Form-->
+{% macro add_project_form() %}
+<form class="form-group" method="POST" action="{{ url_for('add_project') }}">
+  <input type="text" placeholder="Name" name="name" class="form-control my-2" autocomplete="off">
+  <textarea rows="10" placeholder="Description" name="descrip" class="form-control my-2" autocomplete="off"></textarea>
+  <h6 class="text-center">Tools Used</h6>
+  <select class="form-control my-2" name="tools_used" multiple>
+    {% for i in tools %}
+    <option value="{{ i.name }}">{{ i.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-success w-100 my-2">+</button>
+</form>
+{% endmacro %}
+
+<!--Modal-->
+{% macro modal(id, header) %}
+<div class="modal" id="{{ id }}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body pb-0">
+        {{ title_div(header, class='display-4') }}
+        {{ caller() }}
+      </div>
+    </div>
+  </div>
+</div>
 {% endmacro %}
