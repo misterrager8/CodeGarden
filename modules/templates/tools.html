@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+
+{% block body %}
+<title>Tools</title>
+<div class="row">
+  <div class="col-5"></div>
+  {{ macros.unstyled_modal_link('+', id='add_tool_modal', class='col-2 text-center display-1') }}
+  <div class="col-5"></div>
+</div>
+
+<div class="list-group col-10 offset-1">
+  {% for i in tools_ %}
+  {{ macros.tool_list_item(i) }}
+  {% endfor %}
+</div>
+
+{% call macros.modal('add_tool_modal', 'Add Tool') %}
+{{ macros.add_tool_form() }}
+{% endcall %}
+
+{% endblock %}

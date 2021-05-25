@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block body %}
+<title>Tool | {{ tool_.name }}</title>
+{{ macros.title_div(tool_.name, class='display-4 m-5') }}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block body %}
+<title>Project | {{ project_.name }}</title>
+{{ macros.title_div(project_.name, class='display-4 m-5') }}
+
+<p>{{ project_.descrip }}</p>
+<p>{{ project_.get_start_date() }}</p>
+<p>{{ project_.status }}</p>
+{% for i in project_.tools %}
+{{ macros.tool_badge(i) }}
+{% endfor %}
+<div class="mb-4"></div>
+
+{% endblock %}

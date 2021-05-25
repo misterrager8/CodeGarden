@@ -1,105 +1,80 @@
-import sys
+from flask import render_template, redirect, url_for, request
 
-from PyInquirer import prompt
-
-import modules.ctrla
-from modules.model import Project
+from modules import app, db
+from modules.model import Tool, Project
 
 
-class CmdLnInterface:
-    def __init__(self):
-        self.db = modules.ctrla.DB()
+@app.route("/", methods=["GET", "POST"])
+def projects():
+    projects_ = db.session.query(Project).all()
+    tools_ = db.session.query(Tool).all()
+    return render_template("index.html", projects=projects_, tools=tools_)
 
-        main_options = [{
-            'type': 'list',
-            'name': 'main_options',
-            'message': 'What do you want to do?',
-            'choices': [
-                "Add Project",
-                "Delete Project",
-                "Delete All Projects",
-                "Import Projects",
-                "Exit"]}]
 
-        while True:
-            # self.view_all()
-            answer = prompt(main_options)
-            if answer["main_options"] == "Add Project":
-                self.add()
-            elif answer["main_options"] == "Delete Project":
-                self.delete()
-            elif answer["main_options"] == "Delete All Projects":
-                self.delete_all()
-            elif answer["main_options"] == "Import Projects":
-                self.import_projects()
-            elif answer["main_options"] == "Exit":
-                sys.exit()
+@app.route("/project", methods=["GET", "POST"])
+def project():
+    id_: int = request.args.get("id_")
+    _: Project = db.session.query(Project).get(int(id_))
+    return render_template("project.html", project_=_)
 
-    # def view_all(self):
-    #     for i in self.db.get_all_projects():
-    #         i.to_string()
 
-    @staticmethod
-    def add():
-        questions = [
-            {
-                'type': 'input',
-                'name': 'project_name',
-                'message': 'Name?'
-            },
-            {
-                'type': 'input',
-                'name': 'project_descrip',
-                'message': 'Descrip?'
-            },
-            {
-                'type': 'input',
-                'name': 'project_tools',
-                'message': 'Tools used?'
-            }
-        ]
+@app.route("/add_project", methods=["POST"])
+def add_project():
+    name = request.form["name"]
+    descrip = request.form["descrip"]
+    tools_used = []
+    for i in request.form.getlist("tools_used"):
+        x: Tool = db.session.query(Tool).get(int(i))
+        tools_used.append(x)
 
-        answer = prompt(questions)
-        x = Project(answer["project_name"],
-                    answer["project_descrip"],
-                    answer["project_tools"])
-        x.create()
+    _ = Project(name, descrip)
+    _.add_tools(tools_used)
+    db.session.add(_)
+    db.session.commit()
 
-    def delete(self):
-        questions = [{
-            'type': 'input',
-            'name': 'delete_id',
-            'message': 'ID?'}]
+    return redirect(url_for("projects"))
 
-        answer = prompt(questions)
-        self.db.delete_project(int(answer["delete_id"]))
 
-    def delete_all(self):
-        questions = [{
-            'type': 'confirm',
-            'name': 'yesno',
-            'message': 'Sure?'}]
+@app.route("/edit_project", methods=["POST"])
+def edit_project():
+    id_: int = request.args.get("id_")
+    _: Project = db.session.query(Project).get(int(id_))
 
-        answer = prompt(questions)
-        if answer["yesno"]:
-            self.db.delete_all_projects()
-        else:
-            print("bye.")
+    name = request.form["name"]
+    descrip = request.form["descrip"]
+    tools_used = []
+    for i in request.form.getlist("tools_used"):
+        x: Tool = db.session.query(Tool).get(int(i))
+        tools_used.append(x)
 
-    def import_projects(self):
-        imported = self.db.import_projects()
-        print(str(len(imported)) + " project(s) found.")
-        for item in imported:
-            item.to_string()
+    _.name = name
+    _.descrip = descrip
+    _.add_tools(tools_used)
+    db.session.commit()
 
-        questions = [{
-            'type': 'confirm',
-            'name': 'yesno',
-            'message': 'Import these?'}]
+    return redirect(url_for("projects"))
 
-        answer = prompt(questions)
-        if answer["yesno"]:
-            for item in imported:
-                self.db.add_project(item)
-        else:
-            print("bye.")
+
+@app.route("/tools", methods=["GET", "POST"])
+def tools():
+    tools_ = db.session.query(Tool).all()
+    return render_template("tools.html", tools_=tools_)
+
+
+@app.route("/tool", methods=["GET", "POST"])
+def tool():
+    id_: int = request.args.get("id_")
+    _: Tool = db.session.query(Tool).get(int(id_))
+
+    return render_template("tool.html", tool_=_)
+
+
+@app.route("/add_tool", methods=["POST"])
+def add_tool():
+    name = request.form["name"]
+
+    _ = Tool(name)
+    db.session.add(_)
+    db.session.commit()
+
+    return redirect(url_for("tools"))
