@@ -51,7 +51,7 @@ class Project(db.Model):
         self.start_date = start_date
         self.status = status
 
-    def add_tools(self, tools: list):
+    def set_tools(self, tools: list):
         for i in tools: self.tools.append(i)
         db.session.commit()
 

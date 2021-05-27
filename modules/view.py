@@ -28,7 +28,7 @@ def add_project():
         tools_used.append(x)
 
     _ = Project(name, descrip)
-    _.add_tools(tools_used)
+    _.set_tools(tools_used)
     db.session.add(_)
     db.session.commit()
 
@@ -49,7 +49,7 @@ def edit_project():
 
     _.name = name
     _.descrip = descrip
-    _.add_tools(tools_used)
+    _.set_tools(tools_used)
     db.session.commit()
 
     return redirect(url_for("projects"))
