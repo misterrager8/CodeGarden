@@ -38,6 +38,7 @@ class Project(db.Model):
     descrip = Column(Text)
     start_date = Column(Date)
     status = Column(Text)
+    # github_url = Column(Text) "ALTER TABLE projects ADD github_url TEXT AFTER status;"
     tools = relationship("Tool", secondary="links")
     id = Column(Integer, primary_key=True)
 
@@ -45,11 +46,13 @@ class Project(db.Model):
                  name: str,
                  descrip: str = None,
                  start_date: date = datetime.now().date(),
-                 status: str = "In Development"):
+                 status: str = "In Development",
+                 github_url: str = None):
         self.name = name
         self.descrip = descrip
         self.start_date = start_date
         self.status = status
+        self.github_url = github_url
 
     def set_tools(self, tools: list):
         for i in tools: self.tools.append(i)
