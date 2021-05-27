@@ -42,6 +42,7 @@ def edit_project():
 
     name = request.form["name"]
     descrip = request.form["descrip"]
+    status = request.form["status"]
     tools_used = []
     for i in request.form.getlist("tools_used"):
         x: Tool = db.session.query(Tool).get(int(i))
@@ -49,6 +50,7 @@ def edit_project():
 
     _.name = name
     _.descrip = descrip
+    _.status = status
     _.set_tools(tools_used)
     db.session.commit()
 

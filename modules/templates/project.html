@@ -7,7 +7,7 @@
 
 <p>{{ project_.descrip }}</p>
 <p>{{ project_.get_start_date() }}</p>
-<p>{{ project_.status }}</p>
+<p class="font-italic" style="color:{{ project_.get_status()[1] }}">{{ project_.get_status()[0] }}</p>
 {% for i in project_.tools %}
 {{ macros.tool_badge(i) }}
 {% endfor %}

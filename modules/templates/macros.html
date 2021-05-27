@@ -23,7 +23,7 @@
     {% endfor %}
   </div>
   <div>
-    <span class="font-italic mr-3 text-success">{{ project.status }}</span>
+    <span class="font-italic mr-3" style="color:{{ project.get_status()[1] }}">{{ project.get_status()[0] }}</span>
     <small class="mr-2">{{ project.get_start_date() }}</small>
     <a href="" data-target="#info_project_{{ project.id }}" data-toggle="modal" class="mx-1" style="text-decoration:none">{{ info_icon(size='20') }}</a>
     <a href="" data-target="#edit_project_{{ project.id }}" data-toggle="modal" class="mx-1" style="text-decoration:none">{{ edit_icon(size='20') }}</a>
@@ -37,7 +37,7 @@
 {% call modal('info_project_' + project.id|string, project.name, class='text-center') %}
 <p>{{ project.descrip }}</p>
 <p>{{ project.get_start_date() }}</p>
-<p>{{ project.status }}</p>
+<p class="font-italic" style="color:{{ project.get_status()[1] }}">{{ project.get_status()[0] }}</p>
 {% for i in project.tools %}
 {{ tool_badge(i) }}
 {% endfor %}
@@ -114,6 +114,12 @@
 <form class="form-group" method="POST" action="{{ url_for('edit_project', id_=project.id) }}">
   <input type="text" placeholder="Name" name="name" class="form-control my-2" autocomplete="off" value="{{ project.name }}">
   <textarea rows="10" placeholder="Description" name="descrip" class="form-control my-2" autocomplete="off">{{ project.descrip }}</textarea>
+  <select class="form-control my-2" name="status">
+    <option value="In Development">In Development</option>
+    <option value="Paused">Paused</option>
+    <option value="Released">Released</option>
+    <option value="Archived / On Ice">Archived / On Ice</option>
+  </select>
   <h6 class="text-center">Tools Used</h6>
   <select class="form-control my-2" name="tools_used" multiple>
     {% for i in tools %}
