@@ -55,7 +55,7 @@ class Project(db.Model):
         for i in tools: self.tools.append(i)
         db.session.commit()
 
-    def get_start_date(self):
+    def get_start_date(self) -> str:
         return self.start_date.strftime("%B %d, %Y")
 
     def __str__(self):
