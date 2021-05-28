@@ -71,6 +71,10 @@ class Project(db.Model):
         elif self.status == "Archived":
             return [self.status, "#ff8c00"]
 
+    def get_tools(self):
+        _ = [i.name for i in self.tools]
+        return ",".join(_)
+
     def __str__(self):
         return "%d\t%s" % (self.id, self.name)
 
