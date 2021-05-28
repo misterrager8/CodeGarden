@@ -112,8 +112,18 @@
 <form class="form-group" method="POST" action="{{ url_for('add_project') }}">
   <input type="text" placeholder="Name" name="name" class="form-control my-2" autocomplete="off">
   <textarea rows="10" placeholder="Description" name="descrip" class="form-control my-2" autocomplete="off"></textarea>
-  <h6 class="text-center">Tools Used</h6>
-  <select class="form-control my-2" name="tools_used" multiple>
+  <div class="btn-group-toggle border rounded m-1 p-2 text-center" data-toggle="buttons">
+    <h6 class="">Status</h6>
+    {% for i in status_list %}
+    <label class="shadow btn btn-outline-dark">
+      {{ circle_icon(i[1]) }}
+      <input type="radio" name="status" value="{{ i[0] }}">
+      {{ i[0] }}
+    </label>
+    {% endfor %}
+  </div>
+  <div class="btn-group-toggle border rounded p-2" data-toggle="buttons" style="flex-wrap:wrap">
+    <h6 class="text-center">Tools Used</h6>
     {% for i in tools %}
     <label class="shadow btn btn-outline-success my-1">
       {{ circle_icon(i.color) }}

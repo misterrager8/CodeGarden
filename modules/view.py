@@ -22,12 +22,13 @@ def project():
 def add_project():
     name = request.form["name"]
     descrip = request.form["descrip"]
+    status = request.form["status"]
     tools_used = []
     for i in request.form.getlist("tools_used"):
         x: Tool = db.session.query(Tool).get(int(i))
         tools_used.append(x)
 
-    _ = Project(name, descrip)
+    _ = Project(name, descrip, status=status)
     _.set_tools(tools_used)
     db.session.add(_)
     db.session.commit()
