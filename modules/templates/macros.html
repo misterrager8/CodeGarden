@@ -115,9 +115,13 @@
   <h6 class="text-center">Tools Used</h6>
   <select class="form-control my-2" name="tools_used" multiple>
     {% for i in tools %}
-    <option value="{{ i.id }}">{{ i.name }}</option>
+    <label class="shadow btn btn-outline-success my-1">
+      {{ circle_icon(i.color) }}
+      <input name="tools_used" type="checkbox" value="{{ i.id }}">
+      {{ i.name }}
+    </label>
     {% endfor %}
-  </select>
+  </div>
   <button type="submit" class="btn btn-success w-100 my-2">Add</button>
 </form>
 {% endmacro %}
@@ -127,18 +131,28 @@
 <form class="form-group" method="POST" action="{{ url_for('edit_project', id_=project.id) }}">
   <input type="text" placeholder="Name" name="name" class="form-control my-2" autocomplete="off" value="{{ project.name }}">
   <textarea rows="10" placeholder="Description" name="descrip" class="form-control my-2" autocomplete="off">{{ project.descrip }}</textarea>
-  <select class="form-control my-2" name="status">
-    <option value="In Development">In Development</option>
-    <option value="Paused">Paused</option>
-    <option value="Released">Released</option>
-    <option value="Archived / On Ice">Archived / On Ice</option>
-  </select>
-  <h6 class="text-center">Tools Used</h6>
-  <select class="form-control my-2" name="tools_used" multiple>
-    {% for i in tools %}
-    <option value="{{ i.id }}">{{ i.name }}</option>
+  <div class="btn-group-toggle border rounded m-1 p-2 text-center" data-toggle="buttons">
+    <h6 class="">Status</h6>
+    {% for i in status_list %}
+    <label class="shadow btn btn-outline-dark {% if i[0] == project.status %}active{% endif %}">
+      {{ circle_icon(i[1]) }}
+      <!--suppress HtmlUnknownAttribute -->
+      <input type="radio" name="status" value="{{ i[0] }}" {% if i[0]== project.status %}checked="checked" {% endif %}>
+      {{ i[0] }}
+    </label>
     {% endfor %}
-  </select>
+  </div>
+  <div class="btn-group-toggle border rounded m-1 p-2 text-center" data-toggle="buttons" style="flex-wrap:wrap">
+    <h6 class="">Tools Used</h6>
+    {% for i in tools %}
+    <label class="shadow btn btn-outline-dark my-1 {% if i.name in project.get_tools() %}active{% endif %}">
+      {{ circle_icon(i.color) }}
+      <!--suppress HtmlUnknownAttribute -->
+      <input name="tools_used" type="checkbox" value="{{ i.id }}" {% if i.name in project.get_tools() %}checked="checked" {% endif %}>
+      {{ i.name }}
+    </label>
+    {% endfor %}
+  </div>
   <button type="submit" class="btn btn-secondary w-100 my-2">Edit</button>
 </form>
 {% endmacro %}
