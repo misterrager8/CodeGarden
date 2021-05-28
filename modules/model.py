@@ -55,7 +55,7 @@ class Project(db.Model):
         self.github_url = github_url
 
     def set_tools(self, tools: list):
-        for i in tools: self.tools.append(i)
+        self.tools = tools
         db.session.commit()
 
     def get_start_date(self) -> str:
@@ -65,7 +65,7 @@ class Project(db.Model):
         if self.status == "In Development":
             return [self.status, "#2ab04e"]
         elif self.status == "Paused":
-            return [self.status, "#396073"]
+            return [self.status, "#66b9cc"]
         elif self.status == "Released":
             return [self.status, "#0004ff"]
         elif self.status == "Archived":
