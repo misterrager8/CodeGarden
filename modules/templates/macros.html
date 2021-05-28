@@ -29,7 +29,7 @@
 {% macro project_list_item(project) %}
 <div class="list-group-item list-group-item-action d-flex justify-content-between border-0">
   <div>
-    {{ unstyled_link(project.name, class='mr-2', href=url_for('project', id_=project.id)) }}
+    {{ unstyled_modal_link(project.name, 'info_project_' + project.id|string, class='mr-2') }}
     {% for i in project.tools %}
     {{ tool_badge(i) }}
     {% endfor %}
@@ -178,7 +178,7 @@
 <!--Modal-->
 {% macro modal(id, header, class='') %}
 <div class="modal {{ class }}" id="{{ id }}">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-body p-5">
         {{ title_div(header, class='display-4') }}

@@ -11,13 +11,6 @@ def projects():
     return render_template("index.html", projects=projects_, tools=tools_)
 
 
-@app.route("/project", methods=["GET", "POST"])
-def project():
-    id_: int = request.args.get("id_")
-    _: Project = db.session.query(Project).get(int(id_))
-    return render_template("project.html", project_=_)
-
-
 @app.route("/add_project", methods=["POST"])
 def add_project():
     name = request.form["name"]
