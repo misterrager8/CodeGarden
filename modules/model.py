@@ -68,7 +68,7 @@ class Project(db.Model):
             return [self.status, "#396073"]
         elif self.status == "Released":
             return [self.status, "#0004ff"]
-        elif self.status == "Archived / On Ice":
+        elif self.status == "Archived":
             return [self.status, "#ff8c00"]
 
     def __str__(self):
