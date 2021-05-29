@@ -61,7 +61,7 @@ class Project(db.Model):
     def get_start_date(self) -> str:
         return self.start_date.strftime("%B %d, %Y")
 
-    def get_status(self):
+    def get_status(self) -> list:
         if self.status == "In Development":
             return [self.status, "#2ab04e"]
         elif self.status == "Paused":
@@ -71,9 +71,8 @@ class Project(db.Model):
         elif self.status == "Archived":
             return [self.status, "#ff8c00"]
 
-    def get_tools(self):
-        _ = [i.name for i in self.tools]
-        return ",".join(_)
+    def get_tools(self) -> str:
+        return ",".join([i.name for i in self.tools])
 
     def __str__(self):
         return "%d\t%s" % (self.id, self.name)

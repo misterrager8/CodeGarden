@@ -15,16 +15,8 @@ def projects():
 
 @app.route("/add_project", methods=["POST"])
 def add_project():
-    name = request.form["name"]
-    descrip = request.form["descrip"]
-    status = request.form["status"]
-    tools_used = []
-    for i in request.form.getlist("tools_used"):
-        x: Tool = db.session.query(Tool).get(int(i))
-        tools_used.append(x)
-
-    _ = Project(name, descrip, status=status)
-    _.set_tools(tools_used)
+    _ = Project(request.form["name"], request.form["descrip"], status=request.form["status"])
+    _.set_tools([db.session.query(Tool).get(int(i)) for i in request.form.getlist("tools_used")])
     db.session.add(_)
     db.session.commit()
 
@@ -36,18 +28,12 @@ def edit_project():
     id_: int = request.args.get("id_")
     _: Project = db.session.query(Project).get(int(id_))
 
-    name = request.form["name"]
-    descrip = request.form["descrip"]
-    status = request.form["status"]
-    tools_used = []
-    for i in request.form.getlist("tools_used"):
-        x: Tool = db.session.query(Tool).get(int(i))
-        tools_used.append(x)
+    props = {"name": request.form["name"],
+             "descrip": request.form["descrip"],
+             "status": request.form["status"]}
 
-    _.name = name
-    _.descrip = descrip
-    _.status = status
-    _.set_tools(tools_used)
+    for key, value in props.items(): setattr(_, key, value)
+    _.set_tools([db.session.query(Tool).get(int(i)) for i in request.form.getlist("tools_used")])
     db.session.commit()
 
     return redirect(url_for("projects"))
@@ -55,8 +41,7 @@ def edit_project():
 
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
-    tools_ = db.session.query(Tool).all()
-    return render_template("tools.html", tools_=tools_)
+    return render_template("tools.html", tools_=db.session.query(Tool).all())
 
 
 @app.route("/tool", methods=["GET", "POST"])
@@ -69,10 +54,7 @@ def tool():
 
 @app.route("/add_tool", methods=["POST"])
 def add_tool():
-    name = request.form["name"]
-
-    _ = Tool(name)
-    db.session.add(_)
+    db.session.add(Tool(request.form["name"]))
     db.session.commit()
 
     return redirect(url_for("tools"))
