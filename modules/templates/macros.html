@@ -188,3 +188,13 @@
   </div>
 </div>
 {% endmacro %}
+
+<!--Sort Projects Filter-->
+{% macro sort_projects_filter(class='') %}
+<div class="list-inline {{ class }}">
+  <small>Sort by: </small>
+  {{ unstyled_link('Name', href=url_for('projects', order_by='name'), class='badge badge-light mx-1') }}
+  {{ unstyled_link('Start Date', href=url_for('projects', order_by='start_date desc'), class='badge badge-light mx-1') }}
+  {{ unstyled_link('Status', href=url_for('projects', order_by='status'), class='badge badge-light mx-1') }}
+</div>
+{% endmacro %}

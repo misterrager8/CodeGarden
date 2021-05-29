@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, request
+from sqlalchemy import text
 
 from modules import app, db
 from modules.model import Tool, Project
@@ -6,9 +7,10 @@ from modules.model import Tool, Project
 
 @app.route("/", methods=["GET", "POST"])
 def projects():
-    projects_ = db.session.query(Project).all()
-    tools_ = db.session.query(Tool).all()
-    return render_template("index.html", projects=projects_, tools=tools_)
+    order_by = request.args.get("order_by", default="start_date desc")
+    return render_template("index.html",
+                           projects=db.session.query(Project).order_by(text(order_by)).all(),
+                           tools=db.session.query(Tool).all())
 
 
 @app.route("/add_project", methods=["POST"])
