@@ -39,6 +39,17 @@ def edit_project():
     return redirect(url_for("projects"))
 
 
+@app.route("/delete")
+def delete_project():
+    id_: int = request.args.get("id_")
+    _: Project = db.session.query(Project).get(int(id_))
+
+    db.session.delete(_)
+    db.session.commit()
+
+    return redirect(url_for("projects"))
+
+
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
     return render_template("tools.html", tools_=db.session.query(Tool).all())

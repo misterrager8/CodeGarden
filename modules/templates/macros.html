@@ -38,12 +38,18 @@
     {{ status_badge(project, class='mr-2') }}
     {{ date_label(project, class='mr-2') }}
     <a href="" data-target="#edit_project_{{ project.id }}" data-toggle="modal" class="mr-2" style="text-decoration:none">{{ edit_icon(size='20') }}</a>
+    <a href="" data-target="#delete_project_{{ project.id }}" data-toggle="modal" class="mr-2" style="text-decoration:none">X</a>
   </div>
 </div>
 
 <!--Edit Modal-->
 {% call modal('edit_project_' + project.id|string, 'Edit Project') %}
 {{ edit_project_form(project) }}
+{% endcall %}
+
+<!--Delete Modal-->
+{% call modal('delete_project_' + project.id|string, 'Delete Project') %}
+<a href="{{  url_for('delete_project', id_=project.id)  }}" class="btn btn-danger">Delete</a>
 {% endcall %}
 
 <!--Info Modal-->
