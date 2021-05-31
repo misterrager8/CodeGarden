@@ -10,7 +10,8 @@ def projects():
     order_by = request.args.get("order_by", default="start_date desc")
     return render_template("index.html",
                            projects=db.session.query(Project).order_by(text(order_by)).all(),
-                           tools=db.session.query(Tool).all())
+                           tools=db.session.query(Tool).all(),
+                           order_by=order_by)
 
 
 @app.route("/add_project", methods=["POST"])
