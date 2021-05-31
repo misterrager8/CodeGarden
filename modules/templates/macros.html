@@ -38,7 +38,9 @@
     {{ status_badge(project, class='mr-2') }}
     {{ date_label(project, class='mr-2') }}
     <a href="" data-target="#edit_project_{{ project.id }}" data-toggle="modal" class="mr-2" style="text-decoration:none">{{ edit_icon(size='20') }}</a>
-    <a href="" data-target="#delete_project_{{ project.id }}" data-toggle="modal" class="mr-2" style="text-decoration:none">X</a>
+    <a href="" data-target="#delete_project_{{ project.id }}" data-toggle="modal" class="mr-2" style="text-decoration:none">
+      {{ delete_icon() }}
+    </a>
   </div>
 </div>
 
@@ -48,8 +50,8 @@
 {% endcall %}
 
 <!--Delete Modal-->
-{% call modal('delete_project_' + project.id|string, 'Delete Project') %}
-<a href="{{  url_for('delete_project', id_=project.id)  }}" class="btn btn-danger">Delete</a>
+{% call modal('delete_project_' + project.id|string, 'Delete Project?', class='text-center') %}
+<a href="{{  url_for('delete_project', id_=project.id)  }}" class="btn btn-danger w-75">Delete</a>
 {% endcall %}
 
 <!--Info Modal-->
@@ -93,6 +95,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="black" class="bi bi-info-square" viewBox="0 0 16 16">
   <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
   <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+</svg>
+{% endmacro %}
+
+<!--Delete Icon-->
+{% macro delete_icon(size='16') %}
+<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="red" class="bi bi-x-lg" viewBox="0 0 16 16">
+  <path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
 </svg>
 {% endmacro %}
 
