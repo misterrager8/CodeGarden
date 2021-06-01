@@ -22,7 +22,7 @@
 
 <!--Date Label-->
 {% macro date_label(project, class='') %}
-<span class="font-italic {{ class }}"><small>{{ project.get_start_date() }}</small></span>
+<span class="font-italic {{ class }}"><small>{{ project.get_start_date("%B %d, %Y") }}</small></span>
 {% endmacro %}
 
 <!--Project List Item-->

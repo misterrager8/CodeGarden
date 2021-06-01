@@ -58,8 +58,8 @@ class Project(db.Model):
         self.tools = tools
         db.session.commit()
 
-    def get_start_date(self) -> str:
-        return self.start_date.strftime("%B %d, %Y")
+    def get_start_date(self, formt: str) -> str:
+        return self.start_date.strftime(formt)
 
     def get_status(self) -> list:
         if self.status == "In Development":
