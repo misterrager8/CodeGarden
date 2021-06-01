@@ -38,7 +38,7 @@ class Project(db.Model):
     descrip = Column(Text)
     start_date = Column(Date)
     status = Column(Text)
-    # github_url = Column(Text) "ALTER TABLE projects ADD github_url TEXT AFTER status;"
+    github_url = Column(Text)
     tools = relationship("Tool", secondary="links")
     id = Column(Integer, primary_key=True)
 

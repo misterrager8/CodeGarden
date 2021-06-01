@@ -31,6 +31,8 @@ def edit_project():
 
     props = {"name": request.form["name"],
              "descrip": request.form["descrip"],
+             "start_date": request.form["start_date"],
+             "github_url": request.form["github_url"],
              "status": request.form["status"]}
 
     for key, value in props.items(): setattr(_, key, value)
