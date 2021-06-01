@@ -10,7 +10,7 @@
 </div>
 
 {{ macros.sort_projects_filter(class='text-center my-2') }}
-<div class="list-group col-10 offset-1">
+<div class="list-group">
   {% for i in projects %}
   {{ macros.project_list_item(i) }}
   {% endfor %}
