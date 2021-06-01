@@ -73,7 +73,7 @@
 <!--Tool List Item-->
 {% macro tool_list_item(tool) %}
 <div class="list-group-item list-group-item-action d-flex justify-content-between border-0">
-  {{ unstyled_link(tool.name, href=url_for('tool', id_=tool.id)) }}
+  {{ unstyled_link(tool.name, href=url_for('tool', id_=tool.id), class='lead font-italic') }}
   <span class="">{{ circle_icon(tool.color) }}</span>
 </div>
 {% endmacro %}
