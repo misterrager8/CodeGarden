@@ -166,6 +166,7 @@
 <form class="form-group" method="POST" action="{{ url_for('edit_project', id_=project.id) }}">
   <input type="text" placeholder="Name" name="name" class="form-control my-2" autocomplete="off" value="{{ project.name }}">
   <textarea rows="10" placeholder="Description" name="descrip" class="form-control my-2" autocomplete="off">{{ project.descrip }}</textarea>
+  <input type="date" name="start_date" class="form-control" value="{{ project.get_start_date('%Y-%m-%d') }}">
   <div class="btn-group-toggle border rounded m-1 p-2 text-center" data-toggle="buttons">
     <h6 class="">Status</h6>
     {% for i in status_list %}
