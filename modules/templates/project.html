@@ -9,8 +9,12 @@
 </div>
 
 {{ macros.paragraph(project.descrip) }}
-{{ macros.paragraph(project.start_date) }}
+{{ macros.paragraph(project.start_date.strftime('%B %-d, %Y')) }}
 {{ macros.paragraph(project.status) }}
-{{ macros.paragraph(project.tools) }}
+
+{{ macros.paragraph('Tools Used', size=1.75) }}
+{% for i in project.tools.split(',') %}
+{{ macros.paragraph(i, size=1, class='text-capitalize font-italic') }}
+{% endfor %}
 
 {% endblock %}
