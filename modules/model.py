@@ -1,34 +1,9 @@
-import random
-from datetime import datetime, date
+from datetime import date
 
-from sqlalchemy import Column, Text, Integer, Date, ForeignKey
+from sqlalchemy import Column, Text, Integer, Date, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from modules import db
-
-
-class Tool(db.Model):
-    __tablename__ = "tools"
-
-    name = Column(Text)
-    color = Column(Text)
-    projects = relationship("Project", secondary="links")
-    id = Column(Integer, primary_key=True)
-
-    def __init__(self,
-                 name: str):
-        self.name = name
-        self.color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
-
-    def __str__(self):
-        return "%d\t%s" % (self.id, self.name)
-
-
-class Link(db.Model):
-    __tablename__ = "links"
-
-    project_id = Column(Integer, ForeignKey("projects.id"), primary_key=True)
-    tool_id = Column(Integer, ForeignKey("tools.id"), primary_key=True)
 
 
 class Project(db.Model):
@@ -39,43 +14,38 @@ class Project(db.Model):
     start_date = Column(Date)
     status = Column(Text)
     github_url = Column(Text)
-    tools = relationship("Tool", secondary="links")
+    tools = Column(Text)
+    todos = relationship("Todo", backref="projects")
     id = Column(Integer, primary_key=True)
 
-    def __init__(self,
-                 name: str,
-                 descrip: str = None,
-                 start_date: date = datetime.now().date(),
-                 status: str = "In Development",
-                 github_url: str = None):
-        self.name = name
-        self.descrip = descrip
-        self.start_date = start_date
-        self.status = status
-        self.github_url = github_url
-
-    def set_tools(self, tools: list):
-        self.tools = tools
-        db.session.commit()
-
-    def get_start_date(self, formt: str) -> str:
-        return self.start_date.strftime(formt)
-
-    def get_status(self) -> list:
-        if self.status == "In Development":
-            return [self.status, "#2ab04e"]
-        elif self.status == "Paused":
-            return [self.status, "#66b9cc"]
-        elif self.status == "Released":
-            return [self.status, "#0004ff"]
-        elif self.status == "Archived":
-            return [self.status, "#ff8c00"]
-
-    def get_tools(self) -> str:
-        return ",".join([i.name for i in self.tools])
+    def __init__(self, **kwargs):
+        super(Project, self).__init__(**kwargs)
 
     def __str__(self):
-        return "%d\t%s" % (self.id, self.name)
+        return "%s,%s,%s,%s,%s" % (self.name,
+                                   self.descrip,
+                                   self.start_date,
+                                   self.status,
+                                   self.github_url)
+
+
+class Todo(db.Model):
+    __tablename__ = "todos"
+
+    item = Column(Text)
+    date_added = Column(Date, default=date.today())
+    done = Column(Boolean, default=False)
+    project_id = Column(ForeignKey("projects.id"))
+    id = Column(Integer, primary_key=True)
+
+    def __init__(self, **kwargs):
+        super(Todo, self).__init__(**kwargs)
+
+    def __str__(self):
+        return "%s,%s,%s,%s" % (self.item,
+                                self.date_added,
+                                self.done,
+                                self.projects.name)
 
 
 db.create_all()
