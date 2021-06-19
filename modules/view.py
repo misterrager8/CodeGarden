@@ -1,74 +1,122 @@
+from datetime import date
+
 from flask import render_template, redirect, url_for, request
-from sqlalchemy import text
 
 from modules import app, db
-from modules.model import Tool, Project
+from modules.model import Project, Todo
 
 
 @app.route("/", methods=["GET", "POST"])
 def projects():
-    order_by = request.args.get("order_by", default="start_date desc")
-    return render_template("index.html",
-                           projects=db.session.query(Project).order_by(text(order_by)).all(),
-                           tools=db.session.query(Tool).all(),
-                           order_by=order_by)
+    return render_template("index.html", projects=db.session.query(Project))
 
 
-@app.route("/add_project", methods=["POST"])
-def add_project():
-    _ = Project(request.form["name"], request.form["descrip"], status=request.form["status"])
-    _.set_tools([db.session.query(Tool).get(int(i)) for i in request.form.getlist("tools_used")])
-    db.session.add(_)
+@app.route("/create", methods=["GET", "POST"])
+def create_project():
+    project_name: str = request.form["project_name"]
+    start_date: date = request.form["start_date"]
+    descrip: str = request.form["descrip"]
+    status: str = request.form["status"]
+    github_url: str = request.form["github_url"]
+    tools_: str = request.form["tools"]
+
+    db.session.add(Project(name=project_name.title(),
+                           start_date=start_date,
+                           descrip=descrip,
+                           status=status.title(),
+                           github_url=github_url,
+                           tools=tools_))
     db.session.commit()
 
     return redirect(url_for("projects"))
 
 
-@app.route("/edit_project", methods=["POST"])
-def edit_project():
+@app.route("/project", methods=["GET", "POST"])
+def read_project():
     id_: int = request.args.get("id_")
-    _: Project = db.session.query(Project).get(int(id_))
+    project: Project = db.session.query(Project).get(id_)
 
-    props = {"name": request.form["name"],
-             "descrip": request.form["descrip"],
-             "start_date": request.form["start_date"],
-             "github_url": request.form["github_url"],
-             "status": request.form["status"]}
-
-    for key, value in props.items(): setattr(_, key, value)
-    _.set_tools([db.session.query(Tool).get(int(i)) for i in request.form.getlist("tools_used")])
-    db.session.commit()
-
-    return redirect(url_for("projects"))
+    return render_template("project.html", project=project)
 
 
-@app.route("/delete")
+@app.route("/update", methods=["GET", "POST"])
+def update_project():
+    id_: int = request.args.get("id_")
+    project: Project = db.session.query(Project).get(id_)
+
+    if request.method == "POST":
+        project_name: str = request.form["project_name"]
+        start_date: date = request.form["start_date"]
+        descrip: str = request.form["descrip"]
+        status: str = request.form["status"]
+        github_url: str = request.form["github_url"]
+        tools_: str = request.form["tools"]
+
+        project.name = project_name.title()
+        project.start_date = start_date
+        project.descrip = descrip
+        project.status = status.title()
+        project.github_url = github_url
+        project.tools = tools_
+
+        db.session.commit()
+
+        return redirect(url_for("projects"))
+
+
+@app.route("/delete", methods=["GET", "POST"])
 def delete_project():
     id_: int = request.args.get("id_")
-    _: Project = db.session.query(Project).get(int(id_))
+    project: Project = db.session.query(Project).get(id_)
 
-    db.session.delete(_)
+    db.session.delete(project)
     db.session.commit()
 
     return redirect(url_for("projects"))
 
 
-@app.route("/tools", methods=["GET", "POST"])
+@app.route("/tools")
 def tools():
-    return render_template("tools.html", tools_=db.session.query(Tool).all())
+    _ = []
+    for i in db.session.query(Project):
+        for j in i.tools.split(","):
+            _.append(j)
+
+    return render_template("tools.html", x=set(_))
 
 
-@app.route("/tool", methods=["GET", "POST"])
-def tool():
+@app.route("/create_todo", methods=["GET", "POST"])
+def create_todo():
     id_: int = request.args.get("id_")
-    _: Tool = db.session.query(Tool).get(int(id_))
+    project: Project = db.session.query(Project).get(id_)
 
-    return render_template("tool.html", tool_=_)
+    if request.method == "POST":
+        task: str = request.form["task"]
+        project.todos.append(Todo(item=task.capitalize()))
+        db.session.commit()
+
+        return redirect(url_for("read_project", id_=id_))
 
 
-@app.route("/add_tool", methods=["POST"])
-def add_tool():
-    db.session.add(Tool(request.form["name"]))
+@app.route("/update_todos", methods=["GET", "POST"])
+def update_todos():
+    id_: int = request.args.get("id_")
+    project: Project = db.session.query(Project).get(id_)
+
+    if request.method == "POST":
+        todos = request.form.getlist("done")
+        db.session.commit()
+
+        return redirect(url_for("read_project", id_=project.id))
+
+
+@app.route("/delete_todo", methods=["GET", "POST"])
+def delete_todo():
+    id_: int = request.args.get("id_")
+    todo: Todo = db.session.query(Todo).get(id_)
+    _: Project = todo.projects
+
+    db.session.delete(todo)
     db.session.commit()
 
-    return redirect(url_for("tools"))
+    return redirect(url_for("read_project", id_=_.id))

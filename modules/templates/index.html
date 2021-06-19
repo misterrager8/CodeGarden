@@ -3,21 +3,19 @@
 
 {% block body %}
 <title>Projects</title>
-<div class="row">
-  <div class="col-5"></div>
-  {{ macros.unstyled_modal_link('+', id='add_project_modal', class='col-2 text-center display-1') }}
-  <div class="col-5"></div>
+<div class="text-center m-5">
+  {% call macros.unstyled_link(modal_id='project_create') %}
+  {{ macros.add_icon(size=50) }}
+  {% endcall %}
 </div>
 
-{{ macros.sort_projects_filter(class='text-center my-2') }}
-<div class="list-group">
-  {% for i in projects %}
-  {{ macros.project_list_item(i) }}
-  {% endfor %}
-</div>
-
-{% call macros.modal('add_project_modal', 'Add Project') %}
-{{ macros.add_project_form() }}
+{% call macros.modal(modal_id='project_create') %}
+{{ macros.paragraph('Create Project', class='text-center m-3', size=3) }}
+{{ macros.project_create_form() }}
 {% endcall %}
+
+{% for i in projects %}
+{{ macros.project_list_item(i) }}
+{% endfor %}
 
 {% endblock %}
