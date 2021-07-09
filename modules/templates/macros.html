@@ -137,7 +137,13 @@
   <input autocomplete="off" class="form-control mb-2" placeholder="Name" name="project_name">
   <input type="date" class="form-control mb-2" name="start_date">
   <textarea rows="5" autocomplete="off" class="form-control mb-2" placeholder="Description" name="descrip"></textarea>
-  <input autocomplete="off" class="form-control mb-2" placeholder="Status" name="status">
+  <select class="form-control mb-2" name="status">
+    <option value="Active">Active</option>
+    <option value="Released (Archived)">Released (Archived)</option>
+    <option value="Released (Maintained)">Released (Maintained)</option>
+    <option value="Planning">Planning</option>
+    <option value="Paused">Paused</option>
+  </select>
   <input autocomplete="off" class="form-control mb-2" placeholder="GitHub URL" name="github_url">
   <input autocomplete="off" class="form-control mb-2" placeholder="Tools" name="tools">
   {{ button('Create Project', class='w-100') }}
