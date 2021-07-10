@@ -99,8 +99,11 @@
 {% endmacro %}
 
 {% macro project_list_item(project) %}
-<div class="border rounded my-3 p-3 d-flex justify-content-between">
-  {% call unstyled_link(href=url_for('read_project', id_=project.id)) %}{{ project.name }}{% endcall %}
+<div class="list-group-item list-group-item-action border-0 rounded d-flex justify-content-between" style="z-index:auto">
+  <div>
+    {% call link(href=url_for('read_project', id_=project.id), class='mr-3') %}{{ project.name }}{% endcall %}
+    {{ status_badge(project.status) }}
+  </div>
   {{ project_options(project) }}
 </div>
 {% endmacro %}
@@ -108,11 +111,11 @@
 {% macro project_options(project, class='') %}
 <div class="{{ class }}">
   {% if project.github_url %}
-  {% call unstyled_link(href=project.github_url, newtab=true, class='mx-2') %}{{ github_icon() }}{% endcall %}
+  {% call link(href=project.github_url, newtab=true, class='mx-1') %}{{ github_icon() }}{% endcall %}
   {% endif %}
-  {% call unstyled_link(modal_id='todo_create_'+project.id|string, class='mx-2') %}{{ add_icon() }}{% endcall %}
-  {% call unstyled_link(modal_id='project_update_'+project.id|string, class='mx-2') %}{{ update_icon() }}{% endcall %}
-  {% call unstyled_link(modal_id='project_delete_'+project.id|string, class='mx-2') %}{{ delete_icon() }}{% endcall %}
+  {% call link(modal_id='todo_create_'+project.id|string, class='mx-1') %}{{ add_icon() }}{% endcall %}
+  {% call link(modal_id='project_update_'+project.id|string, class='mx-1') %}{{ update_icon() }}{% endcall %}
+  {% call link(modal_id='project_delete_'+project.id|string, class='mx-1') %}{{ delete_icon() }}{% endcall %}
 </div>
 
 {% call modal(modal_id='todo_create_'+project.id|string) %}
@@ -127,7 +130,7 @@
 
 {% call modal(modal_id='project_delete_'+project.id|string, class='text-center') %}
 {{ paragraph('Delete Project?', class='m-3', size=3) }}
-{% call unstyled_link(color='white', class='btn btn-lg btn-danger', href=url_for('delete_project', id_=project.id)) %}Delete{% endcall %}
+{% call link(color='white', class='btn btn-lg btn-danger', href=url_for('delete_project', id_=project.id)) %}Delete{% endcall %}
 {% endcall %}
 
 {% endmacro %}

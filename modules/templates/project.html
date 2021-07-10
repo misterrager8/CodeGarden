@@ -22,7 +22,7 @@
   {{ macros.paragraph('TODO', size=1.75) }}
   {% for i in project.todos %}
   <div class="form-check">
-    {% call macros.unstyled_link(href=url_for('delete_todo', id_=i.id), color='red', class='mr-2') %}X{% endcall %}
+    {% call macros.link(href=url_for('delete_todo', id_=i.id), color='red', class='mr-2') %}X{% endcall %}
     <!--suppress HtmlUnknownAttribute -->
     <input name="done" type="checkbox" value="{{ i.done }}" {% if i.done %}checked{% endif %}>
     <label>{{ i.item }}</label>
