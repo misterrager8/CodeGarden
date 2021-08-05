@@ -135,6 +135,15 @@
 
 {% endmacro %}
 
+{% macro sort_filter() %}
+<ul class="list-inline">
+  <li class="list-inline-item">Sort By:</li>
+  {% if order_by != 'name' %}{{ badge('Name', href=url_for('projects', order_by='name'), class='list-inline-item') }}{% endif %}
+  {% if order_by != 'status' %}{{ badge('Status', href=url_for('projects', order_by='status'), class='list-inline-item') }}{% endif %}
+  {% if order_by != 'start_date' %}{{ badge('Date', href=url_for('projects', order_by='start_date'), class='list-inline-item') }}{% endif %}
+</ul>
+{% endmacro %}
+
 {% macro project_create_form(class='') %}
 <form class="form-group {{ class }}" method="post" action="{{ url_for('create_project') }}">
   <input autocomplete="off" class="form-control mb-2" placeholder="Name" name="project_name">
