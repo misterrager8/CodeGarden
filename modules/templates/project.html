@@ -5,30 +5,34 @@
 <title>Project | {{ project.name }}</title>
 <div class="text-center my-5">
   {{ macros.paragraph(project.name, size=3) }}
-  {{ macros.project_options(project) }}
 </div>
 
 {{ macros.paragraph(project.descrip) }}
 {{ macros.paragraph(project.start_date.strftime('%B %-d, %Y')) }}
-{{ macros.paragraph(project.status) }}
+<p class="badge m-0" style="background-color:{{ project.get_status()[1] }}">{{ project.get_status()[0] }}</p>
 
+{% if project.status == "Planning" %}
+{% endif %}
+
+{% if project.tools %}
 {{ macros.paragraph('Tools Used', size=1.75) }}
 {% for i in project.tools.split(',') %}
 {{ macros.paragraph(i, class='text-capitalize font-italic') }}
 {% endfor %}
+{% endif %}
 
 {% if project.todos %}
 <form method="post" action="{{ url_for('update_todos', id_=project.id) }}">
   {{ macros.paragraph('TODO', size=1.75) }}
   {% for i in project.todos %}
   <div class="form-check">
-    {% call macros.link(href=url_for('delete_todo', id_=i.id), color='red', class='mr-2') %}X{% endcall %}
+    <a href="{{ url_for('delete_todo', id_=i.id) }}" class="me-2 text-danger link">X</a>
     <!--suppress HtmlUnknownAttribute -->
     <input name="done" type="checkbox" value="{{ i.done }}" {% if i.done %}checked{% endif %}>
     <label>{{ i.item }}</label>
   </div>
   {% endfor %}
-  {{ macros.button('Save') }}
+  <button type="submit" class="btn btn-custom">Save</button>
 </form>
 {% endif %}
 

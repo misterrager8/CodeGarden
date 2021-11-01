@@ -1,6 +1,8 @@
 from datetime import date
 
+from dateutil.utils import today
 from flask import render_template, redirect, url_for, request
+from sqlalchemy import text
 
 from modules import app, db
 from modules.model import Project, Todo
@@ -8,24 +10,18 @@ from modules.model import Project, Todo
 
 @app.route("/", methods=["GET", "POST"])
 def projects():
-    return render_template("index.html", projects=db.session.query(Project))
+    order_by = request.args.get("order_by", default="start_date desc")
+    return render_template("index.html", projects=db.session.query(Project).order_by(text(order_by)).all(),
+                           order_by=order_by)
 
 
 @app.route("/create", methods=["GET", "POST"])
 def create_project():
     project_name: str = request.form["project_name"]
-    start_date: date = request.form["start_date"]
-    descrip: str = request.form["descrip"]
-    status: str = request.form["status"]
-    github_url: str = request.form["github_url"]
-    tools_: str = request.form["tools"]
 
     db.session.add(Project(name=project_name.title(),
-                           start_date=start_date,
-                           descrip=descrip,
-                           status=status.title(),
-                           github_url=github_url,
-                           tools=tools_))
+                           start_date=today(),
+                           status="Planning"))
     db.session.commit()
 
     return redirect(url_for("projects"))
@@ -79,8 +75,9 @@ def delete_project():
 def tools():
     _ = []
     for i in db.session.query(Project):
-        for j in i.tools.split(","):
-            _.append(j)
+        if i.tools:
+            for j in i.tools.split(","):
+                _.append(j)
 
     return render_template("tools.html", x=set(_))
 

@@ -21,6 +21,18 @@ class Project(db.Model):
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
+    def get_status(self):
+        if self.status == "Active":
+            return [self.status, "green"]
+        elif self.status == "Released (Archived)":
+            return [self.status, "#1d5e8a"]
+        elif self.status == "Released (Maintained)":
+            return [self.status, "#723cc2"]
+        elif self.status == "Planning":
+            return [self.status, "#db7d12"]
+        elif self.status == "Paused":
+            return [self.status, "gray"]
+
     def __str__(self):
         return "%s,%s,%s,%s,%s" % (self.name,
                                    self.descrip,

@@ -1,0 +1,23 @@
+:root {
+    --primary-color: #170038;
+    --secondary-color: #601dbf;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+}
+
+.btn-custom {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.badge-custom {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.link, .link:hover {
+    text-decoration: none;
+    color: inherit;
+}

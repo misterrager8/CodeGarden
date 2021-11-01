@@ -3,19 +3,17 @@
 
 {% block body %}
 <title>Projects</title>
-<div class="text-center m-5">
-  {% call macros.link(modal_id='project_create') %}
-  {{ macros.add_icon(size=50) }}
-  {% endcall %}
+<div class="text-center my-3">
+  <a href="#" onclick="toggleDiv('projectCreate')" class="badge bg-success link text-light m-1">+ New Project</a>
+  <div id="projectCreate" style="display:none" class="mt-3">{{ macros.project_create_form() }}</div>
 </div>
 
-{% call macros.modal(modal_id='project_create') %}
-{{ macros.paragraph('Create Project', class='text-center m-3', size=3) }}
-{{ macros.project_create_form() }}
-{% endcall %}
+{{ macros.sort_filter() }}
 
-{% for i in projects %}
-{{ macros.project_list_item(i) }}
-{% endfor %}
+<div id="allProjects">
+  {% for i in projects %}
+  {{ macros.project_list_item(i) }}
+  {% endfor %}
+</div>
 
 {% endblock %}
