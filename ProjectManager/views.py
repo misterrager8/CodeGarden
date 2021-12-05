@@ -17,7 +17,7 @@ def projects():
 
 @current_app.route("/project_create", methods=["POST"])
 def project_create():
-    database.create(Project(name=request.form["project_name"].title(),
+    database.create(Project(name=request.form["project_name"],
                             start_date=today(),
                             status="Planning"))
     return redirect(request.referrer)
@@ -35,10 +35,11 @@ def project_edit():
     project_: Project = database.get(Project, request.form["id_"])
 
     project_.name = request.form["project_name"]
-    project_.descrip = request.form["descrip"]
+    project_.descrip = request.form["descrip"] or None
+    project_.start_date = request.form["start_date"]
     project_.status = request.form["status"]
-    project_.github_url = request.form["github_url"]
-    project_.tools = request.form["tools"]
+    project_.github_url = request.form["github_url"] or None
+    project_.tools = request.form["tools"] or None
 
     database.update()
 
@@ -60,7 +61,7 @@ def tools():
 
 @current_app.route("/todo_create", methods=["POST"])
 def todo_create():
-    database.create(Todo(item=request.form["task"].capitalize(),
+    database.create(Todo(item=request.form["task"],
                          project_id=int(request.form["id_"])))
     database.update()
 
