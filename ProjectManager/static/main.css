@@ -1,0 +1,25 @@
+.link, .link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+p {
+    margin: 0;
+}
+
+.input-custom {
+    border: 0;
+    margin: 10px;
+    padding: 5px;
+    display: block;
+    width: 100%;
+    appearance: none;
+}
+
+select {
+    border-radius: 10px;
+}

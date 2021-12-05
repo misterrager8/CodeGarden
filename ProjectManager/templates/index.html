@@ -4,13 +4,13 @@
 {% block body %}
 <title>Projects</title>
 <div class="text-center my-3">
-  <a href="#" onclick="toggleDiv('projectCreate')" class="badge bg-success link text-light m-1">+ New Project</a>
+  <a onclick="toggleDiv('projectCreate')" class="badge bg-success link text-light m-1">+ New Project</a>
   <div id="projectCreate" style="display:none" class="mt-3">{{ macros.project_create_form() }}</div>
 </div>
 
 {{ macros.sort_filter() }}
 
-<div id="allProjects">
+<div id="allProjects" class="row">
   {% for i in projects %}
   {{ macros.project_list_item(i) }}
   {% endfor %}

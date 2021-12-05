@@ -6,13 +6,16 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
-<nav class="navbar navbar-expand-sm navbar-dark">
+<nav class="navbar navbar-expand-xl navbar-dark bg-success">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('projects') }}">
       {% from "macros.html" import brand_icon %}
       {{ brand_icon() }}
     </a>
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" data-bs-target="#navContent" data-bs-toggle="collapse">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('tools') }}">Tools</a>
