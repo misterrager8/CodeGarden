@@ -13,15 +13,20 @@
     <option value="{{ i }}" {% if i== project.status %}selected{% endif %}>{{ i }}</option>
     {% endfor %}
   </select>
-  <p class="badge text-primary mx-2">{{ '%s TODO(S)' % project.get_undone_todos() }}</p>
-  {% for i in project.todos.order_by('done') %}
-  {{ macros.todo_list_item(i) }}
-  {% endfor %}
-  {{ macros.todo_create_form(project) }}
-  <textarea autocomplete="off" class="input-custom fst-italic" placeholder="Description" rows="5" onchange="projectEdit({{ project.id }})" id="descrip{{ project.id }}">{{ project.descrip or '' }}</textarea>
-  <a href="{{ project.github_url or '#' }}" target="_blank" class="link">{{ macros.github_icon(size=30) }}</a>
-  <input autocomplete="off" class="input-custom d-inline w-75" value="{{ project.github_url or '' }}" placeholder="GitHub URL" onchange="projectEdit({{ project.id }})" id="github_url{{ project.id }}">
-  <input autocomplete="off" class="input-custom" value="{{ project.tools or '' }}" placeholder="Tools" onchange="projectEdit({{ project.id }})" id="tools{{ project.id }}">
+  <div class="p-3">
+    <hr class="ms-2">
+    <p class="badge text-primary mx-2">{{ '%s TODO(S)' % project.get_undone_todos() }}</p>
+    {% for i in project.todos.order_by('done') %}
+    {{ macros.todo_list_item(i) }}
+    {% endfor %}
+    {{ macros.todo_create_form(project) }}
+  </div>
+  <textarea autocomplete="off" class="input-custom fst-italic border-top" placeholder="Description" rows="5" onchange="projectEdit({{ project.id }})" id="descrip{{ project.id }}">{{ project.descrip or '' }}</textarea>
+  <div class="px-3">
+    <a href="{{ project.github_url or '#' }}" target="_blank" class="link">{{ macros.github_icon(size=30) }}</a>
+    <input autocomplete="off" class="input-custom d-inline w-75" value="{{ project.github_url or '' }}" placeholder="GitHub URL" onchange="projectEdit({{ project.id }})" id="github_url{{ project.id }}">
+  </div>
+  <input autocomplete="off" class="input-custom border-top" value="{{ project.tools or '' }}" placeholder="Tools" onchange="projectEdit({{ project.id }})" id="tools{{ project.id }}">
   <label class="badge text-dark">Started On:</label><input type="date" class="input-custom w-25 d-inline" value="{{ project.start_date or none }}" name="start_date" id="startDate{{ project.id }}" onchange="projectEdit({{ project.id }})">
   <a><p class="btn btn-outline-danger w-100 my-5">Delete Project</p></a>
 </div>
