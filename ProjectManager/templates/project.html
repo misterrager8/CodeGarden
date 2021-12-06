@@ -18,7 +18,7 @@
   {{ macros.todo_list_item(i) }}
   {% endfor %}
   {{ macros.todo_create_form(project) }}
-  <textarea autocomplete="off" class="input-custom" placeholder="Description" rows="5" onchange="projectEdit({{ project.id }})" id="descrip{{ project.id }}">{{ project.descrip or '' }}</textarea>
+  <textarea autocomplete="off" class="input-custom fst-italic" placeholder="Description" rows="5" onchange="projectEdit({{ project.id }})" id="descrip{{ project.id }}">{{ project.descrip or '' }}</textarea>
   <a href="{{ project.github_url or '#' }}" target="_blank" class="link">{{ macros.github_icon(size=30) }}</a>
   <input autocomplete="off" class="input-custom d-inline w-75" value="{{ project.github_url or '' }}" placeholder="GitHub URL" onchange="projectEdit({{ project.id }})" id="github_url{{ project.id }}">
   <input autocomplete="off" class="input-custom" value="{{ project.tools or '' }}" placeholder="Tools" onchange="projectEdit({{ project.id }})" id="tools{{ project.id }}">
