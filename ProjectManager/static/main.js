@@ -2,10 +2,15 @@ function toggleDiv(divId) {
     $('#' + divId).fadeToggle();
 }
 
+function refreshDiv() {
+    $('#pageContent').load(location.href + ' #pageContent');
+}
+
 function projectCreate() {
-    $.post('project_create', { project_name : $('#projectName').val() }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
-        $('#projectName').val('');
+    $.post('project_create', {
+        project_name : $('#projectName').val()
+    }, function(data) {
+        refreshDiv();
     });
 }
 
@@ -19,38 +24,48 @@ function projectEdit(projectId) {
         github_url : $('#github_url' + projectId).val(),
         tools : $('#tools' + projectId).val()
     }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
-        $('#projectName').val('');
+        refreshDiv();
     });
 }
 
 function projectDelete(projectId) {
-    $.get('project_delete',  { id_ : projectId }, function (data) {
-        $('#allProjects').load(location.href + ' #allProjects');
+    $.get('project_delete',  {
+        id_ : projectId
+    }, function (data) {
+        refreshDiv();
     });
 }
 
 function todoCreate(projectId) {
-    $.post('todo_create', { id_ : projectId, task : $('#task' + projectId).val() }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
-        $('#task' + projectId).val('');
+    $.post('todo_create', {
+        id_ : projectId,
+        task : $('#task' + projectId).val()
+    }, function(data) {
+        refreshDiv();
     });
 }
 
 function todoEdit(todoId) {
-    $.post('todo_edit', { id_ : todoId, item : $('#itemName' + todoId).val() }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
+    $.post('todo_edit', {
+        id_ : todoId,
+        item : $('#itemName' + todoId).val()
+    }, function(data) {
+        refreshDiv();
     });
 }
 
 function todoMark(todoId) {
-    $.post('todo_mark', { id_ : todoId }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
+    $.post('todo_mark', {
+        id_ : todoId
+    }, function(data) {
+        refreshDiv();
     });
 }
 
 function todoDelete(todoId) {
-    $.get('todo_delete', { id_ : todoId }, function(data) {
-        $('#allProjects').load(location.href + ' #allProjects');
+    $.get('todo_delete', {
+        id_ : todoId
+    }, function(data) {
+        refreshDiv();
     });
 }

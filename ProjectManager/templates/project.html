@@ -4,7 +4,7 @@
 
 {% block body %}
 <title>{{ project.name }}</title>
-<div id="allProjects">
+<div>
   <input autocomplete="off" class="input-custom fw-bold text-center" value="{{ project.name }}" placeholder="Name" style="font-size:2em" onchange="projectEdit({{ project.id }})" id="projectName{{ project.id }}">
   <select autocomplete="off" class="input-custom text-light w-100 text-center m-2" onchange="projectEdit({{ project.id }})" id="status{{ project.id }}">
     {% set status_options = ['Active', 'Released (Archived)', 'Released (Maintained)', 'Planning', 'Paused'] %}

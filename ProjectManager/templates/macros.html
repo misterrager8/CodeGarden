@@ -80,7 +80,7 @@
 {% endmacro %}
 
 {% macro project_create_form() %}
-<form class="input-group" onsubmit="event.preventDefault(); projectCreate();">
+<form class="input-group" onsubmit="event.preventDefault(); projectCreate(); this.reset();">
   <input autocomplete="off" class="form-control" placeholder="Name" name="project_name" id="projectName">
   <button type="submit" class="btn btn-success">+</button>
 </form>
@@ -104,7 +104,7 @@
 {% endmacro %}
 
 {% macro todo_create_form(project) %}
-<form onsubmit="event.preventDefault(); todoCreate({{ project.id }});">
+<form onsubmit="event.preventDefault(); todoCreate({{ project.id }}); this.reset();">
   <input autocomplete="off" name="task" class="m-2 w-100 border-0" placeholder="+ New TODO" id="task{{ project.id }}">
 </form>
 {% endmacro %}
