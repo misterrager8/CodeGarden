@@ -14,4 +14,6 @@ def create_app(config):
     with app.app_context():
         from . import views
 
+        # db.drop_all()
+        db.create_all()
         return app

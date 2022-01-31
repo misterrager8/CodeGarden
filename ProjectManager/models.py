@@ -60,6 +60,3 @@ class Tool(db.Model):
 
     def __init__(self, **kwargs):
         super(Tool, self).__init__(**kwargs)
-
-
-db.create_all()
