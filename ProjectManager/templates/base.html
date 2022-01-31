@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% import "macros.html" as macros %}
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,8 +12,7 @@
 <nav class="navbar navbar-expand-xl navbar-dark bg-success">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('projects') }}">
-      {% from "macros.html" import brand_icon %}
-      {{ brand_icon() }}
+      {{ macros.brand_icon() }}
     </a>
     <button class="navbar-toggler" data-bs-target="#navContent" data-bs-toggle="collapse">
       <span class="navbar-toggler-icon"></span>
