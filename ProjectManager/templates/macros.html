@@ -51,8 +51,8 @@
 <div class="card col-xl-6 border-0">
   <div class="card-body border rounded shadow-sm my-2">
     <a href="{{ url_for('project', id_=project.id) }}" class="link fw-bold">{{ project.name }}</a>
-    <span class="badge" style="background-color:{{ project.get_status()[1] }}">{{ project.get_status()[0] }}</span>
-    <p class="badge bg-dark rounded-pill">{{ project.get_undone_todos() }}</p>
+    <span class="badge">{{ project.status }}</span>
+    <p class="badge bg-dark rounded-pill">{{ project.todos.count() }}</p>
     <div class="float-end">
       {% if project.github_url %}<a href="{{ project.github_url }}" class="link mx-1" target="_blank">{{ github_icon() }}</a>{% endif %}
       <a onclick="toggleDiv('projectDelete' + {{ project.id }})" class="link mx-1">{{ delete_icon() }}</a>
@@ -90,7 +90,7 @@
 <form class="form-group {{ class }}" onsubmit="event.preventDefault(); projectEdit({{ project.id }});">
   <input id="projectName{{ project.id }}" autocomplete="off" class="form-control mb-2" placeholder="Name" name="project_name" value="{{ project.name }}">
   <input type="date" class="form-control mb-2" name="start_date" value="{{ project.start_date }}">
-  <textarea id="descrip{{ project.id }}" rows="5" autocomplete="off" class="form-control mb-2" placeholder="Description" name="descrip">{% if project.descrip %}{{ project.descrip }}{% endif %}</textarea>
+  <textarea id="readme{{ project.id }}" rows="5" autocomplete="off" class="form-control mb-2" placeholder="Description" name="readme">{% if project.readme %}{{ project.readme }}{% endif %}</textarea>
   <select id="status{{ project.id }}" class="form-control mb-2" name="status">
     <option value="Select Status">Select Status</option>
     {% for i in status_options %}

@@ -13,7 +13,7 @@ function projectEdit(projectId) {
     $.post('project_edit', {
         id_ : projectId,
         project_name : $('#projectName' + projectId).val(),
-        descrip : $('#descrip' + projectId).val(),
+        readme : $('#readme' + projectId).val(),
         start_date : $('#startDate' + projectId).val(),
         status : $('#status' + projectId).val(),
         github_url : $('#github_url' + projectId).val(),

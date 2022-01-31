@@ -1,43 +1,31 @@
-from sqlalchemy import Column, Text, Integer, Date, ForeignKey, Boolean
+from sqlalchemy import Column, Text, Integer, Date, ForeignKey, Boolean, text
 from sqlalchemy.orm import relationship
 
 from ProjectManager import db
+
+ProjectTool = db.Table('ProjectTool',
+                       Column('id', Integer, primary_key=True),
+                       Column('project', Integer, ForeignKey('projects.id')),
+                       Column('tool', Integer, ForeignKey('tools.id')))
 
 
 class Project(db.Model):
     __tablename__ = "projects"
 
     name = Column(Text)
-    descrip = Column(Text)
+    readme = Column(Text)
     start_date = Column(Date)
     status = Column(Text)
     github_url = Column(Text)
-    tools = Column(Text)
-    todos = relationship("Todo", backref="projects", lazy="dynamic")
+    tools = relationship("Tool", lazy="dynamic", secondary=ProjectTool)
+    todos = relationship("Todo", lazy="dynamic")
     id = Column(Integer, primary_key=True)
 
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
-    def get_undone_todos(self) -> int:
-        count = 0
-        for i in self.todos:
-            if not i.done:
-                count += 1
-
-        return count
-
-    def get_status(self):
-        if self.status == "Active":
-            return [self.status, "green"]
-        elif self.status == "Released (Archived)":
-            return [self.status, "#1d5e8a"]
-        elif self.status == "Released (Maintained)":
-            return [self.status, "#723cc2"]
-        elif self.status == "Planning":
-            return [self.status, "#db7d12"]
-        elif self.status == "Paused":
-            return [self.status, "gray"]
+    def get_todos(self, filter_: str = "", order_by: str = "date_added desc"):
+        return self.todos.filter(text(filter_)).order_by(text(order_by))
 
 
 class Todo(db.Model):
@@ -56,6 +44,9 @@ class Todo(db.Model):
 class Tool(db.Model):
     __tablename__ = "tools"
 
+    name = Column(Text)
+    color = Column(Text)
+    projects = relationship("Project", lazy="dynamic", secondary=ProjectTool)
     id = Column(Integer, primary_key=True)
 
     def __init__(self, **kwargs):

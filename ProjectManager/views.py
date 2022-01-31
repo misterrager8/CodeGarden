@@ -35,7 +35,7 @@ def project_edit():
     project_: Project = database.get(Project, request.form["id_"])
 
     project_.name = request.form["project_name"]
-    project_.descrip = request.form["descrip"] or None
+    project_.readme = request.form["readme"] or None
     project_.start_date = request.form["start_date"]
     project_.status = request.form["status"]
     project_.github_url = request.form["github_url"] or None
