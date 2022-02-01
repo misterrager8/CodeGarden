@@ -6,3 +6,4 @@ PyMySQL~=1.0.2
 gunicorn
 flask_sqlalchemy
 flask_login
+Werkzeug~=2.0.1

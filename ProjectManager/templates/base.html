@@ -9,10 +9,10 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
-<nav class="navbar navbar-expand-xl navbar-dark bg-success">
+<nav class="navbar navbar-expand-xl navbar-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('projects') }}">
-      {{ macros.brand_icon() }}
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      {{ macros.logo() }}
     </a>
     <button class="navbar-toggler" data-bs-target="#navContent" data-bs-toggle="collapse">
       <span class="navbar-toggler-icon"></span>
@@ -20,13 +20,45 @@
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('tools') }}">Tools</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link dropdown-toggle" data-bs-target="#userDD" data-bs-toggle="dropdown">
+            {% if not current_user.is_anonymous %}<span class="me-2">{{ current_user.username }}</span>{% endif %}
+            {{ macros.user_icon() }}
+          </a>
+          <div class="dropdown-menu dropdown-menu-end text-center" id="userDD">
+            {% if current_user.is_anonymous %}
+            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</a>
+            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a>
+            {% else %}
+            <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
+            {% endif %}
+          </div>
         </li>
       </ul>
     </div>
   </div>
+
+  <div class="modal" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-content p-3">
+        {{ macros.login_form() }}
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="signupModal">
+    <div class="modal-dialog">
+      <div class="modal-content p-3">
+        {{ macros.signup_form() }}
+      </div>
+    </div>
+  </div>
+
 </nav>
-<div class="container" id="pageContent">
+<div class="container my-5" id="pageContent">
   {% block body %}
   {% endblock %}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

@@ -3,17 +3,19 @@
 
 {% block body %}
 <title>Projects</title>
-<div class="text-center my-3">
-  <a onclick="toggleDiv('projectCreate')" class="badge bg-success link text-light m-1">+ New Project</a>
-  <div id="projectCreate" style="display:none" class="mt-3">{{ macros.project_create_form() }}</div>
-</div>
-
-{{ macros.sort_filter() }}
+{% if not current_user.is_anonymous %}
+<a onclick="toggleDiv('projectCreate')" class="badge badge-custom link">+ New Project</a>
+<div id="projectCreate" style="display:none" class="py-3">{{ macros.project_create_form() }}</div>
 
 <div class="row">
-  {% for i in projects %}
-  {{ macros.project_list_item(i) }}
+  {% for i in current_user.projects %}
+  {{ macros.project_card(i) }}
   {% endfor %}
 </div>
-
+{% else %}
+<div class="text-center opacity-25">
+  {{ macros.user_icon(size=200) }}
+  <h2>Log In or Sign Up</h2>
+</div>
+{% endif %}
 {% endblock %}

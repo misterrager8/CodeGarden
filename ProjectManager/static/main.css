@@ -1,3 +1,26 @@
+:root {
+    --nav-bg: white;
+    --nav-txt: black;
+    --body-bg: black;
+    --body-txt: white;
+}
+
+.navbar, .badge-custom, .btn-custom {
+    background-color: var(--nav-bg) !important;
+    color: var(--nav-txt) !important;
+}
+
+body, .card, .modal-content, .form-control, .list-group-item {
+    background-color: var(--body-bg) !important;
+    color: var(--body-txt) !important;
+}
+
+.card-body {
+    border: 1px solid var(--body-txt) !important;
+    border-radius: 10px;
+    margin-top: 25px;
+}
+
 .link, .link:hover {
     text-decoration: none;
     color: inherit;
@@ -7,19 +30,22 @@ a:hover {
     cursor: pointer;
 }
 
-p {
-    margin: 0;
+.Planning {
+    background-color: #db7d12;
 }
 
-.input-custom {
-    border: 0;
-    margin: 10px;
-    padding: 5px;
-    display: block;
-    width: 100%;
-    appearance: none;
+.Released {
+    background-color: #723cc2;
 }
 
-select {
-    border-radius: 10px;
+.Archived {
+    background-color: #1d5e8a;
+}
+
+.Paused {
+    background-color: gray;
+}
+
+.Active {
+    background-color: green;
 }

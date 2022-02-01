@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from sqlalchemy import Column, Text, Integer, Date, ForeignKey, Boolean, text
 from sqlalchemy.orm import relationship
 
@@ -9,6 +10,18 @@ ProjectTool = db.Table('ProjectTool',
                        Column('tool', Integer, ForeignKey('tools.id')))
 
 
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+
+    username = Column(Text)
+    password = Column(Text)
+    projects = relationship("Project", lazy="dynamic")
+    id = Column(Integer, primary_key=True)
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
+
 class Project(db.Model):
     __tablename__ = "projects"
 
@@ -17,6 +30,7 @@ class Project(db.Model):
     start_date = Column(Date)
     status = Column(Text)
     github_url = Column(Text)
+    user_id = Column(Integer, ForeignKey("users.id"))
     tools = relationship("Tool", lazy="dynamic", secondary=ProjectTool)
     todos = relationship("Todo", lazy="dynamic")
     id = Column(Integer, primary_key=True)
