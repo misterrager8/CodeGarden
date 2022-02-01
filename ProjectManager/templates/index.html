@@ -2,7 +2,7 @@
 {% import "macros.html" as macros with context %}
 
 {% block body %}
-<title>Projects</title>
+<title>Project Manager | Home</title>
 {% if not current_user.is_anonymous %}
 <a onclick="toggleDiv('projectCreate')" class="badge badge-custom link">+ New Project</a>
 <div id="projectCreate" style="display:none" class="py-3">{{ macros.project_create_form() }}</div>
