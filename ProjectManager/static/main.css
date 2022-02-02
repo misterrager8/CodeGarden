@@ -5,14 +5,24 @@
     --body-txt: white;
 }
 
-.navbar, .badge-custom, .btn-custom {
+.navbar, .badge-custom, .btn-custom, .todo-list-item:hover {
     background-color: var(--nav-bg) !important;
     color: var(--nav-txt) !important;
 }
 
-body, .card, .modal-content, .form-control, .list-group-item {
+body, .card, .modal-content, .form-control {
     background-color: var(--body-bg) !important;
     color: var(--body-txt) !important;
+}
+
+.todo-list-item {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.spinner-border {
+    width: 1em;
+    height: 1em;
 }
 
 .card-body {
@@ -48,4 +58,8 @@ a:hover {
 
 .Active {
     background-color: green;
+}
+
+.bg-danger {
+    color: white;
 }

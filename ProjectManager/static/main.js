@@ -15,6 +15,7 @@ function projectCreate() {
 }
 
 function projectEdit(projectId) {
+    $('#projectSpinner' + projectId).show();
     $.post('project_edit', {
         id_ : projectId,
         project_name : $('#projectName' + projectId).val(),
@@ -38,16 +39,17 @@ function projectDelete(projectId) {
 function todoCreate(projectId) {
     $.post('todo_create', {
         id_ : projectId,
-        task : $('#task' + projectId).val()
+        task : $('#taskFor' + projectId).val()
     }, function(data) {
         refreshDiv();
     });
 }
 
 function todoEdit(todoId) {
+    $('#itemSpinner' + todoId).show();
     $.post('todo_edit', {
         id_ : todoId,
-        item : $('#itemName' + todoId).val()
+        item : $('#itemName' + todoId).html()
     }, function(data) {
         refreshDiv();
     });

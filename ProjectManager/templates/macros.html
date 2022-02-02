@@ -44,13 +44,18 @@
 {% endmacro %}
 
 {% macro todo_list_item(todo) %}
-<div class="list-group-item">
-  <a onclick="todoMark({{ todo.id }})" class="link">{{ check_icon(todo.done) }}</a>
-  <span class="fst-italic fw-bold me-2">{{ todo.item }}</span>
-  <small>{{ todo.date_added.strftime('%B %d, %Y') }}</small>
-  <div class="float-end">
-    <a style="display:none" id="deleteTodo{{ todo.id }}" onclick="todoDelete({{ todo.id }})" class="link badge text-danger">Delete?</a>
-    <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="link badge bg-danger">Delete</a>
+<div class="row todo-list-item">
+  <div class="col">
+    <a onclick="todoMark({{ todo.id }})" class="link">{{ check_icon(todo.done) }}</a>
+    {% if not todo.done %}<a class="link badge badge-custom" onclick="todoEdit({{ todo.id }})"> <span class="spinner-border" style="display:none" id="itemSpinner{{ todo.id }}"></span> Edit</a>{% endif %}
+    <span id="itemName{{ todo.id }}" contenteditable="true" class="fst-italic fw-bold ms-2" style="{% if todo.done %}text-decoration:line-through{% endif %}">{{ todo.item }}</span>
+  </div>
+  <small class="col">{{ todo.date_added.strftime('%B %d, %Y') }}</small>
+  <div class="col">
+    <div class="float-end">
+      <a style="display:none" id="deleteTodo{{ todo.id }}" onclick="todoDelete({{ todo.id }})" class="link badge text-danger">Delete?</a>
+      <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="link badge bg-danger">Delete</a>
+    </div>
   </div>
 </div>
 {% endmacro %}
@@ -74,14 +79,21 @@
 
 {% macro project_create_form() %}
 <form class="input-group" onsubmit="event.preventDefault(); projectCreate(); this.reset();">
-  <input autocomplete="off" class="form-control" placeholder="Name" name="project_name" id="projectName">
+  <input autocomplete="off" class="form-control" placeholder="Name" id="projectName">
   <button type="submit" class="btn btn-custom">+</button>
 </form>
 {% endmacro %}
 
 {% macro todo_create_form(project) %}
 <form onsubmit="event.preventDefault(); todoCreate({{ project.id }}); this.reset();" class="input-group">
-  <input autocomplete="off" name="task" class="form-control" placeholder="+ New TODO" id="task{{ project.id }}">
+  <input autocomplete="off" class="form-control" placeholder="+ New TODO" id="taskFor{{ project.id }}">
+  <button type="submit" class="btn btn-custom">+</button>
+</form>
+{% endmacro %}
+
+{% macro todo_edit_form(todo) %}
+<form onsubmit="event.preventDefault(); todoEdit({{ todo.id }}); this.reset();" class="input-group">
+  <input autocomplete="off" class="form-control" placeholder="+ New TODO" id="itemName{{ todo.id }}" value="{{ todo.item }}">
   <button type="submit" class="btn btn-custom">+</button>
 </form>
 {% endmacro %}

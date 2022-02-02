@@ -87,7 +87,7 @@ def project_delete():
     project_: Project = database.get(Project, request.args.get("id_"))
     database.delete(project_)
 
-    return redirect(request.referrer)
+    return redirect(url_for("index"))
 
 
 @current_app.route("/tools")
