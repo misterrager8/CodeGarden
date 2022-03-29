@@ -1,19 +1,20 @@
 import datetime
 
-from flask import render_template, redirect, request, current_app, url_for
+from flask import render_template, current_app, request, url_for
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import redirect
 
 from ProjectManager import login_manager
 from ProjectManager.ctrla import Database
-from ProjectManager.models import Project, Todo, User
+from ProjectManager.models import User, Project
 
 database = Database()
 
 
 @login_manager.user_loader
 def load_user(id_: int):
-    return database.get(User, id_)
+    return User.query.get(id_)
 
 
 @current_app.route("/")
@@ -26,8 +27,7 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    user = User.query.filter(User.username == username).first()
-
+    user: User = User.query.filter(User.username == username).first()
     if user and check_password_hash(user.password, password):
         login_user(user)
         return redirect(url_for("index"))
@@ -43,40 +43,67 @@ def logout():
 
 @current_app.route("/signup", methods=["POST"])
 def signup():
-    user = User(username=request.form["username"],
-                password=generate_password_hash(request.form["password"]))
-    database.create(user)
-    login_user(user)
+    username = request.form["username"]
+    password = request.form["password"]
+    password_confirm = request.form["password_confirm"]
+
+    if password == password_confirm:
+        _ = User(username=username, password=generate_password_hash(password), date_created=datetime.datetime.now())
+        database.add(_)
+        login_user(_)
+        return redirect(url_for("index"))
+    else:
+        return "Try again."
+
+
+@current_app.route("/change_account", methods=["POST"])
+def change_account():
+    current_user.username = request.form["username"]
+    database.update()
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/change_password", methods=["POST"])
+def change_password():
+    old_password = request.form["old_password"]
+    new_password = request.form["new_password"]
+    new_password_confirm = request.form["new_password_confirm"]
+
+    if check_password_hash(current_user.password, old_password) and new_password == new_password_confirm:
+        current_user.password = generate_password_hash(new_password)
+        database.update()
+    else:
+        return "Try again."
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/delete_account")
+def delete_account():
+    database.delete(current_user)
 
     return redirect(url_for("index"))
 
 
 @current_app.route("/project_create", methods=["POST"])
 def project_create():
-    database.create(Project(name=request.form["project_name"],
-                            start_date=datetime.datetime.now().date(),
-                            status="Planning",
-                            user_id=current_user.id))
+    project_ = Project(name=request.form["name"], user=current_user.id)
+    database.add(project_)
+
     return redirect(request.referrer)
 
 
 @current_app.route("/project")
 def project():
-    project_: Project = database.get(Project, request.args.get("id_"))
-
-    return render_template("project.html", project=project_)
+    project_: Project = database.get(Project, int(request.args.get("id_")))
+    return render_template("project.html", project_=project_)
 
 
 @current_app.route("/project_edit", methods=["POST"])
 def project_edit():
-    project_: Project = database.get(Project, request.form["id_"])
-
-    project_.name = request.form["project_name"]
-    project_.readme = request.form["readme"] or None
-    project_.start_date = request.form["start_date"]
-    project_.status = request.form["status"]
-    project_.github_url = request.form["github_url"] or None
-
+    project_: Project = database.get(Project, int(request.form["id_"]))
+    project_.name = request.form["name"]
     database.update()
 
     return redirect(request.referrer)
@@ -84,48 +111,7 @@ def project_edit():
 
 @current_app.route("/project_delete")
 def project_delete():
-    project_: Project = database.get(Project, request.args.get("id_"))
+    project_: Project = database.get(Project, int(request.args.get("id_")))
     database.delete(project_)
-
-    return redirect(url_for("index"))
-
-
-@current_app.route("/tools")
-def tools():
-    return render_template("tools.html")
-
-
-@current_app.route("/todo_create", methods=["POST"])
-def todo_create():
-    database.create(Todo(item=request.form["task"].capitalize(),
-                         date_added=datetime.datetime.now().date(),
-                         project_id=int(request.form["id_"])))
-
-    return redirect(request.referrer)
-
-
-@current_app.route("/todo_edit", methods=["POST"])
-def todo_edit():
-    todo_: Todo = database.get(Todo, request.form["id_"])
-    todo_.item = request.form["item"]
-
-    database.update()
-
-    return redirect(request.referrer)
-
-
-@current_app.route("/todo_mark", methods=["POST"])
-def todo_mark():
-    todo_: Todo = database.get(Todo, request.form["id_"])
-    todo_.done = not todo_.done
-    database.update()
-
-    return redirect(request.referrer)
-
-
-@current_app.route("/todo_delete")
-def todo_delete():
-    todo: Todo = database.get(Todo, request.args.get("id_"))
-    database.delete(todo)
 
     return redirect(request.referrer)

@@ -1,72 +1,36 @@
 function toggleDiv(divId) {
-    $('#' + divId).fadeToggle();
+    $('#' + divId).fadeToggle(250);
 }
 
-function refreshDiv() {
+function refreshPage() {
     $('#pageContent').load(location.href + ' #pageContent');
+    $('#navContent').load(location.href + ' #navContent');
 }
 
 function projectCreate() {
+    $('#spinner').show();
     $.post('project_create', {
-        project_name : $('#projectName').val()
+        name: $('#name').val()
     }, function(data) {
-        refreshDiv();
+        refreshPage();
     });
 }
 
 function projectEdit(projectId) {
-    $('#projectSpinner' + projectId).show();
+    $('#spinner').show();
     $.post('project_edit', {
-        id_ : projectId,
-        project_name : $('#projectName' + projectId).val(),
-        readme : $('#readme' + projectId).val(),
-        start_date : $('#startDate' + projectId).val(),
-        status : $('#status' + projectId).val(),
-        github_url : $('#github_url' + projectId).val()
+        id_: projectId,
+        name: $('#name').val()
     }, function(data) {
-        refreshDiv();
+        refreshPage();
     });
 }
 
 function projectDelete(projectId) {
-    $.get('project_delete',  {
-        id_ : projectId
-    }, function (data) {
-        refreshDiv();
-    });
-}
-
-function todoCreate(projectId) {
-    $.post('todo_create', {
-        id_ : projectId,
-        task : $('#taskFor' + projectId).val()
+    $('#spinner').show();
+    $.get('project_delete', {
+        id_: projectId
     }, function(data) {
-        refreshDiv();
-    });
-}
-
-function todoEdit(todoId) {
-    $('#itemSpinner' + todoId).show();
-    $.post('todo_edit', {
-        id_ : todoId,
-        item : $('#itemName' + todoId).html()
-    }, function(data) {
-        refreshDiv();
-    });
-}
-
-function todoMark(todoId) {
-    $.post('todo_mark', {
-        id_ : todoId
-    }, function(data) {
-        refreshDiv();
-    });
-}
-
-function todoDelete(todoId) {
-    $.get('todo_delete', {
-        id_ : todoId
-    }, function(data) {
-        refreshDiv();
+        refreshPage();
     });
 }

@@ -1,34 +1,7 @@
-<!--suppress ALL-->
 {% extends "base.html" %}
 {% import "macros.html" as macros with context %}
 
 {% block body %}
-<title>{{ project.name }}</title>
-<span class="spinner-border sticky-top" style="display:none" id="projectSpinner{{ project.id }}"></span>
-<input autocomplete="off" class="form-control mb-2" value="{{ project.name }}" placeholder="Name" onchange="projectEdit({{ project.id }})" id="projectName{{ project.id }}">
-<select autocomplete="off" class="{{ project.status }} w-100 p-2 rounded mb-2" onchange="projectEdit({{ project.id }})" id="status{{ project.id }}">
-  {% set status_options = ['Active', 'Archived', 'Released', 'Planning', 'Paused'] %}
-  <option value="Select Status">Select Status</option>
-  {% for i in status_options %}
-  <option value="{{ i }}" {% if i== project.status %}selected{% endif %}>{{ i }}</option>
-  {% endfor %}
-</select>
-<div class="my-5">
-  {{ macros.todo_create_form(project) }}
-  <span class="badge badge-custom">{{ '%s To-Do(s)' % project.get_todos(filter_='not done').count() }}</span>
-  <div class="my-4">
-    {% for i in project.todos.order_by('done') %}
-    {{ macros.todo_list_item(i) }}
-    {% endfor %}
-  </div>
-</div>
-<textarea autocomplete="off" class="form-control mb-2" placeholder="README" rows="5" onchange="projectEdit({{ project.id }})" id="readme{{ project.id }}">{{ project.readme or '' }}</textarea>
-<div class="input-group mb-2">
-  <a href="{{ project.github_url or '#' }}" target="_blank" class="link me-2">{{ macros.github_icon(size=30) }}</a>
-  <input autocomplete="off" class="form-control" value="{{ project.github_url or '' }}" placeholder="GitHub URL" onchange="projectEdit({{ project.id }})" id="github_url{{ project.id }}">
-</div>
-<input type="date" class="form-control mb-2" value="{{ project.start_date or none }}" name="start_date" id="startDate{{ project.id }}" onchange="projectEdit({{ project.id }})">
-
-<a onclick="toggleDiv('deleteProject' + {{ project.id }})" class="link badge bg-danger">Delete Project</a>
-<a onclick="projectDelete({{ project.id }})" id="deleteProject{{ project.id }}" class="link badge text-danger" style="display:none">Delete Project?</a>
+<title>{{ project_.name }}</title>
+<p class="text-center h1">{{ project_.name }}</p>
 {% endblock %}

@@ -2,20 +2,24 @@
 {% import "macros.html" as macros with context %}
 
 {% block body %}
-<title>Project Manager | Home</title>
+<title>ProjectManager | Home</title>
 {% if not current_user.is_anonymous %}
-<a onclick="toggleDiv('projectCreate')" class="badge badge-custom link">+ New Project</a>
-<div id="projectCreate" style="display:none" class="py-3">{{ macros.project_create_form() }}</div>
-
-<div class="row">
+<a class="btn-custom" onclick="toggleDiv('projectCreate')">+ Add project</a>
+<div id="projectCreate" style="display:none" class="mt-3">{{ macros.project_create_form() }}</div>
+<div class="row mt-3">
   {% for i in current_user.projects %}
-  {{ macros.project_card(i) }}
+  {% call macros.card(class='mb-4') %}
+  <a href="{{ url_for('project', id_=i.id) }}">
+    <span class="h4">{{ i.name }}</span>
+    <span class="badge-custom">{{ i.todos.count() }}</span>
+    <span class="badge-custom float-end">{{ i.status }}</span>
+    <div class="pt-3">
+      <a class="bi bi-trash3 text-danger float-end" onclick="toggleDiv('deleteProject' + {{ i.id }})"></a>
+      <a class="font-custom text-danger float-end" onclick="projectDelete({{ i.id }})" id="deleteProject{{ i.id }}" style="display:none">delete?</a>
+    </div>
+  </a>
+  {% endcall %}
   {% endfor %}
-</div>
-{% else %}
-<div class="text-center opacity-25">
-  {{ macros.user_icon(size=200) }}
-  <h2>Log In or Sign Up</h2>
 </div>
 {% endif %}
 {% endblock %}

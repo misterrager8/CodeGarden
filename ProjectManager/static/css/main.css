@@ -1,0 +1,56 @@
+a, a:hover {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none; }
+
+  ::placeholder {
+    font-style: italic;
+    opacity: 50%; }
+
+    .font-custom, .nav-item, ::placeholder {
+      letter-spacing: 5px;
+      text-transform: uppercase; }
+
+      .border-custom {
+        border: 1px solid #35161a; }
+
+        .navbar, .btn-custom, .dropdown-item:hover {
+          background-color: #367e76;
+          color: #c98189; }
+
+          body, .input-custom, .modal-content, .card, .badge-custom, .dropdown-menu,
+          .btn-custom:hover {
+            background-color: #cae9e5;
+            color: #35161a; }
+
+            .card {
+              border: none; }
+
+              .card-body {
+                border: 1px solid #35161a;
+                border-radius: 5px; }
+
+                .btn-custom {
+                  letter-spacing: 5px;
+                  text-transform: uppercase;
+                  border: 1px solid #35161a;
+                  font-size: 0.9em;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  transition: background-color 0.5s, color 0.5s; }
+
+                  .badge-custom {
+                    letter-spacing: 5px;
+                    text-transform: uppercase;
+                    border: 1px solid #35161a;
+                    font-size: 0.8em;
+                    padding: 3px 15px;
+                    border-radius: 10px; }
+
+                    .input-custom {
+                      border: 1px solid #35161a;
+                      padding: 5px 10px;
+                      border-radius: 5px; }
+
+                      .list-unstyled li {
+                        margin-bottom: 30px; }

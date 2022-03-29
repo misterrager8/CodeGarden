@@ -1,99 +1,113 @@
 <!--suppress ALL -->
-{% set status_options = ['Active', 'Archived', 'Released', 'Planning', 'Paused'] %}
 
-{% macro logo(size=30, color='currentcolor', class='') %}
-<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="{{ color }}" class="bi bi-code-slash {{ class }}" viewBox="0 0 16 16">
-  <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
-</svg>
+<!--ELEMENTS-->
+{% macro button(txt, onclick, href='', class='', toggle='', target='') %}
+<a href="{{ href }}"
+   class="btn-custom {{ class }}"
+   onclick="{{ onclick }}"
+   data-bs-toggle="{{ toggle }}"
+   data-bs-target="#{{ target }}">{{ txt }}</a>
 {% endmacro %}
 
-{% macro user_icon(size=20, color='currentcolor', class='') %}
-<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="{{ color }}" class="bi bi-person-fill {{ class }}" viewBox="0 0 16 16">
-  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-</svg>
+{% macro badge(txt, class='') %}
+<span class="badge-custom {{ class }}">{{ txt }}</span>
 {% endmacro %}
 
-{% macro github_icon(size=20, color='indigo', class='') %}
-<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="{{ color }}" class="bi bi-github {{ class }}" viewBox="0 0 16 16">
-  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-</svg>
+{% macro input(class='', placeholder='', type='text', id='', name='', value='') %}
+<input autocomplete="off"
+       placeholder="{{ placeholder }}"
+       class="input-custom {{ class }}"
+       id="{{ id }}"
+       type="{{ type }}"
+       name="{{ name }}"
+       value="{{ value }}">
 {% endmacro %}
 
-{% macro check_icon(checked, size=20, class='') %}
-{% if checked %}
-<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="green" class="bi bi-check-circle {{ class }}" viewBox="0 0 20 20">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
-</svg>
-{% else %}
-<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" fill="currentcolor" class="bi bi-circle {{ class }}" viewBox="0 0 20 20">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-</svg>
-{% endif %}
-{% endmacro %}
-
-<!--CARDS-->
-{% macro project_card(project) %}
-<div class="card col-xl-4">
-  <div class="card-body">
-    <a class="link fw-bold me-2" href="{{ url_for('project', id_=project.id) }}">{{ project.name }}</a>
-    <span class="badge badge-custom">{{ project.get_todos(filter_='not done').count() }}</span>
-    <span class="badge {{ project.status }} float-end">{{ project.status }}</span>
+{% macro card(size=4, class='') %}
+<div class="card col-xl-{{ size }}">
+  <div class="card-body {{ class }}">
+    {{ caller() }}
   </div>
 </div>
 {% endmacro %}
 
-{% macro todo_list_item(todo) %}
-<div class="row todo-list-item">
-  <div class="col">
-    <a onclick="todoMark({{ todo.id }})" class="link">{{ check_icon(todo.done) }}</a>
-    {% if not todo.done %}<a class="link badge badge-custom" onclick="todoEdit({{ todo.id }})"> <span class="spinner-border" style="display:none" id="itemSpinner{{ todo.id }}"></span> Edit</a>{% endif %}
-    <span id="itemName{{ todo.id }}" contenteditable="true" class="fst-italic fw-bold ms-2" style="{% if todo.done %}text-decoration:line-through{% endif %}">{{ todo.item }}</span>
-  </div>
-  <small class="col">{{ todo.date_added.strftime('%B %d, %Y') }}</small>
-  <div class="col">
-    <div class="float-end">
-      <a style="display:none" id="deleteTodo{{ todo.id }}" onclick="todoDelete({{ todo.id }})" class="link badge text-danger">Delete?</a>
-      <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="link badge bg-danger">Delete</a>
+{% macro modal(id, class='') %}
+<div class="modal" id="{{ id }}">
+  <div class="modal-dialog {{ class }}">
+    <div class="modal-content p-3">
+      <a data-bs-dismiss="modal" class="small text-danger font-custom mb-3">close</a>
+      {{ caller() }}
     </div>
   </div>
 </div>
 {% endmacro %}
 
+{% macro dropdown(id, class='') %}
+<div class="dropdown-menu {{ class }}" id="{{ id }}">
+  {{ caller() }}
+</div>
+{% endmacro %}
+
 <!--FORMS-->
 {% macro login_form() %}
-<form method="POST" action="{{ url_for('login') }}" class="form-group">
-  <input autocomplete="off" placeholder="Username" name="username" class="form-control mb-2" type="text">
-  <input autocomplete="off" placeholder="Password" name="password" class="form-control mb-2" type="password">
-  <button class="btn btn-custom w-100">Log In</button>
+<form method="POST" action="{{ url_for('login') }}">
+  {{ input(name='username', placeholder='Username', class='w-100 mb-3') }}
+  {{ input(name='password', placeholder='Password', class='w-100 mb-3', type='password') }}
+  <button type="submit" class="btn-custom w-100">Log In</button>
 </form>
 {% endmacro %}
 
 {% macro signup_form() %}
-<form method="POST" action="{{ url_for('signup') }}" class="form-group">
-  <input autocomplete="off" placeholder="Username" name="username" class="form-control mb-2" type="text">
-  <input autocomplete="off" placeholder="Password" name="password" class="form-control mb-2" type="password">
-  <button class="btn btn-custom w-100">Sign Up</button>
+<form method="POST" action="{{ url_for('signup') }}">
+  {{ input(name='username', placeholder='Username', class='w-100 mb-3') }}
+  {{ input(name='password', placeholder='Password', class='w-100 mb-3', type='password') }}
+  {{ input(name='password_confirm', placeholder='Confirm Password', class='w-100 mb-3', type='password') }}
+  <button type="submit" class="btn-custom w-100">Sign Up</button>
 </form>
 {% endmacro %}
 
-{% macro project_create_form() %}
-<form class="input-group" onsubmit="event.preventDefault(); projectCreate(); this.reset();">
-  <input autocomplete="off" class="form-control" placeholder="Name" id="projectName">
-  <button type="submit" class="btn btn-custom">+</button>
+{% macro account_edit_form(class='') %}
+<div class="{{ class }}">
+  <form action="{{ url_for('change_account') }}" method="POST" class="mb-5">
+    {{ input(name='username', value=current_user.username, placeholder='Username', class='mb-3') }}<br>
+    <button class="btn-custom">edit account</button>
+  </form>
+  <form action="{{ url_for('change_password') }}" method="POST">
+    {{ input(name='old_password', placeholder='Password', type='password', class='mb-3') }}<br>
+    {{ input(name='new_password', placeholder='New Password', type='password', class='mb-3') }}<br>
+    {{ input(name='new_password_confirm', placeholder='Confirm Password', type='password', class='mb-3') }}<br>
+    <button class="btn-custom">change password</button>
+  </form>
+</div>
+{% endmacro %}
+
+{% macro editor(class='') %}
+<form onsubmit="event.preventDefault()" class="{{ class }}">
+  <div class="py-3" style="font-size: 1.5em">
+    <button onclick="document.execCommand('bold')" class="btn-custom bi bi-type-bold"></button>
+    <button onclick="document.execCommand('italic')" class="btn-custom bi bi-type-italic"></button>
+    <button onclick="document.execCommand('insertUnorderedList')" class="btn-custom bi bi-list-ul"></button>
+    <button onclick="document.execCommand('insertOrderedList')" class="btn-custom bi bi-123"></button>
+    <button onclick="document.execCommand('removeFormat')" class="btn-custom bi bi-eraser"></button>
+    <button onclick="document.execCommand('fontName', false, 'monospace')" class="btn-custom bi bi-code-slash"></button>
+    <button onclick="document.execCommand('indent')" class="btn-custom bi bi-text-indent-left"></button>
+    <button onclick="document.execCommand('outdent')" class="btn-custom bi bi-text-indent-right"></button>
+  </div>
+  <div contenteditable="true" class="input-custom mb-3" style="height: 300px" id="content">WYSIWYG</div>
+  <button type="submit" class="btn-custom bg-success w-100">save</button>
 </form>
 {% endmacro %}
 
-{% macro todo_create_form(project) %}
-<form onsubmit="event.preventDefault(); todoCreate({{ project.id }}); this.reset();" class="input-group">
-  <input autocomplete="off" class="form-control" placeholder="+ New TODO" id="taskFor{{ project.id }}">
-  <button type="submit" class="btn btn-custom">+</button>
+{% macro project_create_form(class='') %}
+<form onsubmit="event.preventDefault(); projectCreate(); this.reset();" class="input-group {{ class }}">
+  {{ input(placeholder='Name', id='name') }}
+  <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i></button>
 </form>
 {% endmacro %}
 
-{% macro todo_edit_form(todo) %}
-<form onsubmit="event.preventDefault(); todoEdit({{ todo.id }}); this.reset();" class="input-group">
-  <input autocomplete="off" class="form-control" placeholder="+ New TODO" id="itemName{{ todo.id }}" value="{{ todo.item }}">
-  <button type="submit" class="btn btn-custom">+</button>
+{% macro project_edit_form(project, class='') %}
+<form onsubmit="event.preventDefault(); projectEdit({{ project.id }});" class="input-group {{ class }}">
+  {{ input(placeholder='Name', id='name', value=project.name) }}
+  <button type="submit" class="btn-custom"><i class="bi bi-save2"></i></button>
 </form>
 {% endmacro %}
