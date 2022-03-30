@@ -100,9 +100,9 @@
 </div>
 {% endmacro %}
 
-{% macro editor(class='') %}
-<form onsubmit="event.preventDefault()" class="{{ class }}">
-  <div class="py-3" style="font-size: 1.5em">
+{% macro readme_editor(project, class='') %}
+<div class="{{ class }}">
+  <div class="py-3">
     <button onclick="document.execCommand('bold')" class="btn-custom bi bi-type-bold"></button>
     <button onclick="document.execCommand('italic')" class="btn-custom bi bi-type-italic"></button>
     <button onclick="document.execCommand('insertUnorderedList')" class="btn-custom bi bi-list-ul"></button>
@@ -112,9 +112,9 @@
     <button onclick="document.execCommand('indent')" class="btn-custom bi bi-text-indent-left"></button>
     <button onclick="document.execCommand('outdent')" class="btn-custom bi bi-text-indent-right"></button>
   </div>
-  <div contenteditable="true" class="input-custom mb-3" style="height: 300px" id="content">WYSIWYG</div>
-  <button type="submit" class="btn-custom bg-success w-100">save</button>
-</form>
+  <div contenteditable="true" class="input-custom mb-3" style="height: 300px" id="readme">{{ project.readme | safe }}</div>
+  <button class="btn-custom bg-success w-100" onclick="projectEdit({{ project_.id }})">save</button>
+</div>
 {% endmacro %}
 
 {% macro project_create_form(class='') %}

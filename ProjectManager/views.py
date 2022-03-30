@@ -104,6 +104,7 @@ def project():
 def project_edit():
     project_: Project = database.get(Project, int(request.form["id_"]))
     project_.name = request.form["name"]
+    project_.readme = request.form["readme"]
     database.update()
 
     return redirect(request.referrer)

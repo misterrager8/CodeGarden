@@ -3,9 +3,12 @@
 
 {% block body %}
 <title>{{ project_.name }}</title>
-<p class="text-center h1">{{ project_.name }}</p>
+<p class="text-center h1" id="name" contenteditable="true">{{ project_.name }}</p>
 {{ macros.todo_create_form(project_, class='mb-3') }}
 {% for i in project_.get_todos() %}
 {{ macros.todo_card(i) }}
 {% endfor %}
+
+{{ macros.readme_editor(project_) }}
+
 {% endblock %}
