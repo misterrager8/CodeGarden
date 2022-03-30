@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, Text, DateTime, Date, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, Text, DateTime, Date, ForeignKey, Boolean, text
 from sqlalchemy.orm import relationship
 
 from ProjectManager import db
@@ -33,13 +33,16 @@ class Project(db.Model):
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
+    def get_todos(self, filter_: str = "", order_by: str = "date_added desc"):
+        return self.todos.filter(text(filter_)).order_by("done", text(order_by))
+
 
 class Todo(db.Model):
     __tablename__ = "todos"
 
     id = Column(Integer, primary_key=True)
     item = Column(Text)
-    date_added = Column(Date)
+    date_added = Column(DateTime)
     done = Column(Boolean, default=False)
     project = Column(ForeignKey("projects.id"))
 

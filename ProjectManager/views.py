@@ -7,7 +7,7 @@ from werkzeug.utils import redirect
 
 from ProjectManager import login_manager
 from ProjectManager.ctrla import Database
-from ProjectManager.models import User, Project
+from ProjectManager.models import User, Project, Todo
 
 database = Database()
 
@@ -112,6 +112,43 @@ def project_edit():
 @current_app.route("/project_delete")
 def project_delete():
     project_: Project = database.get(Project, int(request.args.get("id_")))
+    database.delete_multiple([i for i in project_.todos])
     database.delete(project_)
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/todo_create", methods=["POST"])
+def todo_create():
+    todo_ = Todo(item=request.form["item"],
+                 date_added=datetime.datetime.now(),
+                 project=request.form["id_"])
+    database.add(todo_)
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/todo_edit", methods=["POST"])
+def todo_edit():
+    todo_: Todo = database.get(Todo, int(request.form["id_"]))
+    todo_.item = request.form["item"]
+    database.update()
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/todo_delete")
+def todo_delete():
+    todo_: Todo = database.get(Todo, int(request.args.get("id_")))
+    database.delete(todo_)
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/todo_toggle")
+def todo_toggle():
+    todo_: Todo = database.get(Todo, int(request.args.get("id_")))
+    todo_.done = not todo_.done
+    database.update()
 
     return redirect(request.referrer)

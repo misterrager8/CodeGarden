@@ -34,3 +34,44 @@ function projectDelete(projectId) {
         refreshPage();
     });
 }
+
+function todoCreate(projectId) {
+    $('#spinner').show();
+    $.post('todo_create', {
+        id_: projectId,
+        item: $('#item').val()
+    }, function(data) {
+        refreshPage();
+    });
+}
+
+function todoEdit(event, todoId) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        $('#spinner').show();
+        $.post('todo_edit', {
+            id_: todoId,
+            item: $('#item' + todoId).html()
+        }, function(data) {
+            refreshPage();
+        });
+    }
+}
+
+function todoDelete(todoId) {
+    $('#spinner').show();
+    $.get('todo_delete', {
+        id_: todoId
+    }, function(data) {
+        refreshPage();
+    });
+}
+
+function todoToggle(todoId) {
+    $('#spinner').show();
+    $.get('todo_toggle', {
+        id_: todoId
+    }, function(data) {
+        refreshPage();
+    });
+}

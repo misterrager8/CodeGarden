@@ -3,7 +3,7 @@ gunicorn
 python-dotenv==0.20.0
 PyMySQL~=1.0.2
 SQLAlchemy~=1.4.31
-Werkzeug==2.1.0
+Werkzeug~=2.0.0
 flask_login
 flask_scss
 flask_sqlalchemy
