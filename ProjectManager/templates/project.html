@@ -5,6 +5,7 @@
 <title>{{ project_.name }}</title>
 <p class="text-center h1" id="name" contenteditable="true">{{ project_.name }}</p>
 {{ macros.todo_create_form(project_, class='mb-3') }}
+<p class="font-custom text-warning mb-3">{{ project_.get_todos(filter_='not done').count() }} undone</p>
 {% for i in project_.get_todos() %}
 {{ macros.todo_card(i) }}
 {% endfor %}
