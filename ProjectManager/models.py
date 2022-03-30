@@ -25,7 +25,6 @@ class Project(db.Model):
     name = Column(Text)
     readme = Column(Text)
     start_date = Column(Date)
-    status = Column(Text)
     github_url = Column(Text)
     user = Column(Integer, ForeignKey("users.id"))
     todos = relationship("Todo", lazy="dynamic")

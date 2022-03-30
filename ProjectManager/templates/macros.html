@@ -53,11 +53,8 @@
 <a href="{{ url_for('project', id_=project.id) }}">
   <span class="h4">{{ project.name }}</span>
   <span class="badge-custom">{{ project.get_todos(filter_='not done').count() }}</span>
-  <span class="badge-custom float-end">{{ project.status }}</span>
-  <div class="pt-3">
-    <a class="bi bi-trash3 text-danger float-end" onclick="toggleDiv('deleteProject' + {{ project.id }})"></a>
-    <a class="font-custom text-danger float-end" onclick="projectDelete({{ project.id }})" id="deleteProject{{ project.id }}" style="display:none">delete?</a>
-  </div>
+  <a class="bi bi-trash3 text-danger float-end" onclick="toggleDiv('deleteProject' + {{ project.id }})"></a>
+  <a class="font-custom text-danger float-end" onclick="projectDelete({{ project.id }})" id="deleteProject{{ project.id }}" style="display:none">delete?</a>
 </a>
 {% endcall %}
 {% endmacro %}
