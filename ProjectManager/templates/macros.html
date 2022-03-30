@@ -112,7 +112,7 @@
     <button onclick="document.execCommand('indent')" class="btn-custom bi bi-text-indent-left"></button>
     <button onclick="document.execCommand('outdent')" class="btn-custom bi bi-text-indent-right"></button>
   </div>
-  <div contenteditable="true" class="input-custom mb-3" style="height: 300px" id="readme">{{ project.readme | safe }}</div>
+  <div contenteditable="true" class="input-custom mb-3" id="readme">{{ project.readme | safe }}</div>
   <button class="btn-custom bg-success w-100" onclick="projectEdit({{ project_.id }})">save</button>
 </div>
 {% endmacro %}
