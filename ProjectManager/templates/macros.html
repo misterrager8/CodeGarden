@@ -62,6 +62,8 @@
 {% macro todo_card(todo) %}
 {% call card(size=12, class='border-0 p-1 mb-3') %}
 <a class="bi bi-check-lg me-2 {% if todo.done %}text-success{% else %}text-secondary{% endif %}" onclick="todoToggle({{ todo.id }})"></a>
+<a class="bi bi-clipboard me-2" onclick="todoCopy(this, {{ todo.id }})"></a>
+<input style="display:none" value="{{ todo.item }}" id="copy{{ todo.id }}">
 <span contenteditable="true" id="item{{ todo.id }}" onkeydown="todoEdit(event, {{ todo.id }});" {% if todo.done %}style="text-decoration:line-through" {% endif %}>{{ todo.item }}</span>
 <a class="bi bi-trash3 text-danger float-end" onclick="todoDelete({{ todo.id }})"></a>
 {% endcall %}

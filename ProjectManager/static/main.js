@@ -76,3 +76,12 @@ function todoToggle(todoId) {
         refreshPage();
     });
 }
+
+function todoCopy(elem, todoId) {
+    $('#copy' + todoId).show();
+    $('#copy' + todoId).select();
+    document.execCommand('copy');
+    $('#copy' + todoId).hide();
+    $(elem).toggleClass('bi-clipboard bi-clipboard-check text-success');
+    setTimeout(function() { $(elem).toggleClass('bi-clipboard bi-clipboard-check text-success') }, 2000);
+}
