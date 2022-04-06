@@ -10,5 +10,13 @@
   {{ macros.project_card(i) }}
   {% endfor %}
 </div>
+{% else %}
+<div class="text-center opacity-25 font-custom" style="font-size:3em">
+  <div class="bi bi-person-fill" style="font-size:3em"></div>
+  <span>
+    <a data-bs-toggle="modal" data-bs-target="#loginModal" class="fw-bold">Log In</a> or
+    <a data-bs-toggle="modal" data-bs-target="#signupModal" class="fw-bold">Sign Up</a>
+  </span>
+</div>
 {% endif %}
 {% endblock %}
