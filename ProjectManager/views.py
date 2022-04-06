@@ -88,7 +88,7 @@ def delete_account():
 
 @current_app.route("/project_create", methods=["POST"])
 def project_create():
-    project_ = Project(name=request.form["name"], user=current_user.id)
+    project_ = Project(name=request.form["name"], user=current_user.id, readme="")
     database.add(project_)
 
     return redirect(request.referrer)
