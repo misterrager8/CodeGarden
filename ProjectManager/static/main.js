@@ -20,7 +20,7 @@ function projectEdit(projectId) {
     $('#spinner').show();
     $.post('project_edit', {
         id_: projectId,
-        name: $('#name').html(),
+        name: $('#name').val(),
         readme: $('#readme').html()
     }, function(data) {
         refreshPage();

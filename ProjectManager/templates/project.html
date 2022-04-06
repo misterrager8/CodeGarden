@@ -3,7 +3,7 @@
 
 {% block body %}
 <title>{{ project_.name }}</title>
-<p class="text-center h1" id="name" contenteditable="true">{{ project_.name }}</p>
+<input autocomplete="off" class="w-100 text-center border-0 h1 input-custom" id="name" value="{{ project_.name }}" onchange="projectEdit({{ project_.id }})">
 {{ macros.todo_create_form(project_, class='mb-3') }}
 <p class="font-custom text-warning mb-3">{{ project_.get_todos(filter_='not done').count() }} undone</p>
 {% for i in project_.get_todos() %}
