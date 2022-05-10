@@ -2,9 +2,11 @@ from flask import Flask
 from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+import pymysql
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+pymysql.install_as_MySQLdb()
 
 
 def create_app(config):
