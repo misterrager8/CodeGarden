@@ -1,62 +1,79 @@
-.border-custom, .card-body {
-  border: 1px solid white; }
+:root, html[data-theme="dark"] {
+    --navbar-bg: white;
+    --navbar-txt: #1a1a1a;
+    --body-bg: #1a1a1a;
+    --body-txt: white;
+}
 
-  .font-custom, .dropdown-item {
+html[data-theme="light"] {
+    --navbar-bg: #1a1a1a;
+    --navbar-txt: white;
+    --body-bg: white;
+    --body-txt: #1a1a1a;
+}
+
+.border-custom, .card-body, .btn-custom, .badge-custom, .input-custom {
+    border: 1px solid var(--body-txt);
+}
+
+.font-custom, .btn-custom, .badge-custom, .dropdown-item {
     letter-spacing: 3px;
     font-weight: bold;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+}
 
-    a, a:hover {
-      color: inherit;
-      text-decoration: none;
-      cursor: pointer; }
+a, a:hover, .nav-link, .nav-link:hover {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-      body, .modal-content, .input-hidden, .input-custom, .btn-custom:hover,
-      .card, .badge-custom, .list-group-item {
-        background-color: #1a1a1a;
-        color: white; }
+body, .modal-content, .input-hidden, .input-custom, .btn-custom:hover, .card, .badge-custom, .list-group-item {
+    background-color: var(--body-bg);
+    color: var(--body-txt);
+}
 
-        .navbar {
-          background-color: white;
-          color: #1a1a1a; }
+.navbar {
+    background-color: var(--navbar-bg);
+    color: var(--navbar-txt);
+}
 
-          .btn-custom {
-            background-color: white;
-            color: #1a1a1a; }
+.btn-custom {
+    background-color: var(--navbar-bg);
+    color: var(--navbar-txt);
+}
 
-            .input-custom {
-              border: 1px solid white;
-              border-radius: 5px;
-              padding: 5px 10px; }
+.input-custom {
+    border-radius: 5px;
+    padding: 5px 10px;
+}
 
-              .input-hidden {
-                border: 0;
-                padding: 0; }
+.input-hidden {
+    border: 0; 
+    padding: 0; 
+}
 
-                .btn-custom {
-                  border: 1px solid white;
-                  letter-spacing: 3px;
-                  font-weight: bold;
-                  text-transform: uppercase;
-                  border-radius: 5px;
-                  padding: 5px 10px;
-                  transition: background-color 0.5s; }
+.btn-custom {
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: background-color .5s;
+}
 
-                  .badge-custom {
-                    border: 1px solid white;
-                    letter-spacing: 3px;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    border-radius: 10px;
-                    font-size: 0.8em;
-                    padding: 3px 15px; }
+.badge-custom {
+    border-radius: 10px;
+    font-size: 0.8em;
+    padding: 3px 15px;
+}
 
-                    .card-body {
-                      border-radius: 5px; }
+.card-body {
+    border-radius: 5px;
+}
 
-                      .list-group-item {
-                        border: 1px solid #1a1a1a;
-                        transition: border-bottom 0.5s; }
+.list-group-item {
+    border: 1px solid var(--body-bg);
+    transition: border-bottom .5s;
+}
 
-                        .list-group-item:hover {
-                          border-bottom: 1px solid white; }
+.list-group-item:hover {
+    border-bottom: 1px solid var(--body-txt);
+}

@@ -1,4 +1,4 @@
-<html>
+<html data-theme="dark">
 {% import "macros.html" as macros with context %}
 <head>
     <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a href="{{ url_for('index') }}" class="navbar-brand"><i class="bi bi-briefcase-fill" style="font-size:1.25em"></i></a>
         <div class="collapse navbar-collapse" id="navContent">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item p-1"><a onclick="changeTheme()" class="nav-link bi bi-circle-half"></a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#userDD">
                         <span class="me-2">{{ current_user.username }}</span>

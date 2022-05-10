@@ -1,3 +1,11 @@
+$( document ).ready(function() {
+    if (localStorage.getItem('pj_theme') == 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+});
+
 function toggleDiv(divId) {
     $('#' + divId).fadeToggle(150);
 }
@@ -5,6 +13,16 @@ function toggleDiv(divId) {
 function refreshPage() {
     $('#pageContent').load(location.href + ' #pageContent');
     $('#navContent').load(location.href + ' #navContent');
+}
+
+function changeTheme() {
+    if (localStorage.getItem('pj_theme') == 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('pj_theme', 'light');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('pj_theme', 'dark');
+    }
 }
 
 function addProject() {
