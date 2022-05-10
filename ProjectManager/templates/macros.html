@@ -2,7 +2,9 @@
 <div class="card col-xl-4 border-0">
     <div class="card-body mb-4">
         <a href="{{ url_for('project_', id_=project.id) }}">{{ project.name }}</a>
-        <span class="float-end bi bi-check-all font-custom {% if project.get_todos(filter_='not done').count() < 1 %}text-secondary{% else %}text-warning{% endif %}">{{ project.get_todos(filter_='not done').count() }}</span>
+        <span class="float-end bi bi-check-all font-custom {% if project.get_undone_count() < 1 %}text-secondary{% else %}text-warning{% endif %}">
+            {{ '%s todo(s)' % project.get_undone_count() }}
+        </span>
         <div class="mt-3">
             <a onclick="toggleDiv('deleteProject' + {{ project.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
             <a onclick="deleteProject({{ project.id }})" class="font-custom text-danger" id="deleteProject{{ project.id }}" style="display:none">delete?</a>

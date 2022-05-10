@@ -51,7 +51,7 @@ function editTodo(todoId) {
     $('#spinner').show();
     $.post('edit_todo', {
         id_: todoId,
-        desc: $('#desc' + todoId).val(),
+        desc: $('#editTodo' + todoId).val(),
     }, function(data) {
         refreshPage();
     });

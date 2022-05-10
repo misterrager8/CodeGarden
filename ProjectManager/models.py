@@ -34,6 +34,9 @@ class Project(db.Model):
     def get_todos(self, order_by: str = "", filter_: str = ""):
         return self.todos.filter(text(filter_)).order_by("done", text(order_by))
 
+    def get_undone_count(self) -> int:
+        return self.todos.filter(text("not done")).count()
+
 
 class Todo(db.Model):
     __tablename__ = "todos"

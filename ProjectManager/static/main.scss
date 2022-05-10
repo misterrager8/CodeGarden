@@ -20,7 +20,7 @@ a, a:hover {
     cursor: pointer;
 }
 
-body, .modal-content, .input-custom, .btn-custom:hover, .card, .badge-custom {
+body, .modal-content, .input-hidden, .input-custom, .btn-custom:hover, .card, .badge-custom, .list-group-item {
     background-color: $body-bg;
     color: $body-txt;
 }
@@ -41,6 +41,11 @@ body, .modal-content, .input-custom, .btn-custom:hover, .card, .badge-custom {
     padding: 5px 10px;
 }
 
+.input-hidden {
+   border: 0; 
+   padding: 0; 
+}
+
 .btn-custom {
     @include border-custom;
     @include font-custom;
@@ -59,4 +64,13 @@ body, .modal-content, .input-custom, .btn-custom:hover, .card, .badge-custom {
 
 .card-body {
     border-radius: 5px;
+}
+
+.list-group-item {
+    border: 1px solid $body-bg;
+    transition: border-bottom .5s;
+}
+
+.list-group-item:hover {
+    border-bottom: 1px solid $body-txt;
 }

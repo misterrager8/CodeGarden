@@ -11,7 +11,8 @@
       text-decoration: none;
       cursor: pointer; }
 
-      body, .modal-content, .input-custom, .btn-custom:hover, .card, .badge-custom {
+      body, .modal-content, .input-hidden, .input-custom, .btn-custom:hover,
+      .card, .badge-custom, .list-group-item {
         background-color: #1a1a1a;
         color: white; }
 
@@ -28,23 +29,34 @@
               border-radius: 5px;
               padding: 5px 10px; }
 
-              .btn-custom {
-                border: 1px solid white;
-                letter-spacing: 3px;
-                font-weight: bold;
-                text-transform: uppercase;
-                border-radius: 5px;
-                padding: 5px 10px;
-                transition: background-color 0.5s; }
+              .input-hidden {
+                border: 0;
+                padding: 0; }
 
-                .badge-custom {
+                .btn-custom {
                   border: 1px solid white;
                   letter-spacing: 3px;
                   font-weight: bold;
                   text-transform: uppercase;
-                  border-radius: 10px;
-                  font-size: 0.8em;
-                  padding: 3px 15px; }
+                  border-radius: 5px;
+                  padding: 5px 10px;
+                  transition: background-color 0.5s; }
 
-                  .card-body {
-                    border-radius: 5px; }
+                  .badge-custom {
+                    border: 1px solid white;
+                    letter-spacing: 3px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    border-radius: 10px;
+                    font-size: 0.8em;
+                    padding: 3px 15px; }
+
+                    .card-body {
+                      border-radius: 5px; }
+
+                      .list-group-item {
+                        border: 1px solid #1a1a1a;
+                        transition: border-bottom 0.5s; }
+
+                        .list-group-item:hover {
+                          border-bottom: 1px solid white; }
