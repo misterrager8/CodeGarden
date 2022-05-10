@@ -1,5 +1,5 @@
 function toggleDiv(divId) {
-    $('#' + divId).fadeToggle(250);
+    $('#' + divId).fadeToggle(150);
 }
 
 function refreshPage() {
@@ -7,81 +7,70 @@ function refreshPage() {
     $('#navContent').load(location.href + ' #navContent');
 }
 
-function projectCreate() {
+function addProject() {
     $('#spinner').show();
-    $.post('project_create', {
+    $.post('add_project', {
         name: $('#name').val()
     }, function(data) {
         refreshPage();
     });
 }
 
-function projectEdit(projectId) {
+function editProject(projectId) {
     $('#spinner').show();
-    $.post('project_edit', {
+    $.post('edit_project', {
         id_: projectId,
-        name: $('#name').val(),
-        readme: $('#readme').html()
+        name: $('#name' + projectId).val(),
+        tagline: $('#tagline' + projectId).val(),
+        readme: $('#readme' + projectId).val()
     }, function(data) {
         refreshPage();
     });
 }
 
-function projectDelete(projectId) {
+function deleteProject(projectId) {
     $('#spinner').show();
-    $.get('project_delete', {
+    $.get('delete_project', {
         id_: projectId
     }, function(data) {
         refreshPage();
     });
 }
 
-function todoCreate(projectId) {
+function addTodo(projectId) {
     $('#spinner').show();
-    $.post('todo_create', {
+    $.post('add_todo', {
         id_: projectId,
-        item: $('#item').val()
+        desc: $('#todoFor' + projectId).val()
     }, function(data) {
         refreshPage();
     });
 }
 
-function todoEdit(event, todoId) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        $('#spinner').show();
-        $.post('todo_edit', {
-            id_: todoId,
-            item: $('#item' + todoId).html()
-        }, function(data) {
-            refreshPage();
-        });
-    }
+function editTodo(todoId) {
+    $('#spinner').show();
+    $.post('edit_todo', {
+        id_: todoId,
+        desc: $('#desc' + todoId).val(),
+    }, function(data) {
+        refreshPage();
+    });
 }
 
-function todoDelete(todoId) {
+function deleteTodo(todoId) {
     $('#spinner').show();
-    $.get('todo_delete', {
+    $.get('delete_todo', {
         id_: todoId
     }, function(data) {
         refreshPage();
     });
 }
 
-function todoToggle(todoId) {
+function markTodo(todoId) {
     $('#spinner').show();
-    $.get('todo_toggle', {
+    $.get('mark_todo', {
         id_: todoId
     }, function(data) {
         refreshPage();
     });
-}
-
-function todoCopy(elem, todoId) {
-    $('#copy' + todoId).show();
-    $('#copy' + todoId).select();
-    document.execCommand('copy');
-    $('#copy' + todoId).hide();
-    $(elem).toggleClass('bi-clipboard bi-clipboard-check text-success');
-    setTimeout(function() { $(elem).toggleClass('bi-clipboard bi-clipboard-check text-success') }, 2000);
 }

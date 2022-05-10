@@ -8,13 +8,14 @@ class Database:
         pass
 
     @staticmethod
-    def add(object_):
+    def create(object_):
         db.session.add(object_)
         db.session.commit()
 
     @staticmethod
-    def add_multiple(objects: list):
-        for i in objects: db.session.add(i)
+    def create_multiple(objects: list):
+        for i in objects:
+            db.session.add(i)
         db.session.commit()
 
     @staticmethod
@@ -31,12 +32,13 @@ class Database:
         db.session.commit()
 
     @staticmethod
-    def delete_multiple(objects: list):
-        for i in objects: db.session.delete(i)
+    def delete_mutliple(objects: list):
+        for i in objects:
+            db.session.delete(i)
         db.session.commit()
 
     @staticmethod
-    def search(type_, filter_: str = "", order_by: str = ""):
+    def search(type_, order_by: str = "", filter_: str = ""):
         return db.session.query(type_).filter(text(filter_)).order_by(text(order_by))
 
     @staticmethod

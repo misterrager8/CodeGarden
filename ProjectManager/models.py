@@ -1,18 +1,17 @@
-from flask_login import UserMixin
-from sqlalchemy import Column, Integer, Text, DateTime, Date, ForeignKey, Boolean, text
+from sqlalchemy import Column, Text, Integer, DateTime, Boolean, ForeignKey, text
 from sqlalchemy.orm import relationship
-
 from ProjectManager import db
+from flask_login import UserMixin
 
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     username = Column(Text)
     password = Column(Text)
-    date_created = Column(DateTime)
     projects = relationship("Project", lazy="dynamic")
+    todos = relationship("Todo", lazy="dynamic")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -23,16 +22,16 @@ class Project(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    tagline = Column(Text)
     readme = Column(Text)
-    start_date = Column(Date)
-    github_url = Column(Text)
+    start_date = Column(DateTime)
     user = Column(Integer, ForeignKey("users.id"))
-    todos = relationship("Todo", lazy="dynamic")
+    todos = relationship("Todo", backref="projects", lazy="dynamic")
 
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
-    def get_todos(self, filter_: str = "", order_by: str = "date_added desc"):
+    def get_todos(self, order_by: str = "", filter_: str = ""):
         return self.todos.filter(text(filter_)).order_by("done", text(order_by))
 
 
@@ -40,10 +39,11 @@ class Todo(db.Model):
     __tablename__ = "todos"
 
     id = Column(Integer, primary_key=True)
-    item = Column(Text)
-    date_added = Column(DateTime)
+    desc = Column(Text)
     done = Column(Boolean, default=False)
-    project = Column(ForeignKey("projects.id"))
+    date_added = Column(DateTime)
+    user = Column(Integer, ForeignKey("users.id"))
+    project = Column(Integer, ForeignKey("projects.id"))
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)

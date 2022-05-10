@@ -1,56 +1,50 @@
-a, a:hover {
-  color: inherit;
-  cursor: pointer;
-  text-decoration: none; }
+.border-custom, .card-body {
+  border: 1px solid white; }
 
-  ::placeholder {
-    font-style: italic;
-    opacity: 50%; }
+  .font-custom, .dropdown-item {
+    letter-spacing: 3px;
+    font-weight: bold;
+    text-transform: uppercase; }
 
-    .font-custom, .nav-item, ::placeholder {
-      letter-spacing: 5px;
-      text-transform: uppercase; }
+    a, a:hover {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer; }
 
-      .border-custom {
-        border: 1px solid #35161a; }
+      body, .modal-content, .input-custom, .btn-custom:hover, .card, .badge-custom {
+        background-color: #1a1a1a;
+        color: white; }
 
-        .navbar, .btn-custom, .dropdown-item:hover {
-          background-color: #367e76;
-          color: #c98189; }
+        .navbar {
+          background-color: white;
+          color: #1a1a1a; }
 
-          body, .input-custom, .modal-content, .card, .badge-custom, .dropdown-menu,
-          .btn-custom:hover {
-            background-color: #cae9e5;
-            color: #35161a; }
+          .btn-custom {
+            background-color: white;
+            color: #1a1a1a; }
 
-            .card {
-              border: none; }
+            .input-custom {
+              border: 1px solid white;
+              border-radius: 5px;
+              padding: 5px 10px; }
 
-              .card-body {
-                border: 1px solid #35161a;
-                border-radius: 5px; }
+              .btn-custom {
+                border: 1px solid white;
+                letter-spacing: 3px;
+                font-weight: bold;
+                text-transform: uppercase;
+                border-radius: 5px;
+                padding: 5px 10px;
+                transition: background-color 0.5s; }
 
-                .btn-custom {
-                  letter-spacing: 5px;
+                .badge-custom {
+                  border: 1px solid white;
+                  letter-spacing: 3px;
+                  font-weight: bold;
                   text-transform: uppercase;
-                  border: 1px solid #35161a;
-                  font-size: 0.9em;
-                  padding: 10px 20px;
-                  border-radius: 5px;
-                  transition: background-color 0.5s, color 0.5s; }
+                  border-radius: 10px;
+                  font-size: 0.8em;
+                  padding: 3px 15px; }
 
-                  .badge-custom {
-                    letter-spacing: 5px;
-                    text-transform: uppercase;
-                    border: 1px solid #35161a;
-                    font-size: 0.8em;
-                    padding: 3px 15px;
-                    border-radius: 10px; }
-
-                    .input-custom {
-                      border: 1px solid #35161a;
-                      padding: 5px 10px;
-                      border-radius: 5px; }
-
-                      .list-unstyled li {
-                        margin-bottom: 30px; }
+                  .card-body {
+                    border-radius: 5px; }

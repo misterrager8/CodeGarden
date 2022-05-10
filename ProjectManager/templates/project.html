@@ -3,13 +3,24 @@
 
 {% block body %}
 <title>{{ project_.name }}</title>
-<input autocomplete="off" class="w-100 text-center border-0 h1 input-custom" id="name" value="{{ project_.name }}" onchange="projectEdit({{ project_.id }})">
-{{ macros.todo_create_form(project_, class='mb-3') }}
-<p class="font-custom text-warning mb-3">{{ project_.get_todos(filter_='not done').count() }} undone</p>
-{% for i in project_.get_todos() %}
-{{ macros.todo_card(i) }}
-{% endfor %}
 
-{{ macros.readme_editor(project_) }}
+<a class="btn-custom" onclick="toggleDiv('editProject')"><i class="bi bi-pen"></i> edit</a>
+<div class="mt-3" id="editProject" style="display:none">{{ macros.project_edit_form(project_) }}</div>
+<p class="text-center h3 my-3">{{ project_.name }}</p>
+<div class="mb-3 border-bottom pb-3">{{ project_.tagline or '' }}</div>
+<div class="border-bottom pb-3" style="white-space:pre-wrap">{{ project_.readme or '' }}</div><br>
 
+<span class="bi bi-check-all font-custom {% if project_.get_todos(filter_='not done').count() < 1 %}text-secondary{% else %}text-warning{% endif %}">{{ project_.get_todos(filter_='not done').count() }}</span>
+<a class="bi bi-plus-circle ms-1 text-success" onclick="toggleDiv('addTodo' + {{ project_.id }})"></a>
+<div class="mt-3" id="addTodo{{ project_.id }}" style="display:none">{{ macros.todo_create_form(project_) }}</div>
+<div class="mt-3">
+    {% for i in project_.get_todos() %}
+    <div class="{% if i.done %}text-decoration-line-through opacity-25{% endif %}">
+        <a onclick="markTodo({{ i.id }})" class="bi bi-check-lg me-2 {% if i.done %}text-success{% else %}text-secondary{% endif %}"></a>
+        {{ i.desc }}
+        <a onclick="toggleDiv('deleteTodo' + {{ i.id }})" class="text-danger float-end"><i class="bi bi-trash2"></i></a>
+        <a onclick="deleteTodo({{ i.id }})" class="font-custom text-danger float-end" id="deleteTodo{{ i.id }}" style="display:none">delete?</a>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}
