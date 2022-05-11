@@ -16,6 +16,9 @@ class User(db.Model, UserMixin):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
 
+    def get_projects(self, order_by: str = "id desc", filter_: str = ""):
+        return self.projects.filter(text(filter_)).order_by(text(order_by))
+
 
 class Project(db.Model):
     __tablename__ = "projects"
@@ -31,7 +34,7 @@ class Project(db.Model):
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
-    def get_todos(self, order_by: str = "", filter_: str = ""):
+    def get_todos(self, order_by: str = "id desc", filter_: str = ""):
         return self.todos.filter(text(filter_)).order_by("done", text(order_by))
 
     def get_undone_count(self) -> int:
