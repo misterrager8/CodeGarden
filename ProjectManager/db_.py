@@ -32,7 +32,7 @@ class Database:
         db.session.commit()
 
     @staticmethod
-    def delete_mutliple(objects: list):
+    def delete_multiple(objects: list):
         for i in objects:
             db.session.delete(i)
         db.session.commit()

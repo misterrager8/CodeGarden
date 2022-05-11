@@ -79,6 +79,7 @@ def edit_project():
 @current_app.route("/delete_project")
 def delete_project():
     project_: Project = db.get(Project, int(request.args.get("id_")))
+    db.delete_multiple([i for i in project_.todos])
     db.delete(project_)
     return redirect(request.referrer)
 
