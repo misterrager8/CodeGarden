@@ -16,7 +16,7 @@ html[data-theme="light"] {
     border: 1px solid var(--body-txt);
 }
 
-.font-custom, .btn-custom, .badge-custom, .dropdown-item {
+.font-custom, .btn-custom, .badge-custom, .dropdown-item, ::placeholder {
     letter-spacing: 3px;
     font-weight: bold;
     text-transform: uppercase;

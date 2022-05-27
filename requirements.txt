@@ -8,3 +8,4 @@ python-dotenv==0.20.0
 SQLAlchemy==1.4.35
 Werkzeug==2.1.1
 gunicorn
+markdown

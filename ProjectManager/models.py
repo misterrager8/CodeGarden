@@ -2,6 +2,7 @@ from sqlalchemy import Column, Text, Integer, DateTime, Boolean, ForeignKey, tex
 from sqlalchemy.orm import relationship
 from ProjectManager import db
 from flask_login import UserMixin
+import markdown
 
 
 class User(db.Model, UserMixin):
@@ -33,6 +34,9 @@ class Project(db.Model):
 
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
+
+    def format_readme(self):
+        return markdown.markdown(self.readme)
 
     def get_todos(self, order_by: str = "id desc", filter_: str = ""):
         return self.todos.filter(text(filter_)).order_by("done", text(order_by))

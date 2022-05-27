@@ -16,8 +16,12 @@ def create_app(config):
     login_manager.init_app(app)
 
     with app.app_context():
-        from . import views
+        from ProjectManager.views.projects import projects
+        from ProjectManager.views.todos import todos
 
         db.create_all()
+
+        app.register_blueprint(projects)
+        app.register_blueprint(todos)
 
         return app

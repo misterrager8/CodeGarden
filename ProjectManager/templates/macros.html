@@ -1,7 +1,7 @@
 {% macro project_card(project) %}
 <div class="card col-xl-4 border-0">
     <div class="card-body mb-4">
-        <a href="{{ url_for('project_', id_=project.id) }}">{{ project.name }}</a>
+        <a href="{{ url_for('projects.project_', id_=project.id) }}">{{ project.name }}</a>
         <span class="float-end bi bi-check-all font-custom {% if project.get_undone_count() < 1 %}text-secondary{% else %}text-warning{% endif %}">
             {{ '%s todo(s)' % project.get_undone_count() }}
         </span>
@@ -49,6 +49,17 @@
 <form onsubmit="event.preventDefault(); addTodo({{ project.id }}); this.reset();" class="input-group">
     <input autocomplete="off" class="input-custom" id="todoFor{{ project.id }}" placeholder="TODO">
     <button class="btn-custom" type="submit"><i class="bi bi-plus-lg"></i></button>
+</form>
+{% endmacro %}
+
+{% macro readme_form(project) %}
+<form method="POST" action="{{ url_for('projects.make_readme') }}">
+    <input name="id_" autocomplete="off" value="{{ project.id }}" style="display:none">
+    <input name="features" autocomplete="off" class="input-custom w-100 mb-3" placeholder="features">
+    <input name="usage" autocomplete="off" class="input-custom w-100 mb-3" placeholder="usage">
+    <input name="contrib" autocomplete="off" class="input-custom w-100 mb-3" placeholder="contribution guidelines">
+    <input name="tags" autocomplete="off" class="input-custom w-100 mb-3" placeholder="tags">
+    <button class="btn-custom w-100" type="submit">make readme</button>
 </form>
 {% endmacro %}
 
