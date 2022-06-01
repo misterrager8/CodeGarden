@@ -17,7 +17,7 @@ projects = Blueprint("projects", __name__)
 
 @projects.route("/add_project", methods=["POST"])
 def add_project():
-    project_ = Project(name=request.form["name"], user=current_user.id)
+    project_ = Project(name=request.form["name"], tagline=request.form["tagline"], user=current_user.id)
     db.create(project_)
     return redirect(request.referrer)
 

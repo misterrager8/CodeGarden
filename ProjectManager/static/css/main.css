@@ -12,6 +12,13 @@ html[data-theme="light"] {
     --body-txt: #1a1a1a;
 }
 
+html[data-theme="gray"] {
+    --navbar-bg: white;
+    --navbar-txt: gray;
+    --body-bg: gray;
+    --body-txt: white;
+}
+
 .border-custom, .card-body, .btn-custom, .badge-custom, .input-custom {
     border: 1px solid var(--body-txt);
 }
@@ -20,6 +27,7 @@ html[data-theme="light"] {
     letter-spacing: 3px;
     font-weight: bold;
     text-transform: uppercase;
+    font-size: 0.9em;
 }
 
 a, a:hover, .nav-link, .nav-link:hover {

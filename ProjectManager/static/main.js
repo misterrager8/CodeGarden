@@ -1,10 +1,11 @@
-$( document ).ready(function() {
-    if (localStorage.getItem('pj_theme') == 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
+$(document).ready(function() {
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('project_mgmt_theme'));
 });
+
+function changeTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('project_mgmt_theme', theme);
+}
 
 function toggleDiv(divId) {
     $('#' + divId).fadeToggle(150);
@@ -15,20 +16,11 @@ function refreshPage() {
     $('#navContent').load(location.href + ' #navContent');
 }
 
-function changeTheme() {
-    if (localStorage.getItem('pj_theme') == 'dark') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('pj_theme', 'light');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('pj_theme', 'dark');
-    }
-}
-
 function addProject() {
     $('#spinner').show();
     $.post('add_project', {
-        name: $('#name').val()
+        name: $('#name').val(),
+        tagline: $('#tagline').val()
     }, function(data) {
         refreshPage();
     });
