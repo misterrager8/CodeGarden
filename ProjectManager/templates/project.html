@@ -25,6 +25,7 @@
     <div class="list-group-item {% if i.done %}text-decoration-line-through opacity-25{% endif %}">
         <a onclick="markTodo({{ i.id }})" class="bi bi-check-lg me-2 {% if i.done %}text-success{% else %}text-secondary{% endif %}"></a>
         {% if not i.done %}
+        <a onclick="commitTodo({{ i.id }})" class="bi bi-file-earmark-diff me-2 text-success"></a>
         <input onchange="editTodo({{ i.id }})" autocomplete="off" class="input-hidden" value="{{ i.desc }}" id="editTodo{{ i.id }}">
         {% else %}
         {{ i.desc }}

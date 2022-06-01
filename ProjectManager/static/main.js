@@ -84,3 +84,13 @@ function markTodo(todoId) {
         refreshPage();
     });
 }
+
+function commitTodo(todoId) {
+    $('#spinner').show();
+    $.get('commit_todo', {
+        id_: todoId
+    }, function(data) {
+        refreshPage();
+    });
+}
+

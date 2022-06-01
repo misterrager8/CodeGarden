@@ -45,3 +45,11 @@ def mark_todo():
     todo_.done = not todo_.done
     db.update()
     return redirect(request.referrer)
+
+
+@todos.route("/commit_todo")
+def commit_todo():
+    todo_: Todo = db.get(Todo, int(request.args.get("id_")))
+    todo_.mark_and_commit()
+    db.update()
+    return redirect(request.referrer)

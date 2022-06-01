@@ -2,6 +2,7 @@ from sqlalchemy import Column, Text, Integer, DateTime, Boolean, ForeignKey, tex
 from sqlalchemy.orm import relationship
 from ProjectManager import db
 import markdown
+import subprocess
 
 
 class Project(db.Model):
@@ -38,3 +39,10 @@ class Todo(db.Model):
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)
+
+    def mark(self):
+        self.done = not self.done
+
+    def mark_and_commit(self):
+        self.done = not self.done
+        subprocess.run(["git", "commit", "-am", self.desc])
