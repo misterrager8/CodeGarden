@@ -1,9 +1,8 @@
 from flask import request, current_app, render_template, url_for, Blueprint
-from . import login_manager
 from ProjectManager.db_ import Database
 from werkzeug.utils import redirect
 import datetime
-from ProjectManager.models import User, Project, Todo
+from ProjectManager.models import Project, Todo
 
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -19,7 +18,6 @@ def add_todo():
     todo_ = Todo(
         desc=request.form["desc"],
         date_added=datetime.datetime.now(),
-        user=current_user.id,
         project=request.form["id_"],
     )
     db.create(todo_)

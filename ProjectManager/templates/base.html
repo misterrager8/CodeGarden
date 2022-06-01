@@ -24,39 +24,10 @@
                         <a class="dropdown-item" onclick="changeTheme('dark')">dark</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#userDD">
-                        <span class="me-2">{{ current_user.username }}</span>
-                        <i class="bi bi-person-fill"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end text-center" id="userDD">
-                        {% if current_user.is_anonymous %}
-                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</a>
-                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a>
-                        {% else %}
-                        <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
-                        {% endif %}
-                    </div>
-                </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="modal" id="loginModal">
-    <div class="modal-dialog">
-        <div class="modal-content p-4">
-            {{ macros.login_form() }}
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="signupModal">
-    <div class="modal-dialog">
-        <div class="modal-content p-4">
-            {{ macros.signup_form() }}
-        </div>
-    </div>
-</div>
 <div class="container my-5" id="pageContent">
     <span class="spinner-border spinner-border-sm" id="spinner" style="display:none"></span>
     {% block body %}

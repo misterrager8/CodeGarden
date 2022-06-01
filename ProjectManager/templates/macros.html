@@ -32,8 +32,8 @@
 
 {% macro project_create_form() %}
 <form onsubmit="event.preventDefault(); addProject(); this.reset();" class="input-group">
-    <input autocomplete="off" class="input-custom" id="name" placeholder="Project Name">
-    <input autocomplete="off" class="input-custom" id="tagline" placeholder="One Line Description">
+    <input required autocomplete="off" class="input-custom" id="name" placeholder="Project Name">
+    <input required autocomplete="off" class="input-custom" id="tagline" placeholder="One Line Description">
     <button class="btn-custom" type="submit"><i class="bi bi-plus-lg"></i> create project</button>
 </form>
 {% endmacro %}

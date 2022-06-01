@@ -1,9 +1,8 @@
 from flask import request, current_app, render_template, url_for, Blueprint
-from . import login_manager
 from ProjectManager.db_ import Database
 from werkzeug.utils import redirect
 import datetime
-from ProjectManager.models import User, Project, Todo
+from ProjectManager.models import Project, Todo
 from ProjectManager.readme import Readme
 
 from flask_login import login_user, logout_user, current_user, login_required
@@ -17,7 +16,7 @@ projects = Blueprint("projects", __name__)
 
 @projects.route("/add_project", methods=["POST"])
 def add_project():
-    project_ = Project(name=request.form["name"], tagline=request.form["tagline"], user=current_user.id)
+    project_ = Project(name=request.form["name"], tagline=request.form["tagline"])
     db.create(project_)
     return redirect(request.referrer)
 

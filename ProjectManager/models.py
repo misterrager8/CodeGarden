@@ -1,24 +1,7 @@
 from sqlalchemy import Column, Text, Integer, DateTime, Boolean, ForeignKey, text
 from sqlalchemy.orm import relationship
 from ProjectManager import db
-from flask_login import UserMixin
 import markdown
-
-
-class User(db.Model, UserMixin):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True)
-    username = Column(Text)
-    password = Column(Text)
-    projects = relationship("Project", lazy="dynamic")
-    todos = relationship("Todo", lazy="dynamic")
-
-    def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
-
-    def get_projects(self, order_by: str = "id desc", filter_: str = ""):
-        return self.projects.filter(text(filter_)).order_by(text(order_by))
 
 
 class Project(db.Model):
@@ -29,7 +12,6 @@ class Project(db.Model):
     tagline = Column(Text)
     readme = Column(Text)
     start_date = Column(DateTime)
-    user = Column(Integer, ForeignKey("users.id"))
     todos = relationship("Todo", backref="projects", lazy="dynamic")
 
     def __init__(self, **kwargs):
@@ -52,7 +34,6 @@ class Todo(db.Model):
     desc = Column(Text)
     done = Column(Boolean, default=False)
     date_added = Column(DateTime)
-    user = Column(Integer, ForeignKey("users.id"))
     project = Column(Integer, ForeignKey("projects.id"))
 
     def __init__(self, **kwargs):
