@@ -4,35 +4,14 @@
 {% block body %}
 <title>{{ project_.name }}</title>
 
-<a class="btn-custom" onclick="toggleDiv('editProject')"><i class="bi bi-pen"></i> edit</a>
-<div class="mt-3" id="editProject" style="display:none">{{ macros.project_edit_form(project_) }}</div>
-<p class="text-center h3 my-3">{{ project_.name }}</p>
-<div class="mb-3 border-bottom pb-3">{{ project_.tagline or '' }}</div>
-{% if project_.readme %}<div class="border-bottom pb-3" style="white-space:pre-wrap">{{ project_.format_readme() | safe }}</div><br>{% endif %}
-
-<div class="mb-3">
-    <a class="btn-custom" onclick="toggleDiv('makeReadme')">make readme</a><br>
-    <div style="display:none" id="makeReadme" class="mt-3">{{ macros.readme_form(project_) }}</div>
-</div>
-
-<span class="bi bi-check-all font-custom {% if project_.get_undone_count() < 1 %}text-secondary{% else %}text-warning{% endif %}">
-    {{ '%s todo(s)' % project_.get_undone_count() }}
-</span>
-<a class="bi bi-plus-circle ms-1 text-success" onclick="toggleDiv('addTodo' + {{ project_.id }})"></a>
-<div class="mt-3" id="addTodo{{ project_.id }}" style="display:none">{{ macros.todo_create_form(project_) }}</div>
-<div class="mt-3">
+{{ macros.readme_form(project_) }}
+<hr>
+{{ macros.add_todo_form(project_) }}
+<span class="font-custom">{{ '%s undone' % project_.get_todos(filter_='not done').count() }}</span>
+<div class="my-3">
     {% for i in project_.get_todos() %}
-    <div class="list-group-item {% if i.done %}text-decoration-line-through opacity-25{% endif %}">
-        <a onclick="markTodo({{ i.id }})" class="bi bi-check-lg me-2 {% if i.done %}text-success{% else %}text-secondary{% endif %}"></a>
-        {% if not i.done %}
-        <a onclick="commitTodo({{ i.id }})" class="bi bi-file-earmark-diff me-2 text-success"></a>
-        <input onchange="editTodo({{ i.id }})" autocomplete="off" class="input-hidden" value="{{ i.desc }}" id="editTodo{{ i.id }}">
-        {% else %}
-        {{ i.desc }}
-        {% endif %}
-        <a onclick="toggleDiv('deleteTodo' + {{ i.id }})" class="text-danger float-end"><i class="bi bi-trash2"></i></a>
-        <a onclick="deleteTodo({{ i.id }})" class="font-custom text-danger float-end" id="deleteTodo{{ i.id }}" style="display:none">delete?</a>
-    </div>
+    {{ macros.todo_card(i) }}
     {% endfor %}
 </div>
+{% if project_.get_todos().count() > 0 %}<a class="btn-custom" href="{{ url_for('export_todos', id_=project_.id) }}">export todos</a>{% endif %}
 {% endblock %}

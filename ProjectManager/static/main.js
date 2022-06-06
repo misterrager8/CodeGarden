@@ -7,34 +7,32 @@ function changeTheme(theme) {
     localStorage.setItem('project_mgmt_theme', theme);
 }
 
+function refreshPage() {
+    $('#pageContent').load(location.href + ' #pageContent');
+    $('#navContent').load(location.href + ' #navContent');
+}
+
 function toggleDiv(divId) {
     $('#' + divId).fadeToggle(150);
 }
 
-function refreshPage() {
-    $('#pageContent').load(location.href + ' #pageContent');
-    $('#navContent').load(location.href + ' #navContent');
+function suggestName() {
+    $('#spinner').show();
+    $.get('suggest_name', {
+        filepath: $('#filepath').val()
+    }, function(data) {
+        $('#name').val(data);
+        $('#spinner').hide();
+    });
 }
 
 function addProject() {
     $('#spinner').show();
     $.post('add_project', {
         name: $('#name').val(),
-        tagline: $('#tagline').val()
+        filepath: $('#filepath').val()
     }, function(data) {
-        refreshPage();
-    });
-}
-
-function editProject(projectId) {
-    $('#spinner').show();
-    $.post('edit_project', {
-        id_: projectId,
-        name: $('#name' + projectId).val(),
-        tagline: $('#tagline' + projectId).val(),
-        readme: $('#readme' + projectId).val()
-    }, function(data) {
-        refreshPage();
+       refreshPage(); 
     });
 }
 
@@ -43,7 +41,17 @@ function deleteProject(projectId) {
     $.get('delete_project', {
         id_: projectId
     }, function(data) {
-        refreshPage();
+       refreshPage(); 
+    });
+}
+
+function saveReadme(projectId) {
+    $('#spinner').show();
+    $.post('save_readme', {
+        id_: projectId,
+        readme: $('#readme').val()
+    }, function(data) {
+       refreshPage(); 
     });
 }
 
@@ -51,19 +59,9 @@ function addTodo(projectId) {
     $('#spinner').show();
     $.post('add_todo', {
         id_: projectId,
-        desc: $('#todoFor' + projectId).val()
+        task: $('#task').val()
     }, function(data) {
-        refreshPage();
-    });
-}
-
-function editTodo(todoId) {
-    $('#spinner').show();
-    $.post('edit_todo', {
-        id_: todoId,
-        desc: $('#editTodo' + todoId).val(),
-    }, function(data) {
-        refreshPage();
+       refreshPage(); 
     });
 }
 
@@ -72,7 +70,7 @@ function deleteTodo(todoId) {
     $.get('delete_todo', {
         id_: todoId
     }, function(data) {
-        refreshPage();
+       refreshPage(); 
     });
 }
 
@@ -81,7 +79,7 @@ function markTodo(todoId) {
     $.get('mark_todo', {
         id_: todoId
     }, function(data) {
-        refreshPage();
+       refreshPage(); 
     });
 }
 
@@ -90,7 +88,6 @@ function commitTodo(todoId) {
     $.get('commit_todo', {
         id_: todoId
     }, function(data) {
-        refreshPage();
+       refreshPage(); 
     });
 }
-

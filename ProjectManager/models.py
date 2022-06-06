@@ -1,48 +1,57 @@
-from sqlalchemy import Column, Text, Integer, DateTime, Boolean, ForeignKey, text
-from sqlalchemy.orm import relationship
 from ProjectManager import db
-import markdown
+from os.path import exists
 import subprocess
 
 
 class Project(db.Model):
     __tablename__ = "projects"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(Text)
-    tagline = Column(Text)
-    readme = Column(Text)
-    start_date = Column(DateTime)
-    todos = relationship("Todo", backref="projects", lazy="dynamic")
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    filepath = db.Column(db.Text)
+    todos = db.relationship("Todo", lazy="dynamic", backref="projects")
 
     def __init__(self, **kwargs):
         super(Project, self).__init__(**kwargs)
 
-    def format_readme(self):
-        return markdown.markdown(self.readme)
+    def get_todos(self, filter_: str = "", order_by: str = ""):
+        return self.todos.filter(db.text(filter_)).order_by(
+            Todo.done, db.text(order_by)
+        )
 
-    def get_todos(self, order_by: str = "id desc", filter_: str = ""):
-        return self.todos.filter(text(filter_)).order_by("done", text(order_by))
+    def export_todos(self):
+        with open("%s/todo.txt" % self.filepath, "w") as f:
+            for i in self.todos:
+                if i.done:
+                    f.write("- [x] %s\n" % i.task)
+                else:
+                    f.write("- [ ] %s\n" % i.task)
 
-    def get_undone_count(self) -> int:
-        return self.todos.filter(text("not done")).count()
+    def get_readme(self):
+        if exists("%s/README.md" % self.filepath):
+            with open("%s/README.md" % self.filepath) as f:
+                r = f.read()
+            return r
+        else:
+            return ""
 
 
 class Todo(db.Model):
     __tablename__ = "todos"
 
-    id = Column(Integer, primary_key=True)
-    desc = Column(Text)
-    done = Column(Boolean, default=False)
-    date_added = Column(DateTime)
-    project = Column(Integer, ForeignKey("projects.id"))
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.Text)
+    done = db.Column(db.Boolean)
+    project_id = db.Column(db.Integer, db.ForeignKey("projects.id"))
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)
 
     def mark(self):
         self.done = not self.done
+        db.session.commit()
 
-    def mark_and_commit(self):
+    def commit(self):
+        subprocess.run(["git", "commit", "-am", self.task], cwd=self.projects.filepath)
         self.done = not self.done
-        subprocess.run(["git", "commit", "-am", self.desc])
+        db.session.commit()

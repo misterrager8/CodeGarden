@@ -1,67 +1,46 @@
 {% macro project_card(project) %}
 <div class="card col-xl-6 border-0">
     <div class="card-body mb-4">
-        <a href="{{ url_for('projects.project_', id_=project.id) }}">{{ project.name }}</a>
-        <span class="float-end bi bi-check-all font-custom {% if project.get_undone_count() < 1 %}text-secondary{% else %}text-warning{% endif %}">
-            {{ '%s todo(s)' % project.get_undone_count() }}
-        </span>
-        <div class="text-muted">{{ project.tagline }}</div>
+        <a class="fw-bold" href="{{ url_for('project', id_=project.id) }}"><i class="bi bi-code-slash"></i> {{ project.name }}</a>
+        <span class="float-end fw-bold"><i class="bi bi-check-all text-success"></i> {{ project.get_todos(filter_='not done').count() }}</span>
         <div class="mt-3">
             <a onclick="toggleDiv('deleteProject' + {{ project.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
-            <a onclick="deleteProject({{ project.id }})" class="font-custom text-danger" id="deleteProject{{ project.id }}" style="display:none">delete?</a>
+            <a onclick="deleteProject({{ project.id }})" class="text-danger font-custom" id="deleteProject{{ project.id }}" style="display: none">delete?</a>
         </div>
     </div>
 </div>
 {% endmacro %}
 
-{% macro login_form() %}
-<form method="POST" action="{{ url_for('login') }}">
-    <input autocomplete="off" class="input-custom w-100 mb-3" name="username" placeholder="Username">
-    <input autocomplete="off" class="input-custom w-100 mb-3" name="password" type="password" placeholder="Password">
-    <button class="btn-custom w-100" type="submit">log in</button>
+{% macro todo_card(todo) %}
+<div class="{% if todo.done %}text-decoration-line-through opacity-25{% endif %} p-2 border-bottom" style="border-color: inherit !important">
+    <a onclick="markTodo({{ todo.id }})" class="me-2 bi bi-check-lg {% if todo.done %}text-success{% else %}text-secondary{% endif %}"></a>
+    {% if not todo.done %}<a onclick="commitTodo({{ todo.id }})" class="bi bi-file-earmark-diff me-2"></a>{% endif %}
+    <span class="fw-bold">{{ todo.task }}</span>
+    <div class="float-end">
+        <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
+        <a onclick="deleteTodo({{ todo.id }})" class="text-danger font-custom" id="deleteTodo{{ todo.id }}" style="display: none">delete?</a>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro add_project_form() %}
+<form onsubmit="event.preventDefault(); addProject();" class="input-group">
+    <input autocomplete="off" class="input-custom flex-grow-1" id="filepath" placeholder="filepath" onchange="suggestName()">
+    <input autocomplete="off" class="input-custom" id="name" placeholder="Name">
+    <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> add project</button>
 </form>
 {% endmacro %}
 
-{% macro signup_form() %}
-<form method="POST" action="{{ url_for('signup') }}">
-    <input autocomplete="off" class="input-custom w-100 mb-3" name="username" placeholder="Username">
-    <input autocomplete="off" class="input-custom w-100 mb-3" name="password" type="password" placeholder="Password">
-    <button class="btn-custom w-100" type="submit">sign up</button>
-</form>
-{% endmacro %}
-
-{% macro project_create_form() %}
-<form onsubmit="event.preventDefault(); addProject(); this.reset();" class="input-group">
-    <input required autocomplete="off" class="input-custom" id="name" placeholder="Project Name">
-    <input required autocomplete="off" class="input-custom" id="tagline" placeholder="One Line Description">
-    <button class="btn-custom" type="submit"><i class="bi bi-plus-lg"></i> create project</button>
-</form>
-{% endmacro %}
-
-{% macro project_edit_form(project) %}
-<form onsubmit="event.preventDefault(); editProject({{ project.id }});" class="">
-    <input autocomplete="off" class="input-custom w-100 mb-3" id="name{{ project.id }}" value="{{ project.name }}" placeholder="Project Name">
-    <input autocomplete="off" class="input-custom w-100 mb-3" id="tagline{{ project.id }}" value="{{ project.tagline or '' }}" placeholder="Tagline">
-    <textarea style="white-space:pre-wrap" autocomplete="off" class="input-custom w-100 mb-3" id="readme{{ project.id }}" placeholder="README" rows="10">{{ project.readme or '' }}</textarea>
-    <button class="btn-custom w-100" type="submit"><i class="bi bi-pen"></i> save changes</button>
-</form>
-{% endmacro %}
-
-{% macro todo_create_form(project) %}
-<form onsubmit="event.preventDefault(); addTodo({{ project.id }}); this.reset();" class="input-group">
-    <input autocomplete="off" class="input-custom" id="todoFor{{ project.id }}" placeholder="TODO">
-    <button class="btn-custom" type="submit"><i class="bi bi-plus-lg"></i></button>
+{% macro add_todo_form(project) %}
+<form onsubmit="event.preventDefault(); addTodo({{ project.id }});" class="input-group">
+    <input autocomplete="off" class="input-custom flex-grow-1" id="task" placeholder="Task">
+    <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> add todo</button>
 </form>
 {% endmacro %}
 
 {% macro readme_form(project) %}
-<form method="POST" action="{{ url_for('projects.make_readme') }}">
-    <input name="id_" autocomplete="off" value="{{ project.id }}" style="display:none">
-    <input name="features" autocomplete="off" class="input-custom w-100 mb-3" placeholder="features">
-    <input name="usage" autocomplete="off" class="input-custom w-100 mb-3" placeholder="usage">
-    <input name="contrib" autocomplete="off" class="input-custom w-100 mb-3" placeholder="contribution guidelines">
-    <input name="tags" autocomplete="off" class="input-custom w-100 mb-3" placeholder="tags">
-    <button class="btn-custom w-100" type="submit">make readme</button>
+<form onsubmit="event.preventDefault(); saveReadme({{ project.id }});">
+    <textarea class="input-custom w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
+    <button type="submit" class="btn-custom w-100"><i class="bi bi-save"></i> save</button>
 </form>
 {% endmacro %}
-
