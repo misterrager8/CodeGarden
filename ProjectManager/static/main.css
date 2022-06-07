@@ -7,16 +7,16 @@
 
 html[data-theme="light"] {
     --navbar-bg: #1a1a1a;
-    --navbar-txt: white;
-    --body-bg: white;
+    --navbar-txt: #F0F0F0;
+    --body-bg: #F0F0F0;
     --body-txt: #1a1a1a;
 }
 
 html[data-theme="blue"] {
-    --navbar-bg: #C9CAF8;
-    --navbar-txt: #3D348B;
-    --body-bg: #3D348B;
-    --body-txt: #C9CAF8;
+    --navbar-bg: #9DC4D2;
+    --navbar-txt: #1F363D;
+    --body-bg: #1F363D;
+    --body-txt: #9DC4D2;
 }
 
 html[data-theme="brown"] {
@@ -26,32 +26,18 @@ html[data-theme="brown"] {
     --body-txt: #A19E91;
 }
 
-html[data-theme="vanilla"] {
-    --navbar-bg: #F5FFD6;
-    --navbar-txt: #A6A670;
-    --body-bg: #A6A670;
-    --body-txt: #F5FFD6;
-}
-
 html[data-theme="purple"] {
-    --navbar-bg: #AF9AB2;
-    --navbar-txt: #672A4E;
-    --body-bg: #672A4E;
-    --body-txt: #AF9AB2;
+    --navbar-bg: #C196D9;
+    --navbar-txt: #311042;
+    --body-bg: #311042;
+    --body-txt: #C196D9;
 }
 
 html[data-theme="green"] {
-    --navbar-bg: #94A187;
+    --navbar-bg: #C2E1C2;
     --navbar-txt: #29524A;
     --body-bg: #29524A;
-    --body-txt: #94A187;
-}
-
-html[data-theme="orange"] {
-    --navbar-bg: #FFFBBD;
-    --navbar-txt: #CA3C25;
-    --body-bg: #CA3C25;
-    --body-txt: #FFFBBD;
+    --body-txt: #C2E1C2;
 }
 
 html[data-theme="gray"] {
@@ -106,4 +92,10 @@ body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card {
 ::placeholder {
     color: inherit;
     opacity: 50%;
+}
+
+.input-hidden {
+    border: 0;
+    color: inherit !important;
+    background-color: inherit !important;
 }

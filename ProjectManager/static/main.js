@@ -65,6 +65,16 @@ function addTodo(projectId) {
     });
 }
 
+function editTodo(todoId) {
+    $('#spinner').show();
+    $.post('edit_todo', {
+        id_: todoId,
+        task: $('#editTodo' + todoId).val()
+    }, function(data) {
+       refreshPage();
+    });
+}
+
 function deleteTodo(todoId) {
     $('#spinner').show();
     $.get('delete_todo', {
@@ -89,5 +99,23 @@ function commitTodo(todoId) {
         id_: todoId
     }, function(data) {
        refreshPage(); 
+    });
+}
+
+function gitStatus(projectId) {
+    $('#spinner').show();
+    $.get('git_status', {
+        id_: projectId
+    }, function(data) {
+        $('#spinner').hide();
+        $('#refreshThis').text(data);
+    });
+}
+
+function previewReadme() {
+    $.get('preview_readme', {
+        readme: $('#readme').val()
+    }, function(data) {
+        $('#preview').html(data);
     });
 }

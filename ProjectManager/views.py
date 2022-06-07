@@ -1,6 +1,7 @@
 from flask import render_template, current_app, redirect, request
 from ProjectManager.models import Project, Todo
 from ProjectManager import db
+import markdown
 
 
 @current_app.route("/")
@@ -42,6 +43,11 @@ def save_readme():
     return redirect(request.referrer)
 
 
+@current_app.route("/preview_readme")
+def preview_readme():
+    return markdown.markdown(request.args.get("readme"))
+
+
 @current_app.route("/delete_project")
 def delete_project():
     project_ = Project.query.get(int(request.args.get("id_")))
@@ -58,6 +64,16 @@ def add_todo():
 
     todo_ = Todo(task=task, project_id=project_id)
     db.session.add(todo_)
+    db.session.commit()
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/edit_todo", methods=["POST"])
+def edit_todo():
+    todo_ = Todo.query.get(int(request.form["id_"]))
+    todo_.task = request.form["task"]
+
     db.session.commit()
 
     return redirect(request.referrer)
@@ -86,6 +102,13 @@ def commit_todo():
     todo_.commit()
 
     return redirect(request.referrer)
+
+
+@current_app.route("/git_status")
+def git_status():
+    project_ = Project.query.get(int(request.args.get("id_")))
+
+    return project_.git_status()
 
 
 @current_app.route("/export_todos")

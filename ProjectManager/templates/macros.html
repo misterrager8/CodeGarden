@@ -14,8 +14,12 @@
 {% macro todo_card(todo) %}
 <div class="{% if todo.done %}text-decoration-line-through opacity-25{% endif %} p-2 border-bottom" style="border-color: inherit !important">
     <a onclick="markTodo({{ todo.id }})" class="me-2 bi bi-check-lg {% if todo.done %}text-success{% else %}text-secondary{% endif %}"></a>
-    {% if not todo.done %}<a onclick="commitTodo({{ todo.id }})" class="bi bi-file-earmark-diff me-2"></a>{% endif %}
-    <span class="fw-bold">{{ todo.task }}</span>
+    {% if not todo.done %}
+    <a onclick="commitTodo({{ todo.id }})" class="bi bi-file-earmark-diff me-2"></a>
+    <input class="input-hidden col-10" value="{{ todo.task }}" autocomplete="off" id="editTodo{{ todo.id }}" onchange="editTodo({{ todo.id }})">
+    {% else %}
+    <span>{{ todo.task }}</span>
+    {% endif %}
     <div class="float-end">
         <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
         <a onclick="deleteTodo({{ todo.id }})" class="text-danger font-custom" id="deleteTodo{{ todo.id }}" style="display: none">delete?</a>
@@ -38,9 +42,9 @@
 </form>
 {% endmacro %}
 
-{% macro readme_form(project) %}
-<form onsubmit="event.preventDefault(); saveReadme({{ project.id }});">
-    <textarea class="input-custom w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
+{% macro readme_form(project, class='') %}
+<form onsubmit="event.preventDefault(); saveReadme({{ project.id }});" class="{{ class }}">
+    <textarea onkeyup="previewReadme()" class="input-custom w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
     <button type="submit" class="btn-custom w-100"><i class="bi bi-save"></i> save</button>
 </form>
 {% endmacro %}
