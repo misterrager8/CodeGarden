@@ -64,7 +64,7 @@ a, a:hover {
     cursor: pointer;
 }
 
-.navbar, .dropdown-item:hover, .btn-custom {
+.navbar, .dropdown-item:hover, .btn-custom, a.badge-custom:hover {
     background-color: var(--navbar-bg);
     color: var(--navbar-txt) !important;
 }
@@ -87,6 +87,7 @@ body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card {
     padding: 5px 25px;
     border-radius: 20px;
     font-size: .8em;
+    transition: background-color .5s;
 }
 
 ::placeholder {

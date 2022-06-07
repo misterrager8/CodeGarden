@@ -102,13 +102,23 @@ function commitTodo(todoId) {
     });
 }
 
-function gitStatus(projectId) {
+function gitCommand(projectId, cmd) {
     $('#spinner').show();
-    $.get('git_status', {
-        id_: projectId
+    $.get('git_command', {
+        id_: projectId,
+        cmd: cmd
     }, function(data) {
         $('#spinner').hide();
         $('#refreshThis').text(data);
+    });
+}
+
+function exportTodos(projectId) {
+    $.get('export_todos', {
+        id_: projectId
+    }, function(data) {
+        $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success');
+        setTimeout(function() { $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success'); }, 2000)
     });
 }
 
@@ -118,4 +128,14 @@ function previewReadme() {
     }, function(data) {
         $('#preview').html(data);
     });
+}
+
+function copyPath() {
+    var x = $('#copyPath');
+    x.show();
+    x.select();
+    document.execCommand('copy');
+    x.hide();
+    $('#copyIcon').toggleClass('bg-success bi-check-lg bi-clipboard');
+    setTimeout(function() { $('#copyIcon').toggleClass('bg-success bi-check-lg bi-clipboard'); }, 2000);
 }

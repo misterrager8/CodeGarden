@@ -104,11 +104,11 @@ def commit_todo():
     return redirect(request.referrer)
 
 
-@current_app.route("/git_status")
-def git_status():
+@current_app.route("/git_command")
+def git_command():
     project_ = Project.query.get(int(request.args.get("id_")))
 
-    return project_.git_status()
+    return project_.git_command(request.args.get("cmd"))
 
 
 @current_app.route("/export_todos")

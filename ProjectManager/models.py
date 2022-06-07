@@ -39,9 +39,9 @@ class Project(db.Model):
     def get_readme_as_md(self):
         return markdown.markdown(self.get_readme())
 
-    def git_status(self):
+    def git_command(self, cmd: str):
         return subprocess.run(
-            ["git", "status"], cwd=self.filepath, text=True, capture_output=True
+            cmd.split(), cwd=self.filepath, text=True, capture_output=True
         ).stdout
 
 
