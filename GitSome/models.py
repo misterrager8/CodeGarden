@@ -1,4 +1,4 @@
-from ProjectManager import db
+from GitSome import db
 from os.path import exists
 import subprocess
 import markdown
@@ -16,14 +16,12 @@ class Project(db.Model):
         super(Project, self).__init__(**kwargs)
 
     def get_todos(self, filter_: str = "", order_by: str = "id desc"):
-        return self.todos.filter(db.text(filter_)).order_by(
-            Todo.done, db.text(order_by)
-        )
+        return self.todos.filter(db.text(filter_)).order_by(db.text(order_by))
 
     def export_todos(self):
         with open("%s/todo.txt" % self.filepath, "w") as f:
-            for i in self.todos.order_by(Todo.done):
-                if i.done:
+            for i in self.todos.order_by(Todo.status):
+                if i.status == "Done":
                     f.write("- [x] %s\n" % i.task)
                 else:
                     f.write("- [ ] %s\n" % i.task)
@@ -50,18 +48,22 @@ class Todo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.Text)
-    done = db.Column(db.Boolean, default=False)
+    status = db.Column(db.Text, default="Todo")
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"))
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)
 
     def mark(self):
-        self.done = not self.done
+        if self.status == "Done":
+            self.status = "Todo"
+        else:
+            self.status = "Done"
+
         db.session.commit()
 
     def commit(self):
         subprocess.run(["git", "add", "-A"], cwd=self.projects.filepath)
         subprocess.run(["git", "commit", "-am", self.task], cwd=self.projects.filepath)
-        self.done = not self.done
+        self.status = "Done"
         db.session.commit()

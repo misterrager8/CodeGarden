@@ -93,6 +93,15 @@ function markTodo(todoId) {
     });
 }
 
+function doingTodo(todoId) {
+    $('#spinner').show();
+    $.get('doing_todo', {
+        id_: todoId
+    }, function(data) {
+       refreshPage(); 
+    });
+}
+
 function commitTodo(todoId) {
     $('#spinner').show();
     $.get('commit_todo', {

@@ -1,5 +1,6 @@
-from ProjectManager import create_app
+from GitSome import create_app
 import config
+import webview
 
 app = create_app(config)
 

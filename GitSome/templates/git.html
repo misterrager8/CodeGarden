@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+
+{% block body %}
+<title>{{ project_.name }}</title>
+
+<span class="font-custom">git: </span>
+<a onclick="gitCommand({{ project_.id }}, 'git status')" class="badge-custom">status</a>
+<a onclick="gitCommand({{ project_.id }}, 'git --no-pager diff')" class="badge-custom">diff</a>
+<a onclick="gitCommand({{ project_.id }}, 'git log -10')" class="badge-custom">log</a>
+<a onclick="gitCommand({{ project_.id }}, 'git branch')" class="badge-custom">branch</a>
+<div class="mt-3 font-monospace fst-italic">
+    <div style="white-space: pre-wrap" id="refreshThis"></div>
+</div>
+
+{% endblock %}

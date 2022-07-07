@@ -1,59 +1,24 @@
 :root, html[data-theme="dark"] {
-    --navbar-bg: white;
-    --navbar-txt: #1a1a1a;
+    --navbar-bg: #2e2e2e;
+    --navbar-txt: white;
     --body-bg: #1a1a1a;
     --body-txt: white;
 }
 
 html[data-theme="light"] {
-    --navbar-bg: #1a1a1a;
-    --navbar-txt: #F0F0F0;
-    --body-bg: #F0F0F0;
+    --navbar-bg: #bdbdbd;
+    --navbar-txt: #1a1a1a;
+    --body-bg: white;
     --body-txt: #1a1a1a;
-}
-
-html[data-theme="blue"] {
-    --navbar-bg: #9DC4D2;
-    --navbar-txt: #1F363D;
-    --body-bg: #1F363D;
-    --body-txt: #9DC4D2;
-}
-
-html[data-theme="brown"] {
-    --navbar-bg: #A19E91;
-    --navbar-txt: #230903;
-    --body-bg: #230903;
-    --body-txt: #A19E91;
-}
-
-html[data-theme="purple"] {
-    --navbar-bg: #C196D9;
-    --navbar-txt: #311042;
-    --body-bg: #311042;
-    --body-txt: #C196D9;
-}
-
-html[data-theme="green"] {
-    --navbar-bg: #C2E1C2;
-    --navbar-txt: #29524A;
-    --body-bg: #29524A;
-    --body-txt: #C2E1C2;
-}
-
-html[data-theme="gray"] {
-    --navbar-bg: #F2F2F2;
-    --navbar-txt: #595959;
-    --body-bg: #595959;
-    --body-txt: #F2F2F2;
 }
 
 .font-custom, .btn-custom, .badge-custom, .dropdown-item, ::placeholder {
     letter-spacing: 3px;
-    text-transform: uppercase;
     font-weight: bold;
+    font-size: 0.9em;
 }
 
-.border-custom, .btn-custom, .badge-custom, .input-custom, .card-body {
+.border-custom, .btn-custom, .badge-custom, .input-custom {
     border: 1px solid var(--body-txt);
     border-radius: 5px;
 }
@@ -64,12 +29,12 @@ a, a:hover {
     cursor: pointer;
 }
 
-.navbar, .dropdown-item:hover, .btn-custom, a.badge-custom:hover {
+nav, .dropdown-item:hover, .btn-custom, a.badge-custom:hover {
     background-color: var(--navbar-bg);
     color: var(--navbar-txt) !important;
 }
 
-body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card {
+body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card, .project-link:hover {
     background-color: var(--body-bg);
     color: var(--body-txt) !important;
 }
@@ -99,4 +64,20 @@ body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card {
     border: 0;
     color: inherit !important;
     background-color: inherit !important;
+}
+
+.project-link {
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    padding: 5px 30px;
+    transition: background-color .5s;
+}
+
+.badge {
+    color: inherit !important;
+}
+
+.card-body {
+    border-bottom: 1px solid var(--body-txt);
 }

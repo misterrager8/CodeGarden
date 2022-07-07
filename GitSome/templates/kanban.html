@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+
+{% block body %}
+<title>{{ project_.name }}</title>
+
+<div>{{ macros.add_todo_form(project_) }}</div>
+<div class="row mb-3">
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ project_.get_todos(filter_='status = "Todo"').count() }})</p>
+        {% for i in project_.get_todos(filter_='status = "Todo"') %}
+        {{ macros.todo_card(i) }}
+        {% endfor %}
+    </div>
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-primary"></i> DOING ({{ project_.get_todos(filter_='status = "Doing"').count() }})</p>
+        {% for i in project_.get_todos(filter_='status = "Doing"') %}
+        {{ macros.todo_card(i) }}
+        {% endfor %}
+    </div>
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-success"></i> DONE ({{ project_.get_todos(filter_='status = "Done"').count() }})</p>
+        {% for i in project_.get_todos(filter_='status = "Done"') %}
+        {{ macros.todo_card(i) }}
+        {% endfor %}
+    </div>
+</div>
+
+{% if project_.get_todos().count() > 0 %}
+<a class="btn-custom bi bi-file-earmark-arrow-down" onclick="exportTodos({{ project_.id }})" id="exportIcon"> Export TODOs</a>
+{% endif %}
+
+{% endblock %}

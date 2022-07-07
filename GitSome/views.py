@@ -1,12 +1,17 @@
-from flask import render_template, current_app, redirect, request
-from ProjectManager.models import Project, Todo
-from ProjectManager import db
+from flask import render_template, current_app, redirect, request, url_for
+from GitSome.models import Project, Todo
+from GitSome import db
 import markdown
+
+
+@current_app.context_processor
+def get_projects():
+    return {"projects": Project.query.all()}
 
 
 @current_app.route("/")
 def index():
-    return render_template("index.html", all=Project.query.all())
+    return render_template("index.html")
 
 
 @current_app.route("/suggest_name")
@@ -34,6 +39,20 @@ def project():
     return render_template("project.html", project_=project_)
 
 
+@current_app.route("/kanban")
+def kanban():
+    project_ = Project.query.get(int(request.args.get("id_")))
+
+    return render_template("kanban.html", project_=project_)
+
+
+@current_app.route("/git")
+def git():
+    project_ = Project.query.get(int(request.args.get("id_")))
+
+    return render_template("git.html", project_=project_)
+
+
 @current_app.route("/save_readme", methods=["POST"])
 def save_readme():
     project_ = Project.query.get(int(request.form["id_"]))
@@ -54,7 +73,7 @@ def delete_project():
     db.session.delete(project_)
     db.session.commit()
 
-    return redirect(request.referrer)
+    return redirect(url_for("index"))
 
 
 @current_app.route("/add_todo", methods=["POST"])
@@ -92,6 +111,19 @@ def delete_todo():
 def mark_todo():
     todo_ = Todo.query.get(int(request.args.get("id_")))
     todo_.mark()
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/doing_todo")
+def doing_todo():
+    todo_ = Todo.query.get(int(request.args.get("id_")))
+    if todo_.status == "Doing":
+        todo_.status = "Todo"
+    else:
+        todo_.status = "Doing"
+
+    db.session.commit()
 
     return redirect(request.referrer)
 
