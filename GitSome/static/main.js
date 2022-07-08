@@ -36,6 +36,15 @@ function addProject() {
     });
 }
 
+function pinProject(projectId) {
+    $('#spinner').show();
+    $.get('pin_project', {
+        id_: projectId
+    }, function(data) {
+       refreshPage(); 
+    });
+}
+
 function deleteProject(projectId) {
     $('#spinner').show();
     $.get('delete_project', {
@@ -69,7 +78,8 @@ function editTodo(todoId) {
     $('#spinner').show();
     $.post('edit_todo', {
         id_: todoId,
-        task: $('#editTodo' + todoId).val()
+        task: $('#editTodo' + todoId).val(),
+        note: $('#noteFor' + todoId).val()
     }, function(data) {
        refreshPage();
     });

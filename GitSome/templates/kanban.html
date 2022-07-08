@@ -3,8 +3,9 @@
 
 {% block body %}
 <title>{{ project_.name }}</title>
+<a href="{{ url_for('project', id_=project_.id) }}"><i class="bi bi-caret-left-fill"></i> {{ project_.name }}</a>
 
-<div>{{ macros.add_todo_form(project_) }}</div>
+<div class="mt-3">{{ macros.add_todo_form(project_) }}</div>
 <div class="row mb-3">
     <div class="col-xl-4">
         <p class="font-custom"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ project_.get_todos(filter_='status = "Todo"').count() }})</p>

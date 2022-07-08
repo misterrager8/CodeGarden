@@ -25,11 +25,19 @@
                             <a class="dropdown-item text-secondary" data-bs-target="#addProject" data-bs-toggle="modal"><i class="bi bi-upload"></i> Import Project</a>
                             {% endif %}
                             {% for i in projects %}
-                            <a class="dropdown-item" href="{{ url_for('project', id_=i.id) }}">{{ i.name }}</a>
+                            <a class="dropdown-item" href="{{ url_for('project', id_=i.id) }}">
+                                {% if i.pinned %}<i class="bi bi-pin-fill text-danger"></i>{% endif %}
+                                {{ i.name }}
+                            </a>
                             {% endfor %}
                         </div>
                     </li>
                     {% if project_ %}
+                    <li class="nav-item">
+                        <a class="nav-link my-2" onclick="pinProject({{ project_.id }})">
+                            <i class="bi bi-pin{% if project_.pinned %}-fill text-danger{% endif %}"></i>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-danger m-1" href="{{ url_for('git', id_=project_.id) }}">
                             <i class="bi bi-git"></i>

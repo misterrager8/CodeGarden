@@ -3,14 +3,17 @@
 
 {% block body %}
 <title>{{ project_.name }}</title>
+<a href="{{ url_for('project', id_=project_.id) }}"><i class="bi bi-caret-left-fill"></i> {{ project_.name }}</a>
 
-<span class="font-custom">git: </span>
-<a onclick="gitCommand({{ project_.id }}, 'git status')" class="badge-custom">status</a>
-<a onclick="gitCommand({{ project_.id }}, 'git --no-pager diff')" class="badge-custom">diff</a>
-<a onclick="gitCommand({{ project_.id }}, 'git log -10')" class="badge-custom">log</a>
-<a onclick="gitCommand({{ project_.id }}, 'git branch')" class="badge-custom">branch</a>
-<div class="mt-3 font-monospace fst-italic">
-    <div style="white-space: pre-wrap" id="refreshThis"></div>
+<div class="mt-3">
+    <span class="font-custom">git: </span>
+    <a onclick="gitCommand({{ project_.id }}, 'git status')" class="badge-custom">status</a>
+    <a onclick="gitCommand({{ project_.id }}, 'git --no-pager diff')" class="badge-custom">diff</a>
+    <a onclick="gitCommand({{ project_.id }}, 'git log -10')" class="badge-custom">log</a>
+    <a onclick="gitCommand({{ project_.id }}, 'git branch')" class="badge-custom">branch</a>
+    <div class="mt-3 font-monospace fst-italic">
+        <div style="white-space: pre-wrap" id="refreshThis"></div>
+    </div>
 </div>
 
 {% endblock %}

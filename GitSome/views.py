@@ -6,7 +6,7 @@ import markdown
 
 @current_app.context_processor
 def get_projects():
-    return {"projects": Project.query.all()}
+    return {"projects": Project.query.order_by(db.text("pinned desc"))}
 
 
 @current_app.route("/")
@@ -29,7 +29,7 @@ def add_project():
     db.session.add(project_)
     db.session.commit()
 
-    return redirect(request.referrer)
+    return redirect(url_for("project", id_=project_.id))
 
 
 @current_app.route("/project")
@@ -76,6 +76,15 @@ def delete_project():
     return redirect(url_for("index"))
 
 
+@current_app.route("/pin_project")
+def pin_project():
+    project_ = Project.query.get(int(request.args.get("id_")))
+    project_.pinned = not project_.pinned
+    db.session.commit()
+
+    return redirect(request.referrer)
+
+
 @current_app.route("/add_todo", methods=["POST"])
 def add_todo():
     project_id = int(request.form["id_"])
@@ -92,6 +101,7 @@ def add_todo():
 def edit_todo():
     todo_ = Todo.query.get(int(request.form["id_"]))
     todo_.task = request.form["task"]
+    todo_.note = request.form["note"]
 
     db.session.commit()
 

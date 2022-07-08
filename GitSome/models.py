@@ -10,6 +10,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     filepath = db.Column(db.Text)
+    pinned = db.Column(db.Boolean, default=False)
     todos = db.relationship("Todo", lazy="dynamic", backref="projects")
 
     def __init__(self, **kwargs):
@@ -49,6 +50,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.Text)
     status = db.Column(db.Text, default="Todo")
+    note = db.Column(db.Text)
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"))
 
     def __init__(self, **kwargs):

@@ -15,7 +15,7 @@
 <div class="card border-0 col-xl-12 {% if todo.status == 'Done' %}opacity-25{% endif %}">
     <div class="card-body mb-3">
         {% if not todo.status == 'Done' %}
-        <input class="input-hidden col-10" value="{{ todo.task }}" autocomplete="off" id="editTodo{{ todo.id }}" onchange="editTodo({{ todo.id }})">
+        <input required class="input-hidden col-10" value="{{ todo.task }}" autocomplete="off" id="editTodo{{ todo.id }}" onchange="editTodo({{ todo.id }})">
         {% else %}
         <span>{{ todo.task }}</span>
         {% endif %}
@@ -25,24 +25,26 @@
             <a onclick="commitTodo({{ todo.id }})" class="bi bi-file-earmark-diff me-2"></a>
             <a onclick="doingTodo({{ todo.id }})" class="me-2 bi bi-hand-index-thumb{% if todo.status == 'Doing' %}-fill{% endif %}"></a>
             {% endif %}
+            <a onclick="toggleDiv('noteFor' + {{ todo.id }})" class="bi bi-sticky me-2 {% if todo.note %}text-primary{% endif %}"></a>
             <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="text-danger me-2"><i class="bi bi-trash2"></i></a>
             <a onclick="deleteTodo({{ todo.id }})" class="text-danger font-custom" id="deleteTodo{{ todo.id }}" style="display: none">Delete?</a>
         </div>
+        <textarea onchange="editTodo({{ todo.id }})" placeholder="Note" rows="5" class="mt-2 input-hidden w-100" id="noteFor{{ todo.id }}" style="display: none">{{ todo.note or '' }}</textarea>
     </div>
 </div>
 {% endmacro %}
 
 {% macro add_project_form() %}
 <form class="input-group" method="POST" action="{{ url_for('add_project') }}">
-    <input autocomplete="off" class="input-custom flex-grow-1" id="filepath" name="filepath" placeholder="filepath" onchange="suggestName()">
-    <input autocomplete="off" class="input-custom" id="name" name="name" placeholder="Name">
+    <input required autocomplete="off" class="input-custom flex-grow-1" id="filepath" name="filepath" placeholder="filepath" onchange="suggestName()">
+    <input required autocomplete="off" class="input-custom" id="name" name="name" placeholder="Name">
     <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> Add Project</button>
 </form>
 {% endmacro %}
 
 {% macro add_todo_form(project) %}
 <form onsubmit="event.preventDefault(); addTodo({{ project.id }});" class="input-group">
-    <input autocomplete="off" class="input-custom flex-grow-1" id="task" placeholder="Task">
+    <input required autocomplete="off" class="input-custom flex-grow-1" id="task" placeholder="Task">
     <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> Add TODO</button>
 </form>
 {% endmacro %}
