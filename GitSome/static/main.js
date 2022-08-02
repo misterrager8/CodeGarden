@@ -1,12 +1,3 @@
-$(document).ready(function() {
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('project_mgmt_theme'));
-});
-
-function changeTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('project_mgmt_theme', theme);
-}
-
 function refreshPage() {
     $('#pageContent').load(location.href + ' #pageContent');
     $('#navContent').load(location.href + ' #navContent');
@@ -70,7 +61,8 @@ function addTodo(projectId) {
         id_: projectId,
         task: $('#task').val()
     }, function(data) {
-       refreshPage(); 
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -81,7 +73,8 @@ function editTodo(todoId) {
         task: $('#editTodo' + todoId).val(),
         note: $('#noteFor' + todoId).val()
     }, function(data) {
-       refreshPage();
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -90,7 +83,8 @@ function deleteTodo(todoId) {
     $.get('delete_todo', {
         id_: todoId
     }, function(data) {
-       refreshPage(); 
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -99,7 +93,8 @@ function markTodo(todoId) {
     $.get('mark_todo', {
         id_: todoId
     }, function(data) {
-       refreshPage(); 
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -108,7 +103,8 @@ function doingTodo(todoId) {
     $.get('doing_todo', {
         id_: todoId
     }, function(data) {
-       refreshPage(); 
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -117,7 +113,8 @@ function commitTodo(todoId) {
     $.get('commit_todo', {
         id_: todoId
     }, function(data) {
-       refreshPage(); 
+       $('#kanban').load(location.href + ' #kanban');
+       $('#spinner').hide();
     });
 }
 
@@ -155,6 +152,6 @@ function copyPath() {
     x.select();
     document.execCommand('copy');
     x.hide();
-    $('#copyIcon').toggleClass('bg-success bi-check-lg bi-clipboard');
-    setTimeout(function() { $('#copyIcon').toggleClass('bg-success bi-check-lg bi-clipboard'); }, 2000);
+    $('#copyIcon').toggleClass('text-success bi-check-lg bi-clipboard');
+    setTimeout(function() { $('#copyIcon').toggleClass('text-success bi-check-lg bi-clipboard'); }, 2000);
 }

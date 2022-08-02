@@ -39,20 +39,6 @@ def project():
     return render_template("project.html", project_=project_)
 
 
-@current_app.route("/kanban")
-def kanban():
-    project_ = Project.query.get(int(request.args.get("id_")))
-
-    return render_template("kanban.html", project_=project_)
-
-
-@current_app.route("/git")
-def git():
-    project_ = Project.query.get(int(request.args.get("id_")))
-
-    return render_template("git.html", project_=project_)
-
-
 @current_app.route("/save_readme", methods=["POST"])
 def save_readme():
     project_ = Project.query.get(int(request.form["id_"]))

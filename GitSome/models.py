@@ -33,7 +33,13 @@ class Project(db.Model):
                 r = f.read()
             return r
         else:
-            return ""
+            content = "# %s\n---\n" % self.name
+            with open("%s/README.md" % self.filepath, "w") as f:
+                f.write(content)
+            return content
+
+    def git_exists(self):
+        return exists("%s/.git" % self.filepath)
 
     def get_readme_as_md(self):
         return markdown.markdown(self.get_readme())

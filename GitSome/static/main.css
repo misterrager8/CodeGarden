@@ -1,83 +1,11 @@
-:root, html[data-theme="dark"] {
-    --navbar-bg: #2e2e2e;
-    --navbar-txt: white;
-    --body-bg: #1a1a1a;
-    --body-txt: white;
-}
-
-html[data-theme="light"] {
-    --navbar-bg: #bdbdbd;
-    --navbar-txt: #1a1a1a;
-    --body-bg: white;
-    --body-txt: #1a1a1a;
-}
-
-.font-custom, .btn-custom, .badge-custom, .dropdown-item, ::placeholder {
-    letter-spacing: 3px;
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-.border-custom, .btn-custom, .badge-custom, .input-custom {
-    border: 1px solid var(--body-txt);
-    border-radius: 5px;
-}
-
 a, a:hover {
     color: inherit !important;
     text-decoration: none;
     cursor: pointer;
 }
 
-nav, .dropdown-item:hover, .btn-custom, a.badge-custom:hover {
-    background-color: var(--navbar-bg);
-    color: var(--navbar-txt) !important;
-}
-
-body, .modal-content, .dropdown-menu, .btn-custom:hover, .input-custom, .card, .project-link:hover {
-    background-color: var(--body-bg);
-    color: var(--body-txt) !important;
-}
-
-.input-custom { padding: 5px 10px; }
-
-.btn-custom {
-    padding: 5px 10px;
-    transition: background-color .5s;
-}
-
-.dropdown-item { transition: background-color .5s; }
-
-.badge-custom {
-    padding: 5px 25px;
-    border-radius: 20px;
-    font-size: .8em;
-    transition: background-color .5s;
-}
-
-::placeholder {
+.form-control, .form-control:focus {
+    background-color: inherit;
     color: inherit;
-    opacity: 50%;
-}
-
-.input-hidden {
-    border: 0;
-    color: inherit !important;
-    background-color: inherit !important;
-}
-
-.project-link {
-    font-weight: bold;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    padding: 5px 30px;
-    transition: background-color .5s;
-}
-
-.badge {
-    color: inherit !important;
-}
-
-.card-body {
-    border-bottom: 1px solid var(--body-txt);
+    border-bottom: 1px solid;
 }

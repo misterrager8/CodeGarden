@@ -12,10 +12,10 @@
 {% endmacro %}
 
 {% macro todo_card(todo) %}
-<div class="card border-0 col-xl-12 {% if todo.status == 'Done' %}opacity-25{% endif %}">
-    <div class="card-body mb-3">
+<div class="col-xl-12 {% if todo.status == 'Done' %}opacity-25{% endif %}">
+    <div class="p-3 mb-3">
         {% if not todo.status == 'Done' %}
-        <input required class="input-hidden col-10" value="{{ todo.task }}" autocomplete="off" id="editTodo{{ todo.id }}" onchange="editTodo({{ todo.id }})">
+        <input required class="form-control col-10" value="{{ todo.task }}" autocomplete="off" id="editTodo{{ todo.id }}" onchange="editTodo({{ todo.id }})">
         {% else %}
         <span>{{ todo.task }}</span>
         {% endif %}
@@ -29,29 +29,29 @@
             <a onclick="toggleDiv('deleteTodo' + {{ todo.id }})" class="text-danger me-2"><i class="bi bi-trash2"></i></a>
             <a onclick="deleteTodo({{ todo.id }})" class="text-danger font-custom" id="deleteTodo{{ todo.id }}" style="display: none">Delete?</a>
         </div>
-        <textarea onchange="editTodo({{ todo.id }})" placeholder="Note" rows="5" class="mt-2 input-hidden w-100" id="noteFor{{ todo.id }}" style="display: none">{{ todo.note or '' }}</textarea>
+        <textarea onchange="editTodo({{ todo.id }})" placeholder="Note" rows="20" class="mt-2 form-control w-100" id="noteFor{{ todo.id }}" style="display: none">{{ todo.note or '' }}</textarea>
     </div>
 </div>
 {% endmacro %}
 
 {% macro add_project_form() %}
 <form class="input-group" method="POST" action="{{ url_for('add_project') }}">
-    <input required autocomplete="off" class="input-custom flex-grow-1" id="filepath" name="filepath" placeholder="filepath" onchange="suggestName()">
-    <input required autocomplete="off" class="input-custom" id="name" name="name" placeholder="Name">
-    <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> Add Project</button>
+    <input required autocomplete="off" class="form-control flex-grow-1" id="filepath" name="filepath" placeholder="Filepath" onchange="suggestName()">
+    <input required autocomplete="off" class="form-control" id="name" name="name" placeholder="Name">
+    <button type="submit" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add Project</button>
 </form>
 {% endmacro %}
 
 {% macro add_todo_form(project) %}
 <form onsubmit="event.preventDefault(); addTodo({{ project.id }});" class="input-group">
-    <input required autocomplete="off" class="input-custom flex-grow-1" id="task" placeholder="Task">
-    <button type="submit" class="btn-custom"><i class="bi bi-plus-lg"></i> Add TODO</button>
+    <input required autocomplete="off" class="form-control flex-grow-1" id="task" placeholder="Task">
+    <button type="submit" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add TODO</button>
 </form>
 {% endmacro %}
 
 {% macro readme_form(project, class='') %}
 <form onsubmit="event.preventDefault(); saveReadme({{ project.id }});" class="{{ class }}">
-    <textarea onkeyup="previewReadme()" class="input-custom w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
-    <button type="submit" class="btn-custom w-100"><i class="bi bi-save"></i> SAVE</button>
+    <textarea onkeyup="previewReadme()" class="form-control w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
+    <button type="submit" class="btn btn-success w-100"><i class="bi bi-save"></i> SAVE</button>
 </form>
 {% endmacro %}
