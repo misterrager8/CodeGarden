@@ -29,8 +29,16 @@
     <div id="git" class="tab-pane" role="tabpanel">
         <div class="mt-3">
             <div class="input-group font-monospace">
-                <span class="input-group-text">git </span>
-                <input class="form-control" id="cmd" autocomplete="off" placeholder="Command" onkeyup="if(event.key === 'Enter'){ gitCommand({{ project_.id }}, 'git ' + $(this).val()); }">
+                <span class="input-group-text" >git </span>
+                <input data-bs-toggle="dropdown" data-bs-target="#gitOptions" class="form-control" id="cmd" autocomplete="off" placeholder="Command" onkeyup="if(event.key === 'Enter'){ gitCommand({{ project_.id }}, 'git ' + $(this).val()); }">
+                <div class="dropdown-menu" id="gitOptions">
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git status')">status</a>
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git log')">log</a>
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git branch')">branch</a>
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git diff')">diff</a>
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git help')">help</a>
+                    <a class="dropdown-item" onclick="gitCommand({{ project_.id }}, 'git init')">init</a>
+                </div>
             </div>
             <div class="mt-3 font-monospace fst-italic">
                 <div style="white-space: pre-wrap" id="refreshThis"></div>
