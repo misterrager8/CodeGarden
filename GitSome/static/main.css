@@ -1,3 +1,8 @@
+body, .modal-content, .nav-link.active, .dropdown-menu, .navbar {
+    background-color: #1a1a1a !important;
+    color: white !important;
+}
+
 a, a:hover {
     color: inherit !important;
     text-decoration: none;
@@ -7,5 +12,7 @@ a, a:hover {
 .form-control, .form-control:focus {
     background-color: inherit;
     color: inherit;
+    border: 0;
+    border-radius: 0;
     border-bottom: 1px solid;
 }

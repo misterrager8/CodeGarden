@@ -38,14 +38,14 @@
 <form class="input-group" method="POST" action="{{ url_for('add_project') }}">
     <input required autocomplete="off" class="form-control flex-grow-1" id="filepath" name="filepath" placeholder="Filepath" onchange="suggestName()">
     <input required autocomplete="off" class="form-control" id="name" name="name" placeholder="Name">
-    <button type="submit" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add Project</button>
+    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Import Project</button>
 </form>
 {% endmacro %}
 
 {% macro add_todo_form(project) %}
 <form onsubmit="event.preventDefault(); addTodo({{ project.id }});" class="input-group">
     <input required autocomplete="off" class="form-control flex-grow-1" id="task" placeholder="Task">
-    <button type="submit" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add TODO</button>
+    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Add TODO</button>
 </form>
 {% endmacro %}
 
