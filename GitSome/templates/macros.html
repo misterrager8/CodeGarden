@@ -34,11 +34,18 @@
 </div>
 {% endmacro %}
 
-{% macro add_repo_form() %}
-<form class="input-group" method="POST" action="{{ url_for('repos.add_repo') }}">
-    <input required autocomplete="off" class="form-control flex-grow-1" id="filepath" name="filepath" placeholder="Filepath" onchange="suggestName()">
-    <input required autocomplete="off" class="form-control" id="name" name="name" placeholder="Name">
+{% macro import_repo_form() %}
+<form class="input-group" method="POST" action="{{ url_for('repos.import_repo') }}">
+    <input required autocomplete="off" class="form-control flex-grow-1" name="filepath" placeholder="Filepath">
     <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Import Repo</button>
+</form>
+{% endmacro %}
+
+{% macro new_repo_form() %}
+<form class="input-group" method="POST" action="{{ url_for('repos.make_new_repo') }}">
+    <input required autocomplete="off" class="form-control" name="filepath" placeholder="Filepath">
+    <input required autocomplete="off" class="form-control" name="name" placeholder="Name">
+    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Create Repo</button>
 </form>
 {% endmacro %}
 
@@ -50,8 +57,18 @@
 {% endmacro %}
 
 {% macro readme_form(repo, class='') %}
-<form onsubmit="event.preventDefault(); saveReadme({{ repo.id }});" class="{{ class }}">
-    <textarea onkeyup="previewReadme()" class="form-control w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ repo.get_readme() }}</textarea>
-    <button type="submit" class="btn btn-success w-100"><i class="bi bi-save"></i> SAVE</button>
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+<form class="{{ class }}" method="POST" action="{{ url_for('repos.save_readme', id_=repo.id) }}">
+    <button class="btn btn-outline-success w-100 mb-3"><i class="bi bi-save"></i> Save</button>
+    <textarea class="w-100 h-100" name="readme">{{ repo.get_readme() }}</textarea>
 </form>
+
+<script>
+    const editor = new EasyMDE({
+        placeholder: 'README',
+        autofocus: true
+    }); 
+</script>
 {% endmacro %}

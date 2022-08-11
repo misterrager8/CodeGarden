@@ -1,5 +1,5 @@
-import markdown
 from flask import Blueprint, redirect, render_template, request, url_for
+from pathlib import Path
 
 from GitSome import db
 from GitSome.models import Repo
@@ -7,20 +7,27 @@ from GitSome.models import Repo
 repos = Blueprint("repos", __name__)
 
 
-@repos.route("/suggest_name")
-def suggest_name():
-    filepath = request.args.get("filepath")
-    return filepath.split("/")[-1]
+@repos.route("/import_repo", methods=["POST"])
+def import_repo():
+    filepath = Path(request.form["filepath"])
 
-
-@repos.route("/add_repo", methods=["POST"])
-def add_repo():
-    name = request.form["name"]
-    filepath = request.form["filepath"]
-
-    repo_ = Repo(name=name, filepath=filepath)
+    repo_ = Repo(name=filepath.name, filepath=filepath)
     db.session.add(repo_)
     db.session.commit()
+
+    return redirect(url_for("repos.repo", id_=repo_.id))
+
+
+@repos.route("/make_new_repo", methods=["POST"])
+def make_new_repo():
+    filepath = Path(request.form["filepath"]) / request.form["name"]
+    filepath.mkdir()
+
+    repo_ = Repo(name=filepath.name, filepath=filepath)
+    db.session.add(repo_)
+    db.session.commit()
+
+    repo_.git_command("git init")
 
     return redirect(url_for("repos.repo", id_=repo_.id))
 
@@ -34,16 +41,11 @@ def repo():
 
 @repos.route("/save_readme", methods=["POST"])
 def save_readme():
-    repo_ = Repo.query.get(int(request.form["id_"]))
+    repo_ = Repo.query.get(int(request.args.get("id_")))
     with open("%s/README.md" % repo_.filepath, "w") as f:
         f.write(request.form["readme"])
 
     return redirect(request.referrer)
-
-
-@repos.route("/preview_readme")
-def preview_readme():
-    return markdown.markdown(request.args.get("readme"))
 
 
 @repos.route("/delete_repo")

@@ -16,3 +16,12 @@ a, a:hover {
     border-radius: 0;
     border-bottom: 1px solid;
 }
+
+.CodeMirror, .editor-preview, .editor-toolbar {
+    background-color: #303030 !important;
+    color: white !important;
+}
+
+.fa {
+    color: white !important;
+}

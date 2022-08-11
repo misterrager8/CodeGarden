@@ -21,7 +21,8 @@
                             {% if not repo_ %}Select Repo{% else %}{{ repo_.name }}{% endif %}
                         </a>
                         <div id="repos" class="dropdown-menu">
-                            <a class="dropdown-item" data-bs-target="#addRepo" data-bs-toggle="modal"><i class="bi bi-upload"></i> Import/Add Repo</a>
+                            <a class="dropdown-item" data-bs-target="#importRepo" data-bs-toggle="modal"><i class="bi bi-upload"></i> Import Repo</a>
+                            <a class="text-success dropdown-item" data-bs-target="#newRepo" data-bs-toggle="modal"><i class="bi bi-plus-lg"></i> Create New Repo</a>
                             {% for i in repos %}
                             <a class="dropdown-item" href="{{ url_for('repos.repo', id_=i.id) }}">
                                 {% if i.pinned %}<i class="bi bi-star-fill text-warning"></i>{% endif %}
@@ -42,10 +43,18 @@
         </div>
     </nav>
     
-    <div class="modal" id="addRepo">
+    <div class="modal" id="importRepo">
         <div class="modal-dialog">
             <div class="modal-content p-4">
-                {{ macros.add_repo_form() }}
+                {{ macros.import_repo_form() }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="newRepo">
+        <div class="modal-dialog">
+            <div class="modal-content p-4">
+                {{ macros.new_repo_form() }}
             </div>
         </div>
     </div>

@@ -1,4 +1,3 @@
-import markdown
 from flask import current_app, render_template
 
 from GitSome import db

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+import pyperclip
 
 from GitSome import config, create_app, db
 from GitSome.models import Repo, Todo
@@ -91,6 +92,17 @@ def delete_repo(id):
         db.session.commit()
 
         click.secho("Deleted.", fg="cyan")
+
+
+@cli.command()
+@click.argument("id")
+def copy_path(id):
+    """Copy the repo's filepath with given ID"""
+    with app.app_context():
+        repo_ = Repo.query.get(int(id))
+        pyperclip.copy(repo_.filepath)
+
+        click.secho(f"Copied: {repo_.filepath}", fg="cyan")
 
 
 @cli.command()

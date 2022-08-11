@@ -7,26 +7,6 @@ function toggleDiv(divId) {
     $('#' + divId).fadeToggle(150);
 }
 
-function suggestName() {
-    $('#spinner').show();
-    $.get('suggest_name', {
-        filepath: $('#filepath').val()
-    }, function(data) {
-        $('#name').val(data);
-        $('#spinner').hide();
-    });
-}
-
-function addRepo() {
-    $('#spinner').show();
-    $.post('add_repo', {
-        name: $('#name').val(),
-        filepath: $('#filepath').val()
-    }, function(data) {
-       refreshPage(); 
-    });
-}
-
 function pinRepo(repoId) {
     $('#spinner').show();
     $.get('pin_repo', {
@@ -40,16 +20,6 @@ function deleteRepo(repoId) {
     $('#spinner').show();
     $.get('delete_repo', {
         id_: repoId
-    }, function(data) {
-       refreshPage(); 
-    });
-}
-
-function saveReadme(repoId) {
-    $('#spinner').show();
-    $.post('save_readme', {
-        id_: repoId,
-        readme: $('#readme').val()
     }, function(data) {
        refreshPage(); 
     });
@@ -135,14 +105,6 @@ function exportTodos(repoId) {
     }, function(data) {
         $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success');
         setTimeout(function() { $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success'); }, 2000)
-    });
-}
-
-function previewReadme() {
-    $.get('preview_readme', {
-        readme: $('#readme').val()
-    }, function(data) {
-        $('#preview').html(data);
     });
 }
 

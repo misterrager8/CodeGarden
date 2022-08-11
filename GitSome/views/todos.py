@@ -1,4 +1,3 @@
-import markdown
 from flask import Blueprint, redirect, render_template, request
 
 from GitSome import db
