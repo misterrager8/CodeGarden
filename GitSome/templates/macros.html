@@ -1,11 +1,11 @@
-{% macro project_card(project) %}
+{% macro repo_card(repo) %}
 <div class="card col-xl-6 border-0">
     <div class="card-body mb-4">
-        <a class="fw-bold" href="{{ url_for('project', id_=project.id) }}"><i class="bi bi-code-slash"></i> {{ project.name }}</a>
-        <span class="float-end fw-bold"><i class="bi bi-check-all text-success"></i> {{ project.get_todos(filter_='status is not "Done"').count() }}</span>
+        <a class="fw-bold" href="{{ url_for('repos.repo', id_=repo.id) }}"><i class="bi bi-code-slash"></i> {{ repo.name }}</a>
+        <span class="float-end fw-bold"><i class="bi bi-check-all text-success"></i> {{ repo.get_todos(filter_='status is not "Done"').count() }}</span>
         <div class="mt-3">
-            <a onclick="toggleDiv('deleteProject' + {{ project.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
-            <a onclick="deleteProject({{ project.id }})" class="text-danger font-custom" id="deleteProject{{ project.id }}" style="display: none">Delete?</a>
+            <a onclick="toggleDiv('deleteRepo' + {{ repo.id }})" class="text-danger"><i class="bi bi-trash2"></i></a>
+            <a onclick="deleteRepo({{ repo.id }})" class="text-danger font-custom" id="deleteRepo{{ repo.id }}" style="display: none">Delete?</a>
         </div>
     </div>
 </div>
@@ -34,24 +34,24 @@
 </div>
 {% endmacro %}
 
-{% macro add_project_form() %}
-<form class="input-group" method="POST" action="{{ url_for('add_project') }}">
+{% macro add_repo_form() %}
+<form class="input-group" method="POST" action="{{ url_for('repos.add_repo') }}">
     <input required autocomplete="off" class="form-control flex-grow-1" id="filepath" name="filepath" placeholder="Filepath" onchange="suggestName()">
     <input required autocomplete="off" class="form-control" id="name" name="name" placeholder="Name">
-    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Import Project</button>
+    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Import Repo</button>
 </form>
 {% endmacro %}
 
-{% macro add_todo_form(project) %}
-<form onsubmit="event.preventDefault(); addTodo({{ project.id }});" class="input-group">
+{% macro add_todo_form(repo) %}
+<form onsubmit="event.preventDefault(); addTodo({{ repo.id }});" class="input-group">
     <input required autocomplete="off" class="form-control flex-grow-1" id="task" placeholder="Task">
     <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Add TODO</button>
 </form>
 {% endmacro %}
 
-{% macro readme_form(project, class='') %}
-<form onsubmit="event.preventDefault(); saveReadme({{ project.id }});" class="{{ class }}">
-    <textarea onkeyup="previewReadme()" class="form-control w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ project.get_readme() }}</textarea>
+{% macro readme_form(repo, class='') %}
+<form onsubmit="event.preventDefault(); saveReadme({{ repo.id }});" class="{{ class }}">
+    <textarea onkeyup="previewReadme()" class="form-control w-100 mb-3" style="white-space: pre-wrap" rows="15" id="readme">{{ repo.get_readme() }}</textarea>
     <button type="submit" class="btn btn-success w-100"><i class="bi bi-save"></i> SAVE</button>
 </form>
 {% endmacro %}

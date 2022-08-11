@@ -1,5 +1,5 @@
-from flask import Flask
 import pymysql
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 pymysql.install_as_MySQLdb()
@@ -14,7 +14,11 @@ def create_app(config):
     db.init_app(app)
 
     with app.app_context():
-        from . import views
+        from GitSome.views.repos import repos
+        from GitSome.views.todos import todos
+
+        app.register_blueprint(repos)
+        app.register_blueprint(todos)
 
         db.create_all()
 

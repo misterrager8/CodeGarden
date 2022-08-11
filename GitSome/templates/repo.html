@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+
+{% block body %}
+<title>{{ repo_.name }}</title>
+
+<a href="{{ url_for('repos.delete_repo', id_=repo_.id) }}" class="btn btn-sm btn-outline-danger text-danger float-end"><i class="bi bi-trash3 me-1"></i> Delete</a>
+
+<a onclick="copyPath()" class="btn btn-sm btn-outline-light" id="copyIcon"><i class="bi bi-clipboard me-1"></i> Copy Path</a>
+<input value="{{ repo_.filepath }}" style="display: none" id="copyPath">
+
+
+<ul class="nav nav-tabs mt-4" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#readmeTab" role="tab"><i class="bi bi-code-slash me-2"></i>README</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#git" role="tab"><i class="bi bi-git text-danger me-2"></i> Git</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#kanban" role="tab"><i class="bi bi-kanban text-info me-2"></i> Kanban</a>
+    </li>
+</ul>
+<div class="tab-content p-5">
+    <div id="readmeTab" class="tab-pane show active" role="tabpanel">
+        <a onclick="toggleDiv('editReadme')" class="btn btn-sm btn-outline-light"><i class="bi bi-pen me-1"></i> Edit</a>
+        <div class="row mt-3">
+            <div class="col" id="preview">{{ repo_.get_readme_as_md() | safe }}</div>
+            <div class="col" style="display: none" id="editReadme" class="mt-3">{{ macros.readme_form(repo_)}}</div>
+        </div>
+    </div>
+    <div id="git" class="tab-pane" role="tabpanel">
+        <div class="mt-3">
+            <div>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git status')">status</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git log')">log</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git branch')">branch</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git diff')">diff</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git remote')">remote</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git add -A')">add all</a>
+                <a class="btn btn-sm btn-outline-light" onclick="gitCommand({{ repo_.id }}, 'git help')">help</a>
+                <a class="btn btn-sm btn-outline-light" onclick="toggleDiv('runCmd')">...</a>
+            </div>
+            <div class="input-group font-monospace mt-3" id="runCmd" style="display: none">
+                <span class="input-group-text" >git </span>
+                <input class="form-control" id="cmd" autocomplete="off" placeholder="Command" onkeyup="if(event.key === 'Enter'){ gitCommand({{ repo_.id }}, 'git ' + $(this).val()); }">
+            </div>
+            <div class="mt-3 font-monospace" style="font-size: 0.9em">
+                <div style="white-space: pre-wrap" id="refreshThis"></div>
+            </div>
+        </div>
+    </div>
+    <div id="kanban" class="tab-pane" role="tabpanel">
+        <div class="mt-3">{{ macros.add_todo_form(repo_) }}</div>
+        <div class="row mb-3">
+            <div class="col-xl-4">
+                <p class="text-center"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ repo_.get_todos(filter_='status = "Todo"').count() }})</p>
+                {% for i in repo_.get_todos(filter_='status = "Todo"') %}
+                {{ macros.todo_card(i) }}
+                {% endfor %}
+            </div>
+            <div class="col-xl-4">
+                <p class="text-center"><i class="bi bi-circle-fill text-primary"></i> DOING ({{ repo_.get_todos(filter_='status = "Doing"').count() }})</p>
+                {% for i in repo_.get_todos(filter_='status = "Doing"') %}
+                {{ macros.todo_card(i) }}
+                {% endfor %}
+            </div>
+            <div class="col-xl-4">
+                <p class="text-center"><i class="bi bi-circle-fill text-success"></i> DONE ({{ repo_.get_todos(filter_='status = "Done"').count() }})</p>
+                {% for i in repo_.get_todos(filter_='status = "Done"') %}
+                {{ macros.todo_card(i) }}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if repo_.get_todos().count() > 0 %}
+        <a class="btn btn-sm btn-outline-light" onclick="exportTodos({{ repo_.id }})" id="exportIcon"><i class="bi bi-file-earmark-arrow-down me-1"></i>Export TODOs</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

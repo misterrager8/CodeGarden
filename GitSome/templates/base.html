@@ -16,24 +16,24 @@
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item dropdown me-3">
-                        <a data-bs-toggle="dropdown" data-bs-target="#projects" class="nav-link dropdown-toggle p-1">
+                        <a data-bs-toggle="dropdown" data-bs-target="#repos" class="nav-link dropdown-toggle p-1">
                             <i class="bi bi-code-slash"></i>
-                            {% if not project_ %}Select Project{% else %}{{ project_.name }}{% endif %}
+                            {% if not repo_ %}Select Repo{% else %}{{ repo_.name }}{% endif %}
                         </a>
-                        <div id="projects" class="dropdown-menu">
-                            <a class="dropdown-item" data-bs-target="#addProject" data-bs-toggle="modal"><i class="bi bi-upload"></i> Import/Add Project</a>
-                            {% for i in projects %}
-                            <a class="dropdown-item" href="{{ url_for('project', id_=i.id) }}">
+                        <div id="repos" class="dropdown-menu">
+                            <a class="dropdown-item" data-bs-target="#addRepo" data-bs-toggle="modal"><i class="bi bi-upload"></i> Import/Add Repo</a>
+                            {% for i in repos %}
+                            <a class="dropdown-item" href="{{ url_for('repos.repo', id_=i.id) }}">
                                 {% if i.pinned %}<i class="bi bi-star-fill text-warning"></i>{% endif %}
                                 {{ i.name }}
                             </a>
                             {% endfor %}
                         </div>
                     </li>
-                    {% if project_ %}
+                    {% if repo_ %}
                     <li class="nav-item">
-                        <a class="nav-link" onclick="pinProject({{ project_.id }})">
-                            <i class="bi bi-star{% if project_.pinned %}-fill text-warning{% endif %}"></i>
+                        <a class="nav-link" onclick="pinRepo({{ repo_.id }})">
+                            <i class="bi bi-star{% if repo_.pinned %}-fill text-warning{% endif %}"></i>
                         </a>
                     </li>
                     {% endif %}
@@ -42,10 +42,10 @@
         </div>
     </nav>
     
-    <div class="modal" id="addProject">
+    <div class="modal" id="addRepo">
         <div class="modal-dialog">
             <div class="modal-content p-4">
-                {{ macros.add_project_form() }}
+                {{ macros.add_repo_form() }}
             </div>
         </div>
     </div>

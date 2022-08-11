@@ -1,20 +1,24 @@
-import click
-from GitSome import create_app, config, db
-from GitSome.models import Project, Todo
 from pathlib import Path
+
+import click
+
+from GitSome import config, create_app, db
+from GitSome.models import Repo, Todo
 
 app = create_app(config)
 
 
 @click.group()
 def cli():
+    """GitSome CLI Interface"""
     pass
 
 
 @cli.command()
 def list_all():
+    """List all repos in DB"""
     with app.app_context():
-        for i in Project.query.all():
+        for i in Repo.query.all():
             click.secho(
                 "[%s] %s - %s TODO(S)"
                 % (i.id, i.name, i.get_todos(filter_='status = "Todo"').count()),
@@ -25,24 +29,26 @@ def list_all():
 @cli.command()
 @click.argument("id")
 def list_todos(id):
+    """Print all todos of the repo with given ID"""
     with app.app_context():
-        project_ = Project.query.get(int(id))
-        for i in project_.get_todos(filter_='status = "Todo"'):
+        repo_ = Repo.query.get(int(id))
+        for i in repo_.get_todos(filter_='status = "Todo"'):
             click.secho("[%s] %s" % (i.id, i.task), fg="cyan")
 
 
 @cli.command()
 @click.argument("fullpath")
 def make_new(fullpath):
+    """Make a new project from scratch located in the given FULLPATH"""
     path_ = Path(fullpath)
 
     path_.mkdir()
     with app.app_context():
-        project_ = Project(name=path_.name, filepath=fullpath, pinned=True)
-        db.session.add(project_)
+        repo_ = Repo(name=path_.name, filepath=fullpath, pinned=True)
+        db.session.add(repo_)
         db.session.commit()
 
-        project_.git_command("git init")
+        repo_.git_command("git init")
 
     with open(path_ / "README.md", "w") as f:
         f.write(f"# {path_.name}\n---\n")
@@ -54,9 +60,10 @@ def make_new(fullpath):
 @click.argument("id")
 @click.argument("task")
 def add_todo(id, task):
+    """Add a to do TASK the repo given by ID"""
     with app.app_context():
-        project_ = Project.query.get(int(id))
-        todo_ = Todo(task=task, project_id=project_.id)
+        repo_ = Repo.query.get(int(id))
+        todo_ = Todo(task=task, repo_id=repo_.id)
         db.session.add(todo_)
         db.session.commit()
 
@@ -66,6 +73,7 @@ def add_todo(id, task):
 @cli.command()
 @click.argument("id")
 def commit_todo(id):
+    """Make a commit in git with Todo given by ID as msg in"""
     with app.app_context():
         todo_ = Todo.query.get(int(id))
         todo_.commit()
@@ -75,10 +83,11 @@ def commit_todo(id):
 
 @cli.command()
 @click.argument("id")
-def delete_project(id):
+def delete_repo(id):
+    """Delete the repo with given ID"""
     with app.app_context():
-        project_ = Project.query.get(int(id))
-        db.session.delete(project_)
+        repo_ = Repo.query.get(int(id))
+        db.session.delete(repo_)
         db.session.commit()
 
         click.secho("Deleted.", fg="cyan")
@@ -86,4 +95,5 @@ def delete_project(id):
 
 @cli.command()
 def web():
+    """Launch browser interface for GitSome"""
     app.run(port=app.config["PORT"])

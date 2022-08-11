@@ -1,20 +1,22 @@
-from GitSome import db
-from os.path import exists
 import subprocess
+from os.path import exists
+
 import markdown
 
+from GitSome import db
 
-class Project(db.Model):
-    __tablename__ = "projects"
+
+class Repo(db.Model):
+    __tablename__ = "repos"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     filepath = db.Column(db.Text)
     pinned = db.Column(db.Boolean, default=False)
-    todos = db.relationship("Todo", lazy="dynamic", backref="projects")
+    todos = db.relationship("Todo", lazy="dynamic", backref="repos")
 
     def __init__(self, **kwargs):
-        super(Project, self).__init__(**kwargs)
+        super(Repo, self).__init__(**kwargs)
 
     def get_todos(self, filter_: str = "", order_by: str = "id desc"):
         return self.todos.filter(db.text(filter_)).order_by(db.text(order_by))
@@ -57,7 +59,7 @@ class Todo(db.Model):
     task = db.Column(db.Text)
     status = db.Column(db.Text, default="Todo")
     note = db.Column(db.Text)
-    project_id = db.Column(db.Integer, db.ForeignKey("projects.id"))
+    repo_id = db.Column(db.Integer, db.ForeignKey("repos.id"))
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)
@@ -71,7 +73,7 @@ class Todo(db.Model):
         db.session.commit()
 
     def commit(self):
-        subprocess.run(["git", "add", "-A"], cwd=self.projects.filepath)
-        subprocess.run(["git", "commit", "-am", self.task], cwd=self.projects.filepath)
+        subprocess.run(["git", "add", "-A"], cwd=self.repos.filepath)
+        subprocess.run(["git", "commit", "-am", self.task], cwd=self.repos.filepath)
         self.status = "Done"
         db.session.commit()

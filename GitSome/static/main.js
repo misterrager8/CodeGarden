@@ -17,9 +17,9 @@ function suggestName() {
     });
 }
 
-function addProject() {
+function addRepo() {
     $('#spinner').show();
-    $.post('add_project', {
+    $.post('add_repo', {
         name: $('#name').val(),
         filepath: $('#filepath').val()
     }, function(data) {
@@ -27,38 +27,38 @@ function addProject() {
     });
 }
 
-function pinProject(projectId) {
+function pinRepo(repoId) {
     $('#spinner').show();
-    $.get('pin_project', {
-        id_: projectId
+    $.get('pin_repo', {
+        id_: repoId
     }, function(data) {
        refreshPage(); 
     });
 }
 
-function deleteProject(projectId) {
+function deleteRepo(repoId) {
     $('#spinner').show();
-    $.get('delete_project', {
-        id_: projectId
+    $.get('delete_repo', {
+        id_: repoId
     }, function(data) {
        refreshPage(); 
     });
 }
 
-function saveReadme(projectId) {
+function saveReadme(repoId) {
     $('#spinner').show();
     $.post('save_readme', {
-        id_: projectId,
+        id_: repoId,
         readme: $('#readme').val()
     }, function(data) {
        refreshPage(); 
     });
 }
 
-function addTodo(projectId) {
+function addTodo(repoId) {
     $('#spinner').show();
     $.post('add_todo', {
-        id_: projectId,
+        id_: repoId,
         task: $('#task').val()
     }, function(data) {
        $('#kanban').load(location.href + ' #kanban');
@@ -118,10 +118,10 @@ function commitTodo(todoId) {
     });
 }
 
-function gitCommand(projectId, cmd) {
+function gitCommand(repoId, cmd) {
     $('#spinner').show();
     $.get('git_command', {
-        id_: projectId,
+        id_: repoId,
         cmd: cmd
     }, function(data) {
         $('#spinner').hide();
@@ -129,9 +129,9 @@ function gitCommand(projectId, cmd) {
     });
 }
 
-function exportTodos(projectId) {
+function exportTodos(repoId) {
     $.get('export_todos', {
-        id_: projectId
+        id_: repoId
     }, function(data) {
         $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success');
         setTimeout(function() { $('#exportIcon').toggleClass('bi-file-earmark-arrow-down bi-check-lg bg-success'); }, 2000)
