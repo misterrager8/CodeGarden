@@ -51,21 +51,15 @@
     <div id="kanban" class="tab-pane" role="tabpanel">
         <div class="mt-3">{{ macros.add_todo_form(repo_) }}</div>
         <div class="row mb-3">
-            <div class="col-xl-4">
-                <p class="text-center"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ repo_.get_todos(filter_='status = "Todo"').count() }})</p>
-                {% for i in repo_.get_todos(filter_='status = "Todo"') %}
+            <div class="col-xl-6">
+                <p class="text-center"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ repo_.get_todos(filter_='not done').count() }})</p>
+                {% for i in repo_.get_todos(filter_='not done') %}
                 {{ macros.todo_card(i) }}
                 {% endfor %}
             </div>
-            <div class="col-xl-4">
-                <p class="text-center"><i class="bi bi-circle-fill text-primary"></i> DOING ({{ repo_.get_todos(filter_='status = "Doing"').count() }})</p>
-                {% for i in repo_.get_todos(filter_='status = "Doing"') %}
-                {{ macros.todo_card(i) }}
-                {% endfor %}
-            </div>
-            <div class="col-xl-4">
-                <p class="text-center"><i class="bi bi-circle-fill text-success"></i> DONE ({{ repo_.get_todos(filter_='status = "Done"').count() }})</p>
-                {% for i in repo_.get_todos(filter_='status = "Done"') %}
+            <div class="col-xl-6">
+                <p class="text-center"><i class="bi bi-circle-fill text-success"></i> DONE ({{ repo_.get_todos(filter_='done').count() }})</p>
+                {% for i in repo_.get_todos(filter_='done') %}
                 {{ macros.todo_card(i) }}
                 {% endfor %}
             </div>

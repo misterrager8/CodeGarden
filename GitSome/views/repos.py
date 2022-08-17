@@ -1,5 +1,6 @@
-from flask import Blueprint, redirect, render_template, request, url_for
 from pathlib import Path
+
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from GitSome import db
 from GitSome.models import Repo
@@ -30,6 +31,16 @@ def make_new_repo():
     repo_.git_command("git init")
 
     return redirect(url_for("repos.repo", id_=repo_.id))
+
+
+@repos.route("/edit_repo", methods=["POST"])
+def edit_repo():
+    repo_ = Repo.query.get(int(request.args.get("id_")))
+    repo_.filepath = request.form["filepath"]
+    repo_.name = request.form["name"]
+    db.session.commit()
+
+    return redirect(request.referrer)
 
 
 @repos.route("/repo")

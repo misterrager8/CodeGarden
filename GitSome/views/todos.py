@@ -41,19 +41,7 @@ def delete_todo():
 @todos.route("/mark_todo")
 def mark_todo():
     todo_ = Todo.query.get(int(request.args.get("id_")))
-    todo_.mark()
-
-    return redirect(request.referrer)
-
-
-@todos.route("/doing_todo")
-def doing_todo():
-    todo_ = Todo.query.get(int(request.args.get("id_")))
-    if todo_.status == "Doing":
-        todo_.status = "Todo"
-    else:
-        todo_.status = "Doing"
-
+    todo_.done = not todo_.done
     db.session.commit()
 
     return redirect(request.referrer)
@@ -62,7 +50,9 @@ def doing_todo():
 @todos.route("/commit_todo")
 def commit_todo():
     todo_ = Todo.query.get(int(request.args.get("id_")))
+    todo_.done = True
     todo_.commit()
+    db.session.commit()
 
     return redirect(request.referrer)
 

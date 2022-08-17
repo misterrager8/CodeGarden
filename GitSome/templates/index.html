@@ -3,4 +3,9 @@
 
 {% block body %}
 <title>Git-Some</title>
+<div>
+    {% for i in repos %}
+    {{ macros.repo_card(i) }}
+    {% endfor %}
+</div>
 {% endblock %}

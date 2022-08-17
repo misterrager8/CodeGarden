@@ -1,6 +1,26 @@
+:root, html[data-theme="dark"] {
+    --primary-bg: #1a1a1a;
+    --primary-txt: white;
+}
+
+html[data-theme="light"] {
+    --primary-bg: white;
+    --primary-txt: #1a1a1a;
+}
+
+html[data-theme="blue"] {
+    --primary-bg: #1F487E;
+    --primary-txt: #CEDEF3;
+}
+
+html[data-theme="purple"] {
+    --primary-bg: #4B3F72;
+    --primary-txt: #D0CBE2;
+}
+
 body, .modal-content, .nav-link.active, .dropdown-menu, .navbar {
-    background-color: #1a1a1a !important;
-    color: white !important;
+    background-color: var(--primary-bg) !important;
+    color: var(--primary-txt) !important;
 }
 
 a, a:hover {
@@ -18,10 +38,10 @@ a, a:hover {
 }
 
 .CodeMirror, .editor-preview, .editor-toolbar {
-    background-color: #303030 !important;
-    color: white !important;
+    background-color: var(--primary-bg) !important;
+    color: var(--primary-txt) !important;
 }
 
 .fa {
-    color: white !important;
+    color: var(--primary-txt) !important;
 }

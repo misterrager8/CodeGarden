@@ -1,3 +1,12 @@
+$(document).ready(function() {
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('GitSome'));
+});
+
+function changeTheme(theme) {
+    localStorage.setItem('GitSome', theme);
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('GitSome'));
+}
+
 function refreshPage() {
     $('#pageContent').load(location.href + ' #pageContent');
     $('#navContent').load(location.href + ' #navContent');
@@ -61,16 +70,6 @@ function deleteTodo(todoId) {
 function markTodo(todoId) {
     $('#spinner').show();
     $.get('mark_todo', {
-        id_: todoId
-    }, function(data) {
-       $('#kanban').load(location.href + ' #kanban');
-       $('#spinner').hide();
-    });
-}
-
-function doingTodo(todoId) {
-    $('#spinner').show();
-    $.get('doing_todo', {
         id_: todoId
     }, function(data) {
        $('#kanban').load(location.href + ' #kanban');

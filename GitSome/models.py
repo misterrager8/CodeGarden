@@ -23,8 +23,8 @@ class Repo(db.Model):
 
     def export_todos(self):
         with open("%s/todo.txt" % self.filepath, "w") as f:
-            for i in self.todos.order_by(Todo.status):
-                if i.status == "Done":
+            for i in self.todos.order_by(Todo.done):
+                if i.done:
                     f.write("- [x] %s\n" % i.task)
                 else:
                     f.write("- [ ] %s\n" % i.task)
@@ -57,23 +57,15 @@ class Todo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.Text)
-    status = db.Column(db.Text, default="Todo")
+    done = db.Column(db.Boolean, default=False)
     note = db.Column(db.Text)
     repo_id = db.Column(db.Integer, db.ForeignKey("repos.id"))
 
     def __init__(self, **kwargs):
         super(Todo, self).__init__(**kwargs)
 
-    def mark(self):
-        if self.status == "Done":
-            self.status = "Todo"
-        else:
-            self.status = "Done"
-
-        db.session.commit()
-
     def commit(self):
         subprocess.run(["git", "add", "-A"], cwd=self.repos.filepath)
         subprocess.run(["git", "commit", "-am", self.task], cwd=self.repos.filepath)
-        self.status = "Done"
+        self.done = True
         db.session.commit()

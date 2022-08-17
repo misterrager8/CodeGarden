@@ -22,7 +22,7 @@ def list_all():
         for i in Repo.query.all():
             click.secho(
                 "[%s] %s - %s TODO(S)"
-                % (i.id, i.name, i.get_todos(filter_='status = "Todo"').count()),
+                % (i.id, i.name, i.get_todos(filter_="not done").count()),
                 fg="cyan",
             )
 
@@ -33,7 +33,7 @@ def list_todos(id):
     """Print all todos of the repo with given ID"""
     with app.app_context():
         repo_ = Repo.query.get(int(id))
-        for i in repo_.get_todos(filter_='status = "Todo"'):
+        for i in repo_.get_todos(filter_="not done"):
             click.secho("[%s] %s" % (i.id, i.task), fg="cyan")
 
 
