@@ -25,3 +25,7 @@ function copyPath() {
     $('#copyIcon').toggleClass('bi-check-lg bi-clipboard');
     setTimeout(function() { $('#copyIcon').toggleClass('bi-check-lg bi-clipboard'); }, 2000);
 }
+
+function sendToCommit(idx) {
+    $('#msg').val($('#todoDesc' + idx).val());
+}

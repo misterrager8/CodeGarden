@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+import webview
 
 from code_garden import config, create_app
 from code_garden.models import Repo
@@ -19,6 +20,16 @@ def web():
     """Launch web ui."""
     app = create_app(config)
     app.run(port=config.PORT)
+
+
+@cli.command()
+def desktop():
+    """Launch desktop ui."""
+    app = create_app(config)
+    webview.create_window(
+        "CodeGarden", app, text_select=True, frameless=True, width=1000
+    )
+    webview.start()
 
 
 @cli.command()

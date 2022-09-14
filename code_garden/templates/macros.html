@@ -1,0 +1,41 @@
+{% macro todo_card(todo_, idx, repo_) %}
+<div class="{% if todo_.done %}opacity-25{% endif %}">
+	{{ edit_todo_form(todo_, idx, repo_) }}
+</div>
+{% endmacro %}
+
+{% macro create_repo_form() %}
+{% endmacro %}
+
+{% macro create_todo_form(repo_) %}
+<form class="input-group" method="POST" action="{{ url_for('todos.add_todo', name=repo_.name) }}">
+	<label for="description" class="input-group-text">Add TODO: </label>
+	<input required type="text" id="description" name="description" class="form-control" autocomplete="off">
+	<button type="submit" class="btn btn-outline-success"><i class="bi bi-plus-lg"></i></button>
+</form>
+{% endmacro %}
+
+{% macro edit_todo_form(todo_, idx, repo_) %}
+<form method="POST" action="{{ url_for('todos.edit_todo', name=repo_.name, idx=idx - 1) }}" class="input-group">
+	<a class="btn" href="{{ url_for('todos.mark_todo', name=repo_.name, idx=idx - 1) }}"><i class="bi bi-check-lg text-{% if todo_.done %}success{% else %}secondary{% endif %}"></i></a>
+	<a class="btn text-secondary ps-0" onclick="sendToCommit({{ idx }})"><i class="bi bi-file-diff"></i></a>
+	<input required type="text" name="description" id="todoDesc{{ idx }}" autocomplete="off" class="form-control border-0 p-0" value="{{ todo_.description }}">
+	<a class="btn text-danger" href="{{ url_for('todos.delete_todo', name=repo_.name, idx=idx - 1) }}"><i class="bi bi-x-lg"></i></a>
+</form>
+{% endmacro %}
+
+{% macro commit_form(repo_) %}
+<form class="input-group" method="POST" action="{{ url_for('repos.commit', name=repo_.name) }}">
+	<label for="msg" class="input-group-text">git commit -am </label>
+	<input required type="text" name="msg" autocomplete="off" class="form-control" id="msg">
+	<button type="submit" class="btn btn-outline-secondary"><i class="bi bi-file-diff"></i></button>
+</form>
+{% endmacro %}
+
+{% macro create_branch_form(repo_) %}
+<form method="POST" action="{{ url_for('repos.create_branch', name=repo_.name) }}">
+    <label for="branch" class="form-label">Name</label>
+    <input type="text" name="branch" autocomplete="off" id="branch" class="form-control mb-3">
+    <button type="submit" class="btn btn-outline-success w-100"><i class="bi bi-plus-lg"></i> Create Branch</button>
+</form>
+{% endmacro %}

@@ -10,7 +10,7 @@
 		<a onclick="copyPath()" class="btn btn-outline-secondary"><i id="copyIcon" class="bi bi-clipboard"></i></a>
 	</div>
 </div>
-<div class="row">
+<div class="row mb-3">
 	<div class="col-6">
 		<ul class="nav nav-tabs">
 			<li class="nav-item">
@@ -22,31 +22,31 @@
 		</ul>
 		<div class="tab-content font-monospace">
 			<div class="tab-pane active p-5" id="status">
-				<form class="input-group" method="POST" action="{{ url_for('repos.commit', name=repo_.name) }}">
-					<label for="msg" class="input-group-text">git commit -am </label>
-					<input required type="text" name="msg" autocomplete="off" class="form-control" id="msg">
-					<button type="submit" class="btn btn-outline-secondary"><i class="bi bi-file-diff"></i></button>
-				</form>
+				{% if not 'working tree clean' in repo_.git(['git', 'status']) %}
+				{{ macros.commit_form(repo_) }}
+				{% endif %}
 				<div style="white-space: pre-wrap;">{{ repo_.git(['git', 'status']) }}</div>
 			</div>
 			<div style="white-space: pre-wrap;" class="tab-pane p-5" id="log">{{ repo_.git(['git', 'log', '-5']) }}</div>
 		</div>
 	</div>
 	<div class="col-6">
-		<form class="input-group" method="POST" action="{{ url_for('todos.add_todo', name=repo_.name) }}">
-			<label for="description" class="input-group-text">Add TODO: </label>
-			<input required type="text" id="description" name="description" class="form-control" autocomplete="off">
-			<button type="submit" class="btn btn-outline-success"><i class="bi bi-plus-lg"></i></button>
-		</form>
+		{{ macros.create_todo_form(repo_) }}
 		{% for i in repo_.get_todos() %}
-		<div class="{% if i.done %}opacity-25{% endif %}">
-			<form method="POST" action="{{ url_for('todos.edit_todo', name=repo_.name, idx=loop.index - 1) }}" class="input-group">
-				<a class="btn" href="{{ url_for('todos.mark_todo', name=repo_.name, idx=loop.index - 1) }}"><i class="bi bi-check-lg text-{% if i.done %}success{% else %}secondary{% endif %}"></i></a>
-				<input required type="text" name="description" autocomplete="off" class="form-control border-0 p-0" value="{{ i.description }}">
-				<a class="btn text-danger" href="{{ url_for('todos.delete_todo', name=repo_.name, idx=loop.index - 1) }}"><i class="bi bi-x-lg"></i></a>
-			</form>
-		</div>
+		{{ macros.todo_card(i, loop.index, repo_) }}
 		{% endfor %}
+		<a class="btn btn-sm btn-outline-secondary w-100" href="{{ url_for('todos.clear_todos', name=repo_.name) }}"><i class="bi bi-dash-circle"></i> Clear Completed</a>
 	</div>
 </div>
+<a onclick="toggleDiv('deleteRepo')" class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash3"></i> Delete Repo</a>
+<a href="{{ url_for('repos.delete_repo', name=repo_.name) }}" class="btn btn-sm text-danger w-100" id="deleteRepo" style="display: none;">Delete Repo?</a>
+
+<div class="modal" id="createBranch">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+        	{{ macros.create_branch_form(repo_) }}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

@@ -32,14 +32,22 @@ class Repo:
                 y = f"x {i.description}\n" if i.done else f"{i.description}\n"
                 f.write(y)
 
+    def clear_todos(self):
+        todos_ = [i for i in self.get_todos() if not i.done]
+        self.set_todos(todos_)
+
     def create(self, description):
         self.path.mkdir()
-        subprocess.run("git init".split(), cwd=self.path)
+        self.git(["git", "init"])
+        # subprocess.run("git init".split(), cwd=self.path)
 
         open(self.path / "README.md", "w").write(f"# {self.name}\n\n{description}\n")
-        (self.path / ".gitignore").touch()
+        open(self.path / ".gitignore", "w").write("todo.txt\n")
         (self.path / "LICENSE.md").touch()
         (self.path / "todo.txt").touch()
+
+        self.git(["git", "add", "-A"])
+        self.git(["git", "commit", "-am", "Initial commit"])
 
     def delete(self):
         shutil.rmtree(self.path)

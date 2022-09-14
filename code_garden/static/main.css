@@ -23,7 +23,7 @@ html[data-theme="coffee"] {
     --primary-txt: #ECDBD5;
 }
 
-body, .dropdown-menu, nav, .nav-link.active {
+body, .dropdown-menu, nav, .nav-link.active, .modal-content {
     background-color: var(--primary-bg) !important;
     color: var(--primary-txt) !important;
 }
@@ -42,4 +42,9 @@ a, a:hover,
 /*    border: 0;
     border-radius: 0;*/
     border: 1px solid var(--primary-txt);
+}
+
+* {
+    /*font-size: 1em;*/
+    font-size: 0.98em;
 }

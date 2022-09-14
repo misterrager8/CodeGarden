@@ -53,3 +53,11 @@ def delete_todo():
     repo_.set_todos(todos_)
 
     return redirect(request.referrer)
+
+
+@todos.route("/clear_todos")
+def clear_todos():
+    repo_ = Repo(HOME_DIR / request.args.get("name"))
+    repo_.clear_todos()
+
+    return redirect(request.referrer)

@@ -19,6 +19,7 @@
                         {% if repo_ %}{{ repo_.name }}{% else %}Select Repo{% endif %}
                     </a>
                     <div id="repos" class="dropdown-menu">
+                        <a class="dropdown-item text-success" data-bs-toggle="modal" data-bs-target="#createRepo"><i class="bi bi-plus-lg"></i> New Repo</a>
                         {% for i in repos %}
                         <a class="dropdown-item" href="{{ url_for('repos.repo', name=i.name) }}">{{ i.name }}</a>
                         {% endfor %}
@@ -31,6 +32,7 @@
                         {{ repo_.get_branch() }}
                     </a>
                     <div id="repos" class="dropdown-menu">
+                        <a class="dropdown-item text-success" data-bs-toggle="modal" data-bs-target="#createBranch"><i class="bi bi-plus-lg"></i> New Branch</a>
                         {% for i in repo_.get_branches() %}
                         <a href="{{ url_for('repos.checkout', name=repo_.name, branch=i) }}" class="dropdown-item">{{ i }}</a>
                         {% endfor %}
@@ -53,6 +55,21 @@
         </div>
     </div>
 </nav>
+
+<div class="modal" id="createRepo">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+            <form method="POST" action="{{ url_for('repos.create_repo') }}">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" autocomplete="off" id="name" class="form-control mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" name="description" autocomplete="off" id="description" class="form-control mb-3">
+                <button type="submit" class="btn btn-outline-success w-100"><i class="bi bi-plus-lg"></i> Create Repo</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="container my-5" id="pageContent">
     <span class="spinner-border spinner-border-sm sticky-top" id="spinner" style="display:none"></span>
     {% block body %}
