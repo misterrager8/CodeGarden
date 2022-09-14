@@ -1,4 +1,4 @@
-## Git-Some
+## Code Garden
 ---
 Locally hosted Flask app built to manage GitHub repos and repositories without relying too much on command-line terminals. Inspired by the GitHub Desktop UI
 
@@ -12,4 +12,4 @@ Locally hosted Flask app built to manage GitHub repos and repositories without r
 - Minimalist and responsive interface
 
 #### Usage
-Clone this **[GitHub repository](https://github.com/misterrager8/Git-Some).** Set up an `.env` with the only environment variable you need: `db_url`. Then, run the `python3 setup.py install`, then execute `gitsome web` command.
+Clone this **[GitHub repository](https://github.com/misterrager8/CodeGarden).** Set up an `.env` with the only environment variable you need: `db_url`. Then, run the `python3 setup.py install`, then execute `garden web` command.

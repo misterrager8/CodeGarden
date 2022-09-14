@@ -1,3 +1,7 @@
-GitSome.egg-info/
+CodeGarden.egg-info/
 .env
 .sh
+*.pyc
+.DS_Store
+docs/
+todo.txt

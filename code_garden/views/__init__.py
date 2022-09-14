@@ -1,12 +1,11 @@
 from flask import current_app, render_template
 
-from GitSome import db
-from GitSome.models import Repo
+from code_garden.models import Repo
 
 
 @current_app.context_processor
 def get_repos():
-    return {"repos": Repo.query.order_by(db.text("pinned desc"))}
+    return dict(repos=Repo.all())
 
 
 @current_app.route("/")
