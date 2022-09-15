@@ -57,7 +57,7 @@ def list_todos(name):
     repo_ = Repo(HOME_DIR / name)
 
     for idx, i in enumerate(repo_.get_todos()):
-        click.secho(f"[{idx}] {i}", fg=config.CLI_COLOR)
+        click.secho(f"[{idx}] {i.description}", fg=config.CLI_COLOR)
 
 
 @cli.command()
