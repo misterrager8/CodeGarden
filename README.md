@@ -1,4 +1,5 @@
 ## Code Garden
+![GitHub](https://img.shields.io/github/license/misterrager8/CodeGarden)
 ---
 Locally hosted Flask app built to manage GitHub repos and repositories without relying too much on command-line terminals. Inspired by the GitHub Desktop UI
 
