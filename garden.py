@@ -34,3 +34,14 @@ def commit(dir, type, msg):
             text=True,
         ).stdout
     )
+
+
+@cli.command()
+@click.argument("dir")
+def status(dir):
+    """Git status."""
+    click.secho(
+        subprocess.run(
+            ["git", "status"], cwd=dir, capture_output=True, text=True
+        ).stdout
+    )
