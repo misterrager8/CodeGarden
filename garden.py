@@ -21,5 +21,16 @@ def cli():
 @click.option("--msg", "-m", prompt=True)
 def commit(dir, type, msg):
     """Make a commit."""
-    subprocess.run(["git", "add", "-A"], cwd=dir)
-    subprocess.run(["git", "commit", "-m", f"{type}: {msg}"], cwd=dir)
+    click.secho(
+        subprocess.run(
+            ["git", "add", "-A"], cwd=dir, capture_output=True, text=True
+        ).stdout
+    )
+    click.secho(
+        subprocess.run(
+            ["git", "commit", "-m", f"{type}: {msg}"],
+            cwd=dir,
+            capture_output=True,
+            text=True,
+        ).stdout
+    )
