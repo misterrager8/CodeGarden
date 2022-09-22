@@ -45,3 +45,16 @@ def status(dir):
         ).stdout,
         fg=config.CLI_COLOR,
     )
+
+
+@cli.command()
+@click.argument("dir")
+@click.argument("limit", type=int, default=5)
+def log(dir, limit):
+    """Git log."""
+    click.secho(
+        subprocess.run(
+            ["git", "log", f"-{str(limit)}"], cwd=dir, capture_output=True, text=True
+        ).stdout,
+        fg=config.CLI_COLOR,
+    )
