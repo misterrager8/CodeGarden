@@ -2,6 +2,8 @@ import subprocess
 
 import click
 
+import config
+
 
 @click.group()
 def cli():
@@ -28,7 +30,8 @@ def commit(dir, type, msg):
             cwd=dir,
             capture_output=True,
             text=True,
-        ).stdout
+        ).stdout,
+        fg=config.CLI_COLOR,
     )
 
 
@@ -39,5 +42,6 @@ def status(dir):
     click.secho(
         subprocess.run(
             ["git", "status"], cwd=dir, capture_output=True, text=True
-        ).stdout
+        ).stdout,
+        fg=config.CLI_COLOR,
     )
