@@ -63,3 +63,41 @@ def log(dir, limit):
         ).stdout,
         fg=config.CLI_COLOR,
     )
+
+
+@cli.command()
+@click.argument("dir")
+def branches(dir):
+    """Git branches."""
+    click.secho(
+        subprocess.run(
+            ["git", "branch"], cwd=dir, capture_output=True, text=True
+        ).stdout,
+        fg=config.CLI_COLOR,
+    )
+
+
+@cli.command()
+@click.argument("dir")
+@click.option("--name", "-n", prompt=True)
+def new_branch(dir, name):
+    """Create a branch."""
+    click.secho(
+        subprocess.run(
+            ["git", "checkout", "-b", name], cwd=dir, capture_output=True, text=True
+        ).stdout,
+        fg=config.CLI_COLOR,
+    )
+
+
+@cli.command()
+@click.argument("dir")
+@click.option("--branch", "-b", prompt=True)
+def checkout(dir, branch):
+    """Checkout a branch."""
+    click.secho(
+        subprocess.run(
+            ["git", "checkout", branch], cwd=dir, capture_output=True, text=True
+        ).stdout,
+        fg=config.CLI_COLOR,
+    )
