@@ -2,7 +2,7 @@ import subprocess
 
 import click
 
-import config
+from code_garden import config
 
 
 @click.group()
