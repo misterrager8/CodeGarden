@@ -2,4 +2,24 @@
 {% import "macros.html" as macros with context %}
 {% block body %}
 <title>{{ repo_.name }}</title>
+<div class="font-monospace">
+	<div class="mb-5">
+		<span class="fs-4">Status</span>
+		<div style="white-space: pre-wrap;">{{ repo_.status }}</div>
+	</div>
+	<div class="mb-5">
+		<span class="fs-4">Log</span>
+		<div>{{ repo_.log }}</div>
+	</div>
+	<div class="mb-5">
+		<span class="fs-4">Branch</span>
+		<div>{{ repo_.branch }}</div>
+	</div>
+	<div class="mb-5">
+		<span class="fs-4">TODOS</span>
+		{% for i in repo_.todos %}
+		<div>{{ i }}</div>
+		{% endfor %}
+	</div>
+</div>
 {% endblock %}
