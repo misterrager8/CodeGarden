@@ -56,7 +56,10 @@ def log(dir, limit):
     """Git log."""
     click.secho(
         subprocess.run(
-            ["git", "log", f"-{str(limit)}"], cwd=dir, capture_output=True, text=True
+            ["git", "log", "--branches", "--pretty=format:[%ar] %s", f"-{str(limit)}"],
+            cwd=dir,
+            capture_output=True,
+            text=True,
         ).stdout,
         fg=config.CLI_COLOR,
     )
