@@ -9,7 +9,9 @@
 	</div>
 	<div class="mb-5">
 		<span class="fs-4">Log</span>
-		<div>{{ repo_.log }}</div>
+		{% for i in repo_.log() %}
+		<div>{{ i }}</div>
+		{% endfor %}
 	</div>
 	<div class="mb-5">
 		<span class="fs-4">Branch</span>

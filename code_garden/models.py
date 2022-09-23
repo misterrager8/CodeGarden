@@ -35,8 +35,10 @@ class Repository:
         self.cmd(["add", "-A"])
         return self.cmd(["commit", "-m", msg])
 
-    def log(self, limit: int):
-        return self.cmd(["log", "--pretty=format:[%ar] %s", f"-{str(limit)}"])
+    def log(self, limit: int = 5):
+        return self.cmd(["log", "--pretty=format:[%ar] %s", f"-{str(limit)}"]).split(
+            "\n"
+        )
 
     @property
     def branches(self):

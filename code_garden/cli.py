@@ -45,7 +45,8 @@ def status(dir):
 @click.argument("limit", type=int, default=5)
 def log(dir, limit):
     """Git log."""
-    click.secho(Repository(dir).log(limit), fg=config.CLI_COLOR)
+    for i in Repository(dir).log(limit):
+        click.secho(i, fg=config.CLI_COLOR)
 
 
 @cli.command()
