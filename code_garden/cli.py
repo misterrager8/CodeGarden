@@ -76,3 +76,11 @@ def new_branch(dir, name):
 def checkout(dir, branch):
     """Checkout a branch."""
     click.secho(Repository(dir).checkout(branch), fg=config.CLI_COLOR)
+
+
+@cli.command()
+@click.argument("dir")
+def todos(dir):
+    """List todos."""
+    for i in Repository(dir).todos:
+        click.secho(i, fg=config.CLI_COLOR)

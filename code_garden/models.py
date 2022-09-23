@@ -55,3 +55,10 @@ class Repository:
 
     def checkout(self, branch: str):
         return self.cmd(["checkout", branch])
+
+    @property
+    def todos(self):
+        path = self.path / "todo.txt"
+        return (
+            [i.strip() for i in open(path).readlines()] if path.exists() else ["None"]
+        )
