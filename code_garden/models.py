@@ -15,6 +15,10 @@ class Repository:
             ["git"] + args, text=True, capture_output=True, cwd=self.path
         ).stdout
 
+    @property
+    def name(self):
+        return self.path.name
+
     @classmethod
     def all(cls):
         return [

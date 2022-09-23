@@ -1,0 +1,7 @@
+{% macro repo_card(repo_) %}
+<div class="col-xl-4">
+	<div class="p-3 mb-3" style="border-bottom: 3px solid;">
+		<a href="{{ url_for('repo', path=repo_.path) }}">{{ repo_.name }}</a>
+	</div>
+</div>
+{% endmacro %}

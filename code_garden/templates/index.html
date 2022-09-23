@@ -2,13 +2,9 @@
 {% import "macros.html" as macros with context %}
 {% block body %}
 <title>CodeGarden</title>
-<div>
+<div class="row">
 	{% for i in repos %}
-	<div>
-		<div>
-			{{ i.path.name }}
-		</div>
-	</div>
+	{{ macros.repo_card(i) }}
 	{% endfor %}
 </div>
 {% endblock %}
