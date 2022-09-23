@@ -19,6 +19,8 @@ def cli():
         ["FIX", "TWEAK", "REFACTOR", "FEATURE", "STYLE", "DOCS", "CHORE"],
         case_sensitive=False,
     ),
+    prompt=True,
+    show_choices=True,
 )
 @click.option("--msg", "-m", prompt=True)
 def commit(dir, type, msg):
