@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+{% block body %}
+<title>CodeGarden</title>
+<div>
+	{% for i in repos %}
+	<div>
+		<div>
+			{{ i.path.name }}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

@@ -1,12 +1,18 @@
 import click
 
-from code_garden import config
+from code_garden import config, create_app
 from code_garden.models import Repository
 
 
 @click.group()
 def cli():
     pass
+
+
+@cli.command()
+def web():
+    app = create_app(config)
+    app.run()
 
 
 @cli.command()

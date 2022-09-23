@@ -1,6 +1,10 @@
 import subprocess
 from pathlib import Path
 
+from code_garden import config
+
+HOME_DIR = Path(config.HOME_DIR)
+
 
 class Repository:
     def __init__(self, path):
@@ -10,6 +14,14 @@ class Repository:
         return subprocess.run(
             ["git"] + args, text=True, capture_output=True, cwd=self.path
         ).stdout
+
+    @classmethod
+    def all(cls):
+        return [
+            Repository(i)
+            for i in HOME_DIR.iterdir()
+            if i.is_dir() and (i / ".git").exists()
+        ]
 
     @property
     def status(self):
