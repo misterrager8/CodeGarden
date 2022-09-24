@@ -13,6 +13,26 @@
                 <i class="bi bi-list"></i>
             </a>
             <div class="collapse navbar-collapse" id="navContents">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown me-3">
+                        <a class="dropdown-toggle" data-bs-target="#repos" data-bs-toggle="dropdown">{% if repo_ %}{{ repo_.name }}{% else %}Select Repository{% endif %}</a>
+                        <div id="repos" class="dropdown-menu text-center">
+                            {% for i in repos %}
+                            <a class="dropdown-item" href="{{ url_for('repo', path=i.path) }}">{{ i.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% if repo_ %}
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" data-bs-target="#branches" data-bs-toggle="dropdown">{{ repo_.branch }}</a>
+                        <div id="branches" class="dropdown-menu text-center">
+                            {% for i in repo_.branches %}
+                            <a class="dropdown-item" href="{{ url_for('checkout', path=repo_.path, branch=i) }}">{{ i }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-bs-target="#themes" data-bs-toggle="dropdown"><i class="bi bi-palette-fill"></i></a>

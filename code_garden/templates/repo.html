@@ -2,26 +2,24 @@
 {% import "macros.html" as macros with context %}
 {% block body %}
 <title>{{ repo_.name }}</title>
-<div class="font-monospace">
-	<div class="mb-5">
-		<span class="fs-4">Status</span>
+<div class="row">
+	<div class="col-4">
+		<div class="pb-5 mb-5" style="border-bottom: 1px solid">
+			<p class="fs-4 mb-4">Log</p>
+			{% for i in repo_.log() %}
+			<div>{{ i }}</div>
+			{% endfor %}
+		</div>
+		<div>
+			<p class="fs-4 mb-4">TODOs</p>
+			{% for i in repo_.todos %}
+			<div>{{ i }}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="col-8 px-5">
 		<div style="white-space: pre-wrap;">{{ repo_.status }}</div>
 	</div>
-	<div class="mb-5">
-		<span class="fs-4">Log</span>
-		{% for i in repo_.log() %}
-		<div>{{ i }}</div>
-		{% endfor %}
-	</div>
-	<div class="mb-5">
-		<span class="fs-4">Branch</span>
-		<div>{{ repo_.branch }}</div>
-	</div>
-	<div class="mb-5">
-		<span class="fs-4">TODOS</span>
-		{% for i in repo_.todos %}
-		<div>{{ i }}</div>
-		{% endfor %}
-	</div>
 </div>
+
 {% endblock %}
