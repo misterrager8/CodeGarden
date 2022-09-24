@@ -8,7 +8,20 @@
 
 {% macro add_todo_form(repo_, class='') %}
 <form method="POST" action="{{ url_for('add_todo', path=repo_.path) }}" class="input-group input-group-sm {{ class }}">
-	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off">
+	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-success">Add TODO</button>
+</form>
+{% endmacro %}
+
+{% macro commit_form(repo_, class='') %}
+{% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
+<form method="POST" action="{{ url_for('commit', path=repo_.path) }}" class="input-group input-group-sm">
+	<select name="type" class="form-control">
+		{% for i in types %}
+		<option value="{{ i }}">{{ i }}</option>
+		{% endfor %}
+	</select>
+	<input type="text" name="msg" placeholder="Message" class="form-control" autocomplete="off" required>
+	<button type="submit" class="btn btn-outline-secondary">Commit</button>
 </form>
 {% endmacro %}

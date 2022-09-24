@@ -27,6 +27,14 @@ def checkout():
     return redirect(request.referrer)
 
 
+@current_app.route("/commit", methods=["POST"])
+def commit():
+    repo_ = Repository(request.args.get("path"))
+    repo_.commit(f"{request.form['type']}: {request.form['msg']}")
+
+    return redirect(request.referrer)
+
+
 @current_app.route("/add_todo", methods=["POST"])
 def add_todo():
     repo_ = Repository(request.args.get("path"))
