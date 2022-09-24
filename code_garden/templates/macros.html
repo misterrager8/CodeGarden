@@ -5,3 +5,10 @@
 	</div>
 </div>
 {% endmacro %}
+
+{% macro add_todo_form(repo_, class='') %}
+<form method="POST" action="{{ url_for('add_todo', path=repo_.path) }}" class="input-group input-group-sm {{ class }}">
+	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off">
+	<button type="submit" class="btn btn-outline-success">Add TODO</button>
+</form>
+{% endmacro %}

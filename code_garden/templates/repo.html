@@ -12,8 +12,9 @@
 		</div>
 		<div>
 			<p class="fs-4 mb-4">TODOs</p>
+			{{ macros.add_todo_form(repo_) }}
 			{% for i in repo_.todos %}
-			<div>{{ i }}</div>
+			<div><a class="text-danger me-1" href="{{ url_for('delete_todo', path=repo_.path, idx=loop.index0) }}"><i class="bi bi-x"></i></a>{{ i }}</div>
 			{% endfor %}
 		</div>
 	</div>

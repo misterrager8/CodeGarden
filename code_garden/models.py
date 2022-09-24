@@ -61,6 +61,10 @@ class Repository:
     @property
     def todos(self):
         path = self.path / "todo.txt"
-        return (
-            [i.strip() for i in open(path).readlines()] if path.exists() else ["None"]
-        )
+        return [i.strip() for i in open(path).readlines()] if path.exists() else []
+
+    def save_todos(self, todos_: list):
+        path = self.path / "todo.txt"
+        with open(path, "w") as f:
+            for i in todos_:
+                f.write(f"{i}\n")

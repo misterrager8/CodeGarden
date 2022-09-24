@@ -25,3 +25,22 @@ def checkout():
     repo_.checkout(request.args.get("branch"))
 
     return redirect(request.referrer)
+
+
+@current_app.route("/add_todo", methods=["POST"])
+def add_todo():
+    repo_ = Repository(request.args.get("path"))
+    open(repo_.path / "todo.txt", "a").write(f"{request.form['description']}\n")
+
+    return redirect(request.referrer)
+
+
+@current_app.route("/delete_todo")
+def delete_todo():
+    repo_ = Repository(request.args.get("path"))
+    todos_ = repo_.todos
+
+    todos_.pop(int(request.args.get("idx")))
+    repo_.save_todos(todos_)
+
+    return redirect(request.referrer)
