@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="col-8 px-5 font-monospace">
-		{{ macros.commit_form(repo_) }}
+		{% if not 'working tree clean' in repo_.status %}{{ macros.commit_form(repo_) }}{% endif %}
 		<div style="white-space: pre-wrap;">{{ repo_.status }}</div>
 	</div>
 </div>
