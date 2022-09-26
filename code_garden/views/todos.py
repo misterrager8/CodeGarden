@@ -22,3 +22,14 @@ def delete_todo():
     repo_.save_todos(todos_)
 
     return redirect(request.referrer)
+
+
+@todos.route("/edit_todo", methods=["POST"])
+def edit_todo():
+    repo_ = Repository(request.args.get("path"))
+    todos_ = repo_.todos
+
+    todos_[int(request.args.get("idx"))] = request.form["description"]
+    repo_.save_todos(todos_)
+
+    return redirect(request.referrer)

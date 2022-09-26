@@ -14,7 +14,10 @@
 			<p class="fs-4 mb-4">TODOs</p>
 			{{ macros.add_todo_form(repo_) }}
 			{% for i in repo_.todos %}
-			<div><a class="text-danger me-1" href="{{ url_for('todos.delete_todo', path=repo_.path, idx=loop.index0) }}"><i class="bi bi-x"></i></a>{{ i }}</div>
+			<form method="POST" action="{{ url_for('todos.edit_todo', path=repo_.path, idx=loop.index0) }}" class="input-group">
+				<a class="btn input-group-text text-danger" href="{{ url_for('todos.delete_todo', path=repo_.path, idx=loop.index0) }}"><i class="bi bi-x-lg"></i></a>
+				<input type="text" name="description" class="form-control border-0 p-0" autocomplete="off" required value="{{ i }}">
+			</form>
 			{% endfor %}
 		</div>
 	</div>
