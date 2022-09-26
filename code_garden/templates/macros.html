@@ -1,13 +1,13 @@
 {% macro repo_card(repo_) %}
 <div class="col-xl-4">
 	<div class="p-3 mb-3" style="border-bottom: 3px solid;">
-		<a href="{{ url_for('repo', path=repo_.path) }}">{{ repo_.name }}</a>
+		<a href="{{ url_for('repos.repo', path=repo_.path) }}">{{ repo_.name }}</a>
 	</div>
 </div>
 {% endmacro %}
 
 {% macro add_todo_form(repo_, class='') %}
-<form method="POST" action="{{ url_for('add_todo', path=repo_.path) }}" class="input-group input-group-sm {{ class }}">
+<form method="POST" action="{{ url_for('todos.add_todo', path=repo_.path) }}" class="input-group input-group-sm {{ class }}">
 	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-success">Add TODO</button>
 </form>
@@ -15,7 +15,7 @@
 
 {% macro commit_form(repo_, class='') %}
 {% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
-<form method="POST" action="{{ url_for('commit', path=repo_.path) }}" class="input-group input-group-sm">
+<form method="POST" action="{{ url_for('repos.commit', path=repo_.path) }}" class="input-group input-group-sm">
 	<select name="type" class="form-control">
 		{% for i in types %}
 		<option value="{{ i }}">{{ i }}</option>
