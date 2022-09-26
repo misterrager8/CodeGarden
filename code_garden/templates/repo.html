@@ -4,7 +4,7 @@
 <title>{{ repo_.name }}</title>
 <div class="row">
 	<div class="col-4">
-		<div class="pb-5 mb-5" style="border-bottom: 1px solid">
+		<div class="pb-5 mb-5 font-monospace" style="border-bottom: 1px solid">
 			<p class="fs-4 mb-4">Log</p>
 			{% for i in repo_.log() %}
 			<div>{{ i }}</div>
@@ -18,7 +18,7 @@
 			{% endfor %}
 		</div>
 	</div>
-	<div class="col-8 px-5">
+	<div class="col-8 px-5 font-monospace">
 		{{ macros.commit_form(repo_) }}
 		<div style="white-space: pre-wrap;">{{ repo_.status }}</div>
 	</div>
