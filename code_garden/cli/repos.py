@@ -1,21 +1,15 @@
 import click
 
-from code_garden import config, create_app
+from code_garden import config
 from code_garden.models import Repository
 
 
 @click.group()
-def cli():
+def repos():
     pass
 
 
-@cli.command()
-def web():
-    app = create_app(config)
-    app.run()
-
-
-@cli.command()
+@repos.command()
 @click.argument("dir")
 @click.option(
     "--type",
@@ -33,14 +27,14 @@ def commit(dir, type, msg):
     click.secho(Repository(dir).commit(f"{type}: {msg}"), fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 def status(dir):
     """Git status."""
     click.secho(Repository(dir).status, fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 @click.argument("limit", type=int, default=5)
 def log(dir, limit):
@@ -49,21 +43,21 @@ def log(dir, limit):
         click.secho(i, fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 def branches(dir):
     """Git branches."""
     click.secho(Repository(dir).branches, fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 def branch(dir):
     """Git current branch."""
     click.secho(Repository(dir).branch, fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 @click.option("--name", "-n", prompt=True)
 def new_branch(dir, name):
@@ -71,17 +65,9 @@ def new_branch(dir, name):
     click.secho(Repository(dir).create_branch(name), fg=config.CLI_COLOR)
 
 
-@cli.command()
+@repos.command()
 @click.argument("dir")
 @click.option("--branch", "-b", prompt=True)
 def checkout(dir, branch):
     """Checkout a branch."""
     click.secho(Repository(dir).checkout(branch), fg=config.CLI_COLOR)
-
-
-@cli.command()
-@click.argument("dir")
-def todos(dir):
-    """List todos."""
-    for i in Repository(dir).todos:
-        click.secho(i, fg=config.CLI_COLOR)
