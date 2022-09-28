@@ -12,6 +12,14 @@ def repos():
 
 
 @repos.command()
+@click.option("--name", "-n", prompt=True)
+@click.option("--desc", "-d", prompt=True)
+def init(name, desc):
+    """Create a new git repository."""
+    click.secho(Repository.init(name, desc), fg=config.CLI_COLOR)
+
+
+@repos.command()
 @click.option("--dir", "-d", default=os.getcwd())
 @click.option(
     "--type",
@@ -61,10 +69,20 @@ def branch(dir):
 
 @repos.command()
 @click.option("--dir", "-d", default=os.getcwd())
+@click.option("--branch", "-b", prompt=True)
+def delete_branch(dir, branch):
+    """Delete a branch."""
+    Repository(dir).cmd(["branch", "-d", branch])
+    click.secho("Branch deleted.", fg=config.CLI_COLOR)
+
+
+@repos.command()
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option("--name", "-n", prompt=True)
 def new_branch(dir, name):
     """Create a branch."""
-    click.secho(Repository(dir).create_branch(name), fg=config.CLI_COLOR)
+    Repository(dir).create_branch(name)
+    click.secho("Branch created.", fg=config.CLI_COLOR)
 
 
 @repos.command()

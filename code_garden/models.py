@@ -22,6 +22,17 @@ class Repository:
         return self.path.name
 
     @classmethod
+    def init(cls, name: str, description: str = ""):
+        repo_ = Repository(HOME_DIR / name)
+        repo_.path.mkdir()
+        open(repo_.path / "README.md", "w").write(f"# {name}\n---\n\n{description}\n")
+        (repo_.path / "LICENSE.md").touch()
+        (repo_.path / ".gitignore").touch()
+
+        repo_.cmd(["init"])
+        return repo_.commit("Initial commit")
+
+    @classmethod
     def all(cls):
         return [
             Repository(i)
