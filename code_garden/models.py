@@ -1,6 +1,8 @@
 import subprocess
 from pathlib import Path
 
+import click
+
 from code_garden import config
 
 HOME_DIR = Path(config.HOME_DIR)
@@ -57,6 +59,11 @@ class Repository:
 
     def checkout(self, branch: str):
         return self.cmd(["checkout", branch])
+
+    def merge(self, current_branch: str, other_branch: str):
+        click.secho(self.checkout(current_branch), fg=config.CLI_COLOR)
+        click.secho(self.cmd(["merge", other_branch]), fg=config.CLI_COLOR)
+        click.secho(self.checkout(other_branch), fg=config.CLI_COLOR)
 
     @property
     def todos(self):

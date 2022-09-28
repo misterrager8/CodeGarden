@@ -73,3 +73,14 @@ def new_branch(dir, name):
 def checkout(dir, branch):
     """Checkout a branch."""
     click.secho(Repository(dir).checkout(branch), fg=config.CLI_COLOR)
+
+
+@repos.command()
+@click.option("--dir", "-d", default=os.getcwd())
+@click.argument("current")
+@click.argument("other")
+def merge(dir, current, other):
+    """Merge a branch."""
+    Repository(dir).merge(current, other)
+
+    click.secho("Merged.", fg=config.CLI_COLOR)
