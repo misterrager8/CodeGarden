@@ -1,3 +1,5 @@
+import os
+
 import click
 
 from code_garden import config
@@ -10,7 +12,7 @@ def todos():
 
 
 @todos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 def list_todos(dir):
     """List todos."""
     for idx, i in enumerate(Repository(dir).todos):
@@ -18,7 +20,7 @@ def list_todos(dir):
 
 
 @todos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option("--task", "-t", prompt=True)
 def add_todo(dir, task):
     """Add a todo."""
@@ -27,7 +29,7 @@ def add_todo(dir, task):
 
 
 @todos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option("--idx", "-i", type=int)
 def delete_todo(dir, idx):
     """Delete a todo."""

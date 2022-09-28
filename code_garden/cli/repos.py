@@ -1,3 +1,5 @@
+import os
+
 import click
 
 from code_garden import config
@@ -10,7 +12,7 @@ def repos():
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option(
     "--type",
     "-t",
@@ -28,14 +30,14 @@ def commit(dir, type, msg):
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 def status(dir):
     """Git status."""
     click.secho(Repository(dir).status, fg=config.CLI_COLOR)
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.argument("limit", type=int, default=5)
 def log(dir, limit):
     """Git log."""
@@ -44,21 +46,21 @@ def log(dir, limit):
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 def branches(dir):
     """Git branches."""
     click.secho(Repository(dir).branches, fg=config.CLI_COLOR)
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 def branch(dir):
     """Git current branch."""
     click.secho(Repository(dir).branch, fg=config.CLI_COLOR)
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option("--name", "-n", prompt=True)
 def new_branch(dir, name):
     """Create a branch."""
@@ -66,7 +68,7 @@ def new_branch(dir, name):
 
 
 @repos.command()
-@click.argument("dir")
+@click.option("--dir", "-d", default=os.getcwd())
 @click.option("--branch", "-b", prompt=True)
 def checkout(dir, branch):
     """Checkout a branch."""
