@@ -7,7 +7,7 @@
 {% endmacro %}
 
 {% macro init_repo_form(class='') %}
-<form method="POST" action="{{ url_for('repos.init_repo') }}" class="input-group input-group-sm {{ class }}">
+<form method="POST" action="{{ url_for('repos.init_repo') }}" class="input-group {{ class }}">
 	<input type="text" name="name" placeholder="Name" autocomplete="off" class="form-control">
 	<input type="text" name="desc" placeholder="Description" autocomplete="off" class="form-control">
 	<button type="submit" class="btn btn-outline-success">init</button>
@@ -15,7 +15,7 @@
 {% endmacro %}
 
 {% macro add_todo_form(repo_, class='') %}
-<form method="POST" action="{{ url_for('todos.add_todo', path=repo_.path) }}" class="input-group input-group-sm {{ class }}">
+<form method="POST" action="{{ url_for('todos.add_todo', path=repo_.path) }}" class="input-group {{ class }}">
 	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-success">Add TODO</button>
 </form>
@@ -23,7 +23,7 @@
 
 {% macro commit_form(repo_, class='') %}
 {% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
-<form method="POST" action="{{ url_for('repos.commit', path=repo_.path) }}" class="input-group input-group-sm">
+<form method="POST" action="{{ url_for('repos.commit', path=repo_.path) }}" class="input-group">
 	<select name="type" class="form-control">
 		{% for i in types %}
 		<option value="{{ i }}">{{ i }}</option>

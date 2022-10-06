@@ -18,3 +18,8 @@ a, a:hover, .nav-link, .nav-link:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
+.btn, .font-custom, .dropdown-item, ::placeholder, .nav-item {
+    letter-spacing: 2px;
+    font-size: 0.9em;
+}

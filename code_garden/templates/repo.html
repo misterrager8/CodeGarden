@@ -3,7 +3,7 @@
 {% block body %}
 <title>{{ repo_.name }}</title>
 <div class="row">
-	<div class="col-4">
+	<div class="col-6">
 		<div class="pb-5 mb-5 font-monospace" style="border-bottom: 1px solid">
 			<p class="fs-4 mb-4">Log</p>
 			{% for i in repo_.log() %}
@@ -21,9 +21,9 @@
 			{% endfor %}
 		</div>
 	</div>
-	<div class="col-8 px-5 font-monospace">
+	<div class="col-6 px-5">
 		{% if not 'working tree clean' in repo_.status %}{{ macros.commit_form(repo_) }}{% endif %}
-		<div style="white-space: pre-wrap;">{{ repo_.status }}</div>
+		<div style="white-space: pre-wrap;" class="font-monospace">{{ repo_.status }}</div>
 	</div>
 </div>
 
