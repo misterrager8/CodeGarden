@@ -5,13 +5,13 @@
 <div class="row">
 	<div class="col-6">
 		<div class="pb-5 mb-5 font-monospace" style="border-bottom: 1px solid">
-			<p class="fs-4 mb-4">Log</p>
+			<p class="fs-5 font-custom">Log</p>
 			{% for i in repo_.log() %}
-			<div>{{ i }}</div>
+			<div class="text-truncate mb-1" title="{{ i }}">{{ i }}</div>
 			{% endfor %}
 		</div>
 		<div>
-			<p class="fs-4 mb-4">TODOs</p>
+			<p class="fs-5 font-custom">TODOs</p>
 			{{ macros.add_todo_form(repo_) }}
 			{% for i in repo_.todos %}
 			<form method="POST" action="{{ url_for('todos.edit_todo', path=repo_.path, idx=loop.index0) }}" class="input-group">
