@@ -6,6 +6,15 @@
 </div>
 {% endmacro %}
 
+{% macro log_item(item) %}
+<div class="hover">
+	<div class="py-2 border-top">
+		<p class="fw-bold text-truncate">{{ item.subject }}</p>
+		<p class="small text-muted">{{ item.time }}</p>
+	</div>
+</div>
+{% endmacro %}
+
 {% macro init_repo_form(class='') %}
 <form method="POST" action="{{ url_for('repos.init_repo') }}" class="input-group {{ class }}">
 	<input type="text" name="name" placeholder="Name" autocomplete="off" class="form-control">
@@ -15,8 +24,8 @@
 {% endmacro %}
 
 {% macro add_todo_form(repo_, class='') %}
-<form method="POST" action="{{ url_for('todos.add_todo', path=repo_.path) }}" class="input-group {{ class }}">
-	<input type="text" name="description" placeholder="Description" class="form-control" autocomplete="off" required>
+<form onsubmit="event.preventDefault(); addTodo('{{ repo_.path }}')" class="input-group {{ class }}">
+	<input type="text" id="description" placeholder="Description" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-success">Add TODO</button>
 </form>
 {% endmacro %}

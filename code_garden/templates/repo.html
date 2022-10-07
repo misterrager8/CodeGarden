@@ -3,28 +3,35 @@
 {% block body %}
 <title>{{ repo_.name }}</title>
 <div class="row">
-	<div class="col-6">
-		<div class="pb-5 mb-5 font-monospace" style="border-bottom: 1px solid">
-			<p class="fs-5 font-custom">Log</p>
+	<div class="col-3">
+		<a onclick="reloadDiv('status')" class="font-custom fs-5">Changes <i class="bi bi-arrow-clockwise"></i></a>
+		<div style="" id="status" class="mt-3">
+			{% for i in repo_.status %}
+			<div class="mb-3"><a class="hover" onclick="showDiff('{{ repo_.path }}', '{{ i.filepath }}')"><i class="bi bi-circle me-1" style="color: {{ i.color }}"></i> {{ i.filepath }}</a></div>
+			{% endfor %}
+			{% if repo_.status | length > 0 %}{{ macros.commit_form(repo_) }}{% endif %}
+		</div>
+		<a onclick="reloadDiv('log')" class="font-custom fs-5">Log <i class="bi bi-arrow-clockwise"></i></a>
+		<div id="log" class="mt-3">
 			{% for i in repo_.log() %}
-			<div class="text-truncate mb-1" title="{{ i }}">{{ i }}</div>
+			{{ macros.log_item(i) }}
 			{% endfor %}
 		</div>
-		<div>
-			<p class="fs-5 font-custom">TODOs</p>
+		<div id="todos" class="mt-3">
 			{{ macros.add_todo_form(repo_) }}
 			{% for i in repo_.todos %}
-			<form method="POST" action="{{ url_for('todos.edit_todo', path=repo_.path, idx=loop.index0) }}" class="input-group">
-				<a class="btn input-group-text text-danger" href="{{ url_for('todos.delete_todo', path=repo_.path, idx=loop.index0) }}"><i class="bi bi-x-lg"></i></a>
-				<input type="text" name="description" class="form-control border-0 p-0" autocomplete="off" required value="{{ i }}">
-			</form>
+			<div class="input-group hover {% if i.done %}opacity-25{% endif %}">
+				<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.path }}', {{ loop.index0 }})"><i class="bi bi-check-lg"></i></a>
+				<input type="text" id="description{{ loop.index0 }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ i.name }}" onchange="editTodo('{{ repo_.path }}', '{{ loop.index0 }}')">
+				<a class="pe-0 btn input-group-text text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ loop.index0 }})"><i class="bi bi-x-lg"></i></a>
+			</div>
 			{% endfor %}
 		</div>
 	</div>
-	<div class="col-6 px-5">
-		{% if not 'working tree clean' in repo_.status %}{{ macros.commit_form(repo_) }}{% endif %}
-		<div style="white-space: pre-wrap;" class="font-monospace">{{ repo_.status }}</div>
+	<div class="col-9">
+		<a id="readmeBtn" class="invisible font-custom fs-5 hover" onclick="reloadDiv('diff'); $(this).addClass('invisible')"><i class="bi bi-eye"></i> README</a>
+		<!-- <div id="readme" class="p-3" style="display: none;"></div> -->
+		<div id="diff" class="p-3">{{ repo_.readme | safe }}</div>
 	</div>
 </div>
-
 {% endblock %}

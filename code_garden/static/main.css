@@ -23,3 +23,11 @@ a, a:hover, .nav-link, .nav-link:hover {
     letter-spacing: 2px;
     font-size: 0.9em;
 }
+
+p {
+    margin:  0;
+}
+
+.hover:hover {
+    border-bottom: 1px solid;
+}

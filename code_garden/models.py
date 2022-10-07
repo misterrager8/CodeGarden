@@ -2,6 +2,7 @@ import subprocess
 from pathlib import Path
 
 import click
+import markdown
 
 from code_garden import config
 
@@ -20,6 +21,10 @@ class Repository:
     @property
     def name(self):
         return self.path.name
+
+    @property
+    def readme(self):
+        return markdown.markdown(open(self.path / "README.md").read())
 
     @classmethod
     def init(cls, name: str, description: str = ""):
@@ -42,16 +47,23 @@ class Repository:
 
     @property
     def status(self):
-        return self.cmd(["status"])
+        return [
+            ChangeItem(i.strip()[2:], i.strip()[0])
+            for i in self.cmd(["status", "-s"]).split("\n")
+            if i
+        ]
 
     def commit(self, msg: str):
         self.cmd(["add", "-A"])
         return self.cmd(["commit", "-m", msg])
 
     def log(self, limit: int = 5):
-        return self.cmd(["log", "--pretty=format:[%ar] %s", f"-{str(limit)}"]).split(
-            "\n"
-        )
+        return [
+            LogItem(i.split("\t")[0], i.split("\t")[1])
+            for i in self.cmd(
+                ["log", "--pretty=format:%s\t%ar", f"-{str(limit)}"]
+            ).split("\n")
+        ]
 
     @property
     def branches(self):
@@ -79,10 +91,48 @@ class Repository:
     @property
     def todos(self):
         path = self.path / "todo.txt"
-        return [i.strip() for i in open(path).readlines()] if path.exists() else []
+        return (
+            [Todo.from_text(i.strip()) for i in open(path).readlines()]
+            if path.exists()
+            else []
+        )
 
     def save_todos(self, todos_: list):
         path = self.path / "todo.txt"
         with open(path, "w") as f:
             for i in todos_:
-                f.write(f"{i}\n")
+                f.write(f"{i.plaintext}\n")
+
+
+class Todo:
+    def __init__(self, name: str, done: bool = False):
+        self.name = name
+        self.done = done
+
+    @classmethod
+    def from_text(cls, plaintext):
+        return Todo(plaintext[4:], plaintext.startswith("[x] "))
+
+    @property
+    def plaintext(self):
+        return f"[{'x' if self.done else ' '}] {self.name}"
+
+    def mark(self):
+        self.done = not self.done
+
+
+class LogItem:
+    def __init__(self, subject: str, time: str):
+        self.subject = subject
+        self.time = time
+
+
+class ChangeItem:
+    def __init__(self, filepath: str, type: str):
+        self.filepath = filepath
+        self.type = type
+
+    @property
+    def color(self):
+        choices = {"M": "orange", "A": "green", "D": "red", "R": "yellow", "?": "green"}
+        return choices[self.type]

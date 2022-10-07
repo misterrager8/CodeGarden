@@ -1,3 +1,5 @@
+import webbrowser
+
 import click
 
 from code_garden import config, create_app
@@ -11,9 +13,12 @@ def main():
 
 
 @main.command()
-def web():
+@click.option("--switch", "-s", is_flag=True)
+def web(switch):
     app = create_app(config)
-    app.run()
+    if switch:
+        webbrowser.open(f"http://127.0.0.1:{config.PORT}/")
+    app.run(port=config.PORT)
 
 
 cli = click.CommandCollection(sources=[main, repos, todos])

@@ -50,7 +50,7 @@ def status(dir):
 def log(dir, limit):
     """Git log."""
     for i in Repository(dir).log(limit):
-        click.secho(i, fg=config.CLI_COLOR)
+        click.secho(f"[{i.time}] {i.subject}", fg=config.CLI_COLOR)
 
 
 @repos.command()

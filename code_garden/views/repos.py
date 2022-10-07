@@ -37,3 +37,10 @@ def commit():
     repo_.commit(f"{request.form['type']}: {request.form['msg']}")
 
     return redirect(request.referrer)
+
+
+@repos.route("/show_diff")
+def show_diff():
+    repo_ = Repository(request.args.get("repo_path"))
+
+    return repo_.cmd(["diff", request.args.get("file_path").strip()])

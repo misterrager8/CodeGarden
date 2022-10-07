@@ -1,14 +1,17 @@
 from flask import Blueprint, redirect, request
 
-from code_garden.models import Repository
+from code_garden.models import Repository, Todo
 
 todos = Blueprint("todos", __name__)
 
 
 @todos.route("/add_todo", methods=["POST"])
 def add_todo():
-    repo_ = Repository(request.args.get("path"))
-    open(repo_.path / "todo.txt", "a").write(f"{request.form['description']}\n")
+    repo_ = Repository(request.form["path"])
+    todos_ = repo_.todos
+
+    todos_.insert(0, Todo(request.form["description"]))
+    repo_.save_todos(todos_)
 
     return redirect(request.referrer)
 
@@ -24,12 +27,23 @@ def delete_todo():
     return redirect(request.referrer)
 
 
-@todos.route("/edit_todo", methods=["POST"])
-def edit_todo():
+@todos.route("/mark_todo")
+def mark_todo():
     repo_ = Repository(request.args.get("path"))
     todos_ = repo_.todos
 
-    todos_[int(request.args.get("idx"))] = request.form["description"]
+    todos_[int(request.args.get("idx"))].mark()
+    repo_.save_todos(todos_)
+
+    return redirect(request.referrer)
+
+
+@todos.route("/edit_todo", methods=["POST"])
+def edit_todo():
+    repo_ = Repository(request.form["path"])
+    todos_ = repo_.todos
+
+    todos_[int(request.form["idx"])].name = request.form["description"]
     repo_.save_todos(todos_)
 
     return redirect(request.referrer)
