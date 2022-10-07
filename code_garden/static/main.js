@@ -61,6 +61,14 @@ function deleteTodo(path, idx) {
     })
 }
 
+function clearCompleted(path) {
+    $.get('clear_completed', {
+        path: path,
+    }, function(data) {
+        reloadDiv('todos');
+    })
+}
+
 function showDiff(repoPath, filePath) {
     $.get('show_diff', {
         repo_path: repoPath,
@@ -69,5 +77,23 @@ function showDiff(repoPath, filePath) {
         $('#diff').html('');
         $('#diff').append(`<div style="white-space: pre-wrap" class="font-monospace">${data}</div>`);
         $('#readmeBtn').removeClass('invisible');
+    })
+}
+
+function ignore(idx, repoPath) {
+    $.get('ignore', {
+        idx: idx,
+        repo_path: repoPath
+    }, function(data) {
+        reloadDiv('status');
+    })
+}
+
+function reset(idx, repoPath) {
+    $.get('reset', {
+        idx: idx,
+        repo_path: repoPath
+    }, function(data) {
+        reloadDiv('status');
     })
 }

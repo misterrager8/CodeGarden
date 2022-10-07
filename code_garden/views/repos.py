@@ -44,3 +44,23 @@ def show_diff():
     repo_ = Repository(request.args.get("repo_path"))
 
     return repo_.cmd(["diff", request.args.get("file_path").strip()])
+
+
+@repos.route("/ignore")
+def ignore():
+    repo_ = Repository(request.args.get("repo_path"))
+    file_ = repo_.status[int(request.args.get("idx"))]
+
+    file_.ignore(repo_)
+
+    return redirect(request.referrer)
+
+
+@repos.route("/reset")
+def reset():
+    repo_ = Repository(request.args.get("repo_path"))
+    file_ = repo_.status[int(request.args.get("idx"))]
+
+    file_.reset(repo_)
+
+    return redirect(request.referrer)

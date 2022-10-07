@@ -27,6 +27,14 @@ def delete_todo():
     return redirect(request.referrer)
 
 
+@todos.route("/clear_completed")
+def clear_completed():
+    repo_ = Repository(request.args.get("path"))
+    repo_.clear_completed()
+
+    return redirect(request.referrer)
+
+
 @todos.route("/mark_todo")
 def mark_todo():
     repo_ = Repository(request.args.get("path"))

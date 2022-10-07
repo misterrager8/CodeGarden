@@ -48,10 +48,14 @@ class Repository:
     @property
     def status(self):
         return [
-            ChangeItem(i.strip()[2:], i.strip()[0])
+            ChangeItem(i[2:].strip(), i.strip()[0])
             for i in self.cmd(["status", "-s"]).split("\n")
             if i
         ]
+
+    @property
+    def last_updated(self):
+        return self.log()[0].time
 
     def commit(self, msg: str):
         self.cmd(["add", "-A"])
@@ -97,6 +101,17 @@ class Repository:
             else []
         )
 
+    @property
+    def undone_count(self):
+        return len([i for i in self.todos if not i.done])
+
+    @property
+    def any_done(self):
+        return any(i.done for i in self.todos)
+
+    def clear_completed(self):
+        self.save_todos([i for i in self.todos if not i.done])
+
     def save_todos(self, todos_: list):
         path = self.path / "todo.txt"
         with open(path, "w") as f:
@@ -131,6 +146,16 @@ class ChangeItem:
     def __init__(self, filepath: str, type: str):
         self.filepath = filepath
         self.type = type
+
+    def ignore(self, repo_: Repository):
+        open((repo_.path / ".gitignore"), "a").write(f"{self.filepath}\n")
+
+    def reset(self, repo_: Repository):
+        return repo_.cmd(["checkout", "--", self.filepath])
+
+    @property
+    def filename(self):
+        return self.filepath.split("/")[-1]
 
     @property
     def color(self):

@@ -1,8 +1,23 @@
 {% macro repo_card(repo_) %}
 <div class="col-xl-4">
-	<div class="p-3 mb-3" style="border-bottom: 3px solid;">
-		<a href="{{ url_for('repos.repo', path=repo_.path) }}">{{ repo_.name }}</a>
+	<div class="p-3 mb-3 border rounded-3 " style="border-bottom: 3px solid;">
+		<div class="d-flex justify-content-between">
+			<a class="font-custom fw-bold fs-5" href="{{ url_for('repos.repo', path=repo_.path) }}">{{ repo_.name }}</a>
+			<div>
+				{% if repo_.status %}<span class="font-custom"><i class="bi bi-circle-fill text-primary"></i> {{ repo_.status | length }}</span>{% endif %}
+				{% if repo_.todos %}<span class="font-custom"><i class="bi bi-check-all text-success"></i> {{ repo_.undone_count }}</span>{% endif %}
+			</div>
+		</div>
+		<div class="text-muted small fst-italic">Last Commit: {{ repo_.last_updated }}</div>
 	</div>
+</div>
+{% endmacro %}
+
+{% macro todo_item(todo_, repo_, idx) %}
+<div class="input-group hover {% if todo_.done %}opacity-25{% endif %}">
+	<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-check-lg"></i></a>
+	<input type="text" id="description{{ idx }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ todo_.name }}" onchange="editTodo('{{ repo_.path }}', '{{ idx }}')">
+	<a class="pe-0 btn input-group-text text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
 </div>
 {% endmacro %}
 
@@ -12,6 +27,21 @@
 		<p class="fw-bold text-truncate">{{ item.subject }}</p>
 		<p class="small text-muted">{{ item.time }}</p>
 	</div>
+</div>
+{% endmacro %}
+
+{% macro change_item(change_item_, repo_, idx) %}
+<div class="mb-3">
+	<i class="bi bi-circle me-1"style="color: {{ change_item_.color }}"></i>
+	{% if not change_item_.filename == '.gitignore' %}
+	<a title="Add to .gitignore" onclick="ignore('{{ idx }}', '{{ repo_.path }}')">
+		<i class="bi bi-eye-slash-fill text-secondary me-1"></i>
+	</a>
+	<a title="Reset" onclick="reset('{{ idx }}', '{{ repo_.path }}')">
+		<i class="bi bi-x-lg text-danger me-1"></i>
+	</a>
+	{% endif %}
+	<a class="hover" onclick="showDiff('{{ repo_.path }}', '{{ change_item_.filepath }}')" title="{{ change_item_.filepath }}">{{ change_item_.filename }}</a>
 </div>
 {% endmacro %}
 
