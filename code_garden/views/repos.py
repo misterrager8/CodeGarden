@@ -56,11 +56,30 @@ def ignore():
     return redirect(request.referrer)
 
 
+@repos.route("/unignore")
+def unignore():
+    repo_ = Repository(request.args.get("repo_path"))
+    ignores = repo_.ignored
+    ignores.pop(int(request.args.get("idx")))
+
+    repo_.set_ignored(ignores)
+
+    return redirect(request.referrer)
+
+
 @repos.route("/reset")
 def reset():
     repo_ = Repository(request.args.get("repo_path"))
     file_ = repo_.status[int(request.args.get("idx"))]
 
     file_.reset(repo_)
+
+    return redirect(request.referrer)
+
+
+@repos.route("/create_branch", methods=["POST"])
+def create_branch():
+    repo_ = Repository(request.args.get("path"))
+    repo_.create_branch(request.form["branch_name"])
 
     return redirect(request.referrer)

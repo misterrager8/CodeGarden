@@ -17,7 +17,7 @@
 <div class="input-group hover {% if todo_.done %}opacity-25{% endif %}">
 	<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-check-lg"></i></a>
 	<input type="text" id="description{{ idx }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ todo_.name }}" onchange="editTodo('{{ repo_.path }}', '{{ idx }}')">
-	<a class="pe-0 btn input-group-text text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
+	<a class="pe-0 btn text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
 </div>
 {% endmacro %}
 
@@ -37,12 +37,23 @@
 	<a title="Add to .gitignore" onclick="ignore('{{ idx }}', '{{ repo_.path }}')">
 		<i class="bi bi-eye-slash-fill text-secondary me-1"></i>
 	</a>
+	{% endif %}
 	<a title="Reset" onclick="reset('{{ idx }}', '{{ repo_.path }}')">
 		<i class="bi bi-x-lg text-danger me-1"></i>
 	</a>
-	{% endif %}
 	<a class="hover" onclick="showDiff('{{ repo_.path }}', '{{ change_item_.filepath }}')" title="{{ change_item_.filepath }}">{{ change_item_.filename }}</a>
 </div>
+{% endmacro %}
+
+{% macro ignore_item(item_, repo_, idx) %}
+<div class="input-group">
+	<input class="form-control border-0 p-0 fst-italic" value="{{ item_ }}">
+	<a class="btn text-danger pe-0" onclick="unignore('{{ idx }}', '{{ repo_.path }}')"><i class="bi bi-x-lg"></i></a>
+</div>
+{% endmacro %}
+
+{% macro branch_item(branch_, repo_, idx) %}
+<div class="font-custom {% if branch_ == repo_.branch %}text-success{% endif %}">{{ branch_ }}</div>
 {% endmacro %}
 
 {% macro init_repo_form(class='') %}
@@ -54,7 +65,13 @@
 {% endmacro %}
 
 {% macro add_todo_form(repo_, class='') %}
+{% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
 <form onsubmit="event.preventDefault(); addTodo('{{ repo_.path }}')" class="input-group {{ class }}">
+	<select id="type" class="form-control">
+		{% for i in types %}
+		<option value="{{ i }}">{{ i }}</option>
+		{% endfor %}
+	</select>
 	<input type="text" id="description" placeholder="Description" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-success">Add TODO</button>
 </form>

@@ -61,6 +61,15 @@ class Repository:
         self.cmd(["add", "-A"])
         return self.cmd(["commit", "-m", msg])
 
+    @property
+    def ignored(self):
+        return [i.strip() for i in open(self.path / ".gitignore").readlines()]
+
+    def set_ignored(self, ignores: list):
+        with open(self.path / ".gitignore", "w") as f:
+            for i in ignores:
+                f.write(f"{i}\n")
+
     def log(self, limit: int = 5):
         return [
             LogItem(i.split("\t")[0], i.split("\t")[1])

@@ -27,7 +27,8 @@ function reloadDiv(divId) {
 function addTodo(path) {
     $.post('add_todo', {
         path: path,
-        description: $('#description').val()
+        description: $('#description').val(),
+        type: $('#type').val()
     }, function(data) {
         reloadDiv('todos');
     })
@@ -86,6 +87,15 @@ function ignore(idx, repoPath) {
         repo_path: repoPath
     }, function(data) {
         reloadDiv('status');
+    })
+}
+
+function unignore(idx, repoPath) {
+    $.get('unignore', {
+        idx: idx,
+        repo_path: repoPath
+    }, function(data) {
+        reloadDiv('ignore');
     })
 }
 

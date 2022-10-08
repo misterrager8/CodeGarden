@@ -10,7 +10,7 @@ def add_todo():
     repo_ = Repository(request.form["path"])
     todos_ = repo_.todos
 
-    todos_.insert(0, Todo(request.form["description"]))
+    todos_.insert(0, Todo(f"{request.form['type']}: {request.form['description']}"))
     repo_.save_todos(todos_)
 
     return redirect(request.referrer)
