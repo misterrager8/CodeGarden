@@ -4,20 +4,21 @@
 <title>Repository: {{ repo_.name }}</title>
 <div class="row">
 	<div class="col-3">
-		<a onclick="reloadDiv('status')" class="btn btn-sm btn-outline-secondary">Changes <i class="bi bi-arrow-clockwise"></i></a>
+		<a onclick="copyPath(); showCheck(this);" class="btn btn-custom">Copy Path <i id="copy" class="bi bi-clipboard"></i></a><br>
+		<a onclick="reloadDiv('status'); showCheck(this);" class="btn btn-custom mt-4">Changes <i class="bi bi-arrow-clockwise"></i></a>
 		<div style="" id="status" class="mt-2">
 			{% for i in repo_.status %}
 			{{ macros.change_item(i, repo_, loop.index0) }}
 			{% endfor %}
 			{% if repo_.status | length > 0 %}{{ macros.commit_form(repo_) }}{% endif %}
 		</div>
-		<a onclick="reloadDiv('log')" class="btn btn-sm btn-outline-secondary mt-3">Log <i class="bi bi-arrow-clockwise"></i></a>
+		<a onclick="reloadDiv('log'); showCheck(this);" class="btn btn-custom mt-4">Log <i class="bi bi-arrow-clockwise"></i></a>
 		<div id="log" class="mt-2">
 			{% for i in repo_.log() %}
 			{{ macros.log_item(i) }}
 			{% endfor %}
 		</div>
-		<a onclick="reloadDiv('todos')" class="btn btn-sm btn-outline-secondary mt-3">TODOs <i class="bi bi-arrow-clockwise"></i></a>
+		<a onclick="reloadDiv('todos'); showCheck(this);" class="btn btn-custom mt-4">TODOs <i class="bi bi-arrow-clockwise"></i></a>
 		<div id="todos" class="mt-2">
 			{{ macros.add_todo_form(repo_) }}
 			{% for i in repo_.todos %}
@@ -27,13 +28,13 @@
 			<a class="btn btn-sm btn-outline-warning mt-3" onclick="clearCompleted('{{ repo_.path }}')"><i class="bi bi-x"></i> Clear Completed</a>
 			{% endif %}
 		</div>
-		<a onclick="reloadDiv('ignore')" class="btn btn-sm btn-outline-secondary mt-3">Ignored <i class="bi bi-arrow-clockwise"></i></a>
+		<a onclick="reloadDiv('ignore'); showCheck(this);" class="btn btn-custom mt-4">Ignored <i class="bi bi-arrow-clockwise"></i></a>
 		<div id="ignore" class="mt-2">
 			{% for i in repo_.ignored %}
 			{{ macros.ignore_item(i, repo_, loop.index0) }}
 			{% endfor %}
 		</div>
-		<a onclick="reloadDiv('branches')" class="btn btn-sm btn-outline-secondary mt-3">Branches <i class="bi bi-arrow-clockwise"></i></a>
+		<a onclick="reloadDiv('branches'); showCheck(this);" class="btn btn-custom mt-4">Branches <i class="bi bi-arrow-clockwise"></i></a>
 		<div id="branches" class="mt-2">
 			<form method="POST" action="{{ url_for('repos.create_branch', path=repo_.path) }}">
 				<input type="text" name="branch_name" class="form-control" autocomplete="off" placeholder="New Branch" required>
@@ -42,7 +43,7 @@
 			{{ macros.branch_item(i, repo_, loop.index0) }}
 			{% endfor %}
 		</div>
-		<a onclick="" class="btn btn-sm btn-outline-secondary mt-3">Copy Path <i class="bi bi-arrow-clockwise"></i></a>
+		<input value="{{ repo_.path }}" id="copyThis" style="display: none;">
 	</div>
 	<div class="col-9">
 		<a id="readmeBtn" class="invisible font-custom fs-5 hover" onclick="reloadDiv('diff'); $(this).addClass('invisible')"><i class="bi bi-eye"></i> README</a>

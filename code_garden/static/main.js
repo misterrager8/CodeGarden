@@ -107,3 +107,17 @@ function reset(idx, repoPath) {
         reloadDiv('status');
     })
 }
+
+function copyPath() {
+    copyThis = document.getElementById('copyThis');
+    copyThis.style.display = 'block';
+    copyThis.select();
+    document.execCommand('copy');
+    copyThis.style.display = 'none';
+}
+
+function showCheck(elem) {
+    check = $(`<i class="bi bi-check-lg text-success"></i>`);
+    $(elem).append(check);
+    setTimeout(function() {$(check).remove()}, 1000);
+}

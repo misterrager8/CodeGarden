@@ -31,3 +31,8 @@ p {
 .hover:hover {
     border-bottom: 1px solid;
 }
+
+.btn-custom, .btn-custom:hover {
+    padding: 0;
+    color: inherit;
+}

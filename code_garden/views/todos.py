@@ -46,6 +46,18 @@ def mark_todo():
     return redirect(request.referrer)
 
 
+@todos.route("/commit_todo")
+def commit_todo():
+    repo_ = Repository(request.args.get("path"))
+    todos_ = repo_.todos
+
+    todos_[int(request.args.get("idx"))].mark()
+    repo_.save_todos(todos_)
+    repo_.commit(todos_[int(request.args.get("idx"))].name)
+
+    return redirect(request.referrer)
+
+
 @todos.route("/edit_todo", methods=["POST"])
 def edit_todo():
     repo_ = Repository(request.form["path"])

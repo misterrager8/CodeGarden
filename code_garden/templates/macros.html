@@ -4,8 +4,9 @@
 		<div class="d-flex justify-content-between">
 			<a class="font-custom fw-bold fs-5" href="{{ url_for('repos.repo', path=repo_.path) }}">{{ repo_.name }}</a>
 			<div>
-				{% if repo_.status %}<span class="font-custom"><i class="bi bi-circle-fill text-primary"></i> {{ repo_.status | length }}</span>{% endif %}
-				{% if repo_.todos %}<span class="font-custom"><i class="bi bi-check-all text-success"></i> {{ repo_.undone_count }}</span>{% endif %}
+				{% if repo_.status %}<span class="font-custom mx-1"><i class="bi bi-circle-fill text-primary"></i> {{ repo_.status | length }}</span>{% endif %}
+				{% if repo_.todos %}<span class="font-custom mx-1"><i class="bi bi-check-all text-success"></i> {{ repo_.undone_count }}</span>{% endif %}
+				{% if repo_.branches|length > 1 %}<span class="font-custom mx-1"><i class="bi bi-signpost-split text-secondary"></i> {{ repo_.branches|length }}</span>{% endif %}
 			</div>
 		</div>
 		<div class="text-muted small fst-italic">Last Commit: {{ repo_.last_updated }}</div>
@@ -16,6 +17,7 @@
 {% macro todo_item(todo_, repo_, idx) %}
 <div class="input-group hover {% if todo_.done %}opacity-25{% endif %}">
 	<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-check-lg"></i></a>
+	<a class="ps-0 btn input-group-text text-secondary" href="{{ url_for('todos.commit_todo', path=repo_.path, idx=idx) }}"><i class="bi bi-file-diff"></i></a>
 	<input type="text" id="description{{ idx }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ todo_.name }}" onchange="editTodo('{{ repo_.path }}', '{{ idx }}')">
 	<a class="pe-0 btn text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
 </div>
