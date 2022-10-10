@@ -19,7 +19,7 @@
                         <a class="dropdown-toggle" data-bs-target="#repos" data-bs-toggle="dropdown">{% if repo_ %}{{ repo_.name }}{% else %}Select Repository{% endif %}</a>
                         <div id="repos" class="dropdown-menu text-center">
                             {% for i in repos %}
-                            <a class="dropdown-item" href="{{ url_for('repos.repo', path=i.path) }}">{{ i.name }}</a>
+                            <a class="dropdown-item" href="{{ url_for('repos.repo', name=i.name) }}">{{ i.name }}</a>
                             {% endfor %}
                         </div>
                     </li>
@@ -28,7 +28,7 @@
                         <a class="dropdown-toggle" data-bs-target="#branches" data-bs-toggle="dropdown">{{ repo_.branch }}</a>
                         <div id="branches" class="dropdown-menu text-center">
                             {% for i in repo_.branches %}
-                            <a class="dropdown-item" href="{{ url_for('repos.checkout', path=repo_.path, branch=i) }}">{{ i }}</a>
+                            <a class="dropdown-item" href="{{ url_for('repos.checkout', name=repo_.name, branch=i) }}">{{ i }}</a>
                             {% endfor %}
                         </div>
                     </li>

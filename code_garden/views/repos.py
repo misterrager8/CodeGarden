@@ -10,7 +10,7 @@ repos = Blueprint("repos", __name__)
 
 @repos.route("/repo")
 def repo():
-    repo_ = Repository(request.args.get("path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     return render_template("repo.html", repo_=repo_)
 
 
@@ -18,14 +18,12 @@ def repo():
 def init_repo():
     Repository.init(request.form["name"], request.form["desc"])
 
-    return redirect(
-        url_for("repos.repo", path=Path(config.HOME_DIR) / request.form["name"])
-    )
+    return redirect(url_for("repos.repo", name=request.form["name"]))
 
 
 @repos.route("/checkout")
 def checkout():
-    repo_ = Repository(request.args.get("path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     repo_.checkout(request.args.get("branch"))
 
     return redirect(request.referrer)
@@ -33,7 +31,7 @@ def checkout():
 
 @repos.route("/commit", methods=["POST"])
 def commit():
-    repo_ = Repository(request.args.get("path"))
+    repo_ = Repository(config.HOME_DIR / request.form["name"])
     repo_.commit(f"{request.form['type']}: {request.form['msg']}")
 
     return redirect(request.referrer)
@@ -41,14 +39,14 @@ def commit():
 
 @repos.route("/show_diff")
 def show_diff():
-    repo_ = Repository(request.args.get("repo_path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("repo_path"))
 
     return repo_.cmd(["diff", request.args.get("file_path").strip()])
 
 
 @repos.route("/ignore")
 def ignore():
-    repo_ = Repository(request.args.get("repo_path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("repo_path"))
     file_ = repo_.status[int(request.args.get("idx"))]
 
     file_.ignore(repo_)
@@ -58,7 +56,7 @@ def ignore():
 
 @repos.route("/unignore")
 def unignore():
-    repo_ = Repository(request.args.get("repo_path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("repo_path"))
     ignores = repo_.ignored
     ignores.pop(int(request.args.get("idx")))
 
@@ -69,7 +67,7 @@ def unignore():
 
 @repos.route("/reset")
 def reset():
-    repo_ = Repository(request.args.get("repo_path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("repo_path"))
     file_ = repo_.status[int(request.args.get("idx"))]
 
     file_.reset(repo_)
@@ -79,7 +77,7 @@ def reset():
 
 @repos.route("/create_branch", methods=["POST"])
 def create_branch():
-    repo_ = Repository(request.args.get("path"))
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     repo_.create_branch(request.form["branch_name"])
 
     return redirect(request.referrer)

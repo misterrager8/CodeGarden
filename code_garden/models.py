@@ -6,8 +6,6 @@ import markdown
 
 from code_garden import config
 
-HOME_DIR = Path(config.HOME_DIR)
-
 
 class Repository:
     def __init__(self, path):
@@ -28,7 +26,7 @@ class Repository:
 
     @classmethod
     def init(cls, name: str, description: str = ""):
-        repo_ = Repository(HOME_DIR / name)
+        repo_ = Repository(config.HOME_DIR / name)
         repo_.path.mkdir()
         open(repo_.path / "README.md", "w").write(f"# {name}\n---\n\n{description}\n")
         (repo_.path / "LICENSE.md").touch()
@@ -41,7 +39,7 @@ class Repository:
     def all(cls):
         return [
             Repository(i)
-            for i in HOME_DIR.iterdir()
+            for i in config.HOME_DIR.iterdir()
             if i.is_dir() and (i / ".git").exists()
         ]
 

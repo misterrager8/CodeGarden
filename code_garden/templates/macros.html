@@ -2,7 +2,7 @@
 <div class="col-xl-4">
 	<div class="p-3 mb-3 border rounded-3 " style="border-bottom: 3px solid;">
 		<div class="d-flex justify-content-between">
-			<a class="font-custom fw-bold fs-5" href="{{ url_for('repos.repo', path=repo_.path) }}">{{ repo_.name }}</a>
+			<a class="font-custom fw-bold fs-5" href="{{ url_for('repos.repo', name=repo_.name) }}">{{ repo_.name }}</a>
 			<div>
 				{% if repo_.status %}<span class="font-custom mx-1"><i class="bi bi-circle-fill text-primary"></i> {{ repo_.status | length }}</span>{% endif %}
 				{% if repo_.todos %}<span class="font-custom mx-1"><i class="bi bi-check-all text-success"></i> {{ repo_.undone_count }}</span>{% endif %}
@@ -16,10 +16,10 @@
 
 {% macro todo_item(todo_, repo_, idx) %}
 <div class="input-group hover {% if todo_.done %}opacity-25{% endif %}">
-	<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-check-lg"></i></a>
-	<a class="ps-0 btn input-group-text text-secondary" href="{{ url_for('todos.commit_todo', path=repo_.path, idx=idx) }}"><i class="bi bi-file-diff"></i></a>
-	<input type="text" id="description{{ idx }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ todo_.name }}" onchange="editTodo('{{ repo_.path }}', '{{ idx }}')">
-	<a class="pe-0 btn text-danger" onclick="deleteTodo('{{ repo_.path }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
+	<a class="ps-0 btn input-group-text text-secondary" onclick="markTodo('{{ repo_.name }}', {{ idx }})"><i class="bi bi-check-lg"></i></a>
+	<a class="ps-0 btn input-group-text text-secondary" onclick="commitTodo('{{ repo_.name }}', '{{ idx }}')"><i class="bi bi-file-diff"></i></a>
+	<input type="text" id="description{{ idx }}" class="form-control border-0 p-0" autocomplete="off" required value="{{ todo_.name }}" onchange="editTodo('{{ repo_.name }}', '{{ idx }}')">
+	<a class="pe-0 btn text-danger" onclick="deleteTodo('{{ repo_.name }}', {{ idx }})"><i class="bi bi-x-lg"></i></a>
 </div>
 {% endmacro %}
 
@@ -36,11 +36,11 @@
 <div class="mb-3">
 	<i class="bi bi-circle me-1"style="color: {{ change_item_.color }}"></i>
 	{% if not change_item_.filename == '.gitignore' %}
-	<a title="Add to .gitignore" onclick="ignore('{{ idx }}', '{{ repo_.path }}')">
+	<a title="Add to .gitignore" onclick="ignore('{{ idx }}', '{{ repo_.name }}')">
 		<i class="bi bi-eye-slash-fill text-secondary me-1"></i>
 	</a>
 	{% endif %}
-	<a title="Reset" onclick="reset('{{ idx }}', '{{ repo_.path }}')">
+	<a title="Reset" onclick="reset('{{ idx }}', '{{ repo_.name }}')">
 		<i class="bi bi-x-lg text-danger me-1"></i>
 	</a>
 	<a class="hover" onclick="showDiff('{{ repo_.path }}', '{{ change_item_.filepath }}')" title="{{ change_item_.filepath }}">{{ change_item_.filename }}</a>
@@ -50,7 +50,7 @@
 {% macro ignore_item(item_, repo_, idx) %}
 <div class="input-group">
 	<input class="form-control border-0 p-0 fst-italic" value="{{ item_ }}">
-	<a class="btn text-danger pe-0" onclick="unignore('{{ idx }}', '{{ repo_.path }}')"><i class="bi bi-x-lg"></i></a>
+	<a class="btn text-danger pe-0" onclick="unignore('{{ idx }}', '{{ repo_.name }}')"><i class="bi bi-x-lg"></i></a>
 </div>
 {% endmacro %}
 
@@ -68,26 +68,25 @@
 
 {% macro add_todo_form(repo_, class='') %}
 {% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
-<form onsubmit="event.preventDefault(); addTodo('{{ repo_.path }}')" class="input-group {{ class }}">
+<form onsubmit="event.preventDefault(); addTodo('{{ repo_.name }}')" class="input-group {{ class }}">
 	<select id="type" class="form-control">
 		{% for i in types %}
 		<option value="{{ i }}">{{ i }}</option>
 		{% endfor %}
 	</select>
 	<input type="text" id="description" placeholder="Description" class="form-control" autocomplete="off" required>
-	<button type="submit" class="btn btn-outline-success">Add TODO</button>
 </form>
 {% endmacro %}
 
 {% macro commit_form(repo_, class='') %}
 {% set types=['FEATURE', 'TWEAK', 'REFACTOR', 'FIX', 'STYLE', 'DOCS', 'CHORE'] %}
-<form method="POST" action="{{ url_for('repos.commit', path=repo_.path) }}" class="input-group">
-	<select name="type" class="form-control">
+<form onsubmit="event.preventDefault(); commit('{{ repo_.name }}')" class="input-group">
+	<select id="commitType" class="form-control">
 		{% for i in types %}
 		<option value="{{ i }}">{{ i }}</option>
 		{% endfor %}
 	</select>
-	<input type="text" name="msg" placeholder="Message" class="form-control" autocomplete="off" required>
+	<input type="text" id="commitMsg" placeholder="Message" class="form-control" autocomplete="off" required>
 	<button type="submit" class="btn btn-outline-secondary">Commit</button>
 </form>
 {% endmacro %}
