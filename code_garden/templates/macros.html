@@ -55,7 +55,11 @@
 {% endmacro %}
 
 {% macro branch_item(branch_, repo_, idx) %}
-<div class="font-custom {% if branch_ == repo_.branch %}text-success{% endif %}">{{ branch_ }}</div>
+<div>
+	<span class="font-custom {% if branch_ == repo_.branch %}text-success{% endif %}">{{ branch_ }}</span>
+	<a onclick="push('{{ repo_.name }}')"><i class="bi bi-file-earmark-arrow-up"></i></a>
+	{% if branch_ != repo_.branch %}<a title="Merge with current" onclick="merge('{{ repo_.name }}', '{{ branch_ }}')"><i class="bi bi-intersect"></i></a>{% endif %}
+</div>
 {% endmacro %}
 
 {% macro init_repo_form(class='') %}

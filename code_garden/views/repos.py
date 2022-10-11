@@ -75,6 +75,31 @@ def reset():
     return redirect(request.referrer)
 
 
+@repos.route("/reset_repo")
+def reset_repo():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+
+    repo_.reset()
+
+    return redirect(request.referrer)
+
+
+@repos.route("/merge")
+def merge():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    repo_.merge(request.args.get("branch"))
+
+    return redirect(request.referrer)
+
+
+@repos.route("/push")
+def push():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    repo_.cmd(["push"])
+
+    return redirect(request.referrer)
+
+
 @repos.route("/create_branch", methods=["POST"])
 def create_branch():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))

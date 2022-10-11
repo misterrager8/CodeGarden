@@ -152,6 +152,38 @@ function reset(idx, repoPath) {
     })
 }
 
+function resetRepo(name) {
+    $('#spinner').show();
+    $.get('reset_repo', {
+        name: name
+    }, function(data) {
+        reloadDiv('status');
+        $('#spinner').hide();
+    })
+}
+
+function merge(name, branch) {
+    $('#spinner').show();
+    $.get('merge', {
+        name: name,
+        branch: branch
+    }, function(data) {
+        reloadDiv('status');
+        reloadDiv('log');
+        reloadDiv('branches');
+        $('#spinner').hide();
+    })
+}
+
+function push(name) {
+    $('#spinner').show();
+    $.get('push', {
+        name: name,
+    }, function(data) {
+        $('#spinner').hide();
+    })
+}
+
 function copyPath() {
     copyThis = document.getElementById('copyThis');
     copyThis.style.display = 'block';

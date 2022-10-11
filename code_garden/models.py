@@ -63,6 +63,10 @@ class Repository:
     def ignored(self):
         return [i.strip() for i in open(self.path / ".gitignore").readlines()]
 
+    @property
+    def remotes(self):
+        return [i.strip() for i in self.cmd(["remote"]).split("\n") if i]
+
     def set_ignored(self, ignores: list):
         with open(self.path / ".gitignore", "w") as f:
             for i in ignores:
@@ -94,10 +98,11 @@ class Repository:
     def checkout(self, branch: str):
         return self.cmd(["checkout", branch])
 
-    def merge(self, current_branch: str, other_branch: str):
-        click.secho(self.checkout(current_branch), fg=config.CLI_COLOR)
-        click.secho(self.cmd(["merge", other_branch]), fg=config.CLI_COLOR)
-        click.secho(self.checkout(other_branch), fg=config.CLI_COLOR)
+    def merge(self, branch: str):
+        click.secho(self.cmd(["merge", branch]), fg=config.CLI_COLOR)
+
+    def reset(self):
+        return self.cmd(["checkout", "--", "."])
 
     @property
     def todos(self):
