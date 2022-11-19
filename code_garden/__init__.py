@@ -6,10 +6,10 @@ def create_app(config):
     app.config.from_object(config)
 
     with app.app_context():
-        from code_garden.views.repos import repos
+        from code_garden.views.repositories import repositories
         from code_garden.views.todos import todos
 
-        app.register_blueprint(repos)
+        app.register_blueprint(repositories)
         app.register_blueprint(todos)
 
         return app

@@ -6,13 +6,35 @@ from code_garden.models import Repository, Todo
 todos = Blueprint("todos", __name__)
 
 
-@todos.route("/add_todo", methods=["POST"])
-def add_todo():
-    repo_ = Repository(config.HOME_DIR / request.form["name"])
+@todos.route("/create_todo", methods=["POST"])
+def create_todo():
+    repo_ = Repository(config.HOME_DIR / request.form.get("name"))
     todos_ = repo_.todos
+    todos_.append(Todo(request.form.get("description"), False))
 
-    todos_.insert(0, Todo(f"{request.form['type']}: {request.form['description']}"))
-    repo_.save_todos(todos_)
+    repo_.set_todos(todos_)
+
+    return redirect(request.referrer)
+
+
+@todos.route("/edit_todo", methods=["POST"])
+def edit_todo():
+    repo_ = Repository(config.HOME_DIR / request.form.get("name"))
+    todos_ = repo_.todos
+    todos_[int(request.form.get("id"))].description = request.form.get("description")
+
+    repo_.set_todos(todos_)
+
+    return redirect(request.referrer)
+
+
+@todos.route("/toggle_todo")
+def toggle_todo():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    todos_ = repo_.todos
+    todos_[int(request.args.get("id"))].toggle()
+
+    repo_.set_todos(todos_)
 
     return redirect(request.referrer)
 
@@ -21,50 +43,8 @@ def add_todo():
 def delete_todo():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     todos_ = repo_.todos
+    del todos_[int(request.args.get("id"))]
 
-    todos_.pop(int(request.args.get("idx")))
-    repo_.save_todos(todos_)
-
-    return redirect(request.referrer)
-
-
-@todos.route("/clear_completed")
-def clear_completed():
-    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
-    repo_.clear_completed()
-
-    return redirect(request.referrer)
-
-
-@todos.route("/mark_todo")
-def mark_todo():
-    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
-    todos_ = repo_.todos
-
-    todos_[int(request.args.get("idx"))].mark()
-    repo_.save_todos(todos_)
-
-    return redirect(request.referrer)
-
-
-@todos.route("/commit_todo")
-def commit_todo():
-    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
-    todos_ = repo_.todos
-
-    todos_[int(request.args.get("idx"))].mark()
-    repo_.save_todos(todos_)
-    repo_.commit(todos_[int(request.args.get("idx"))].name)
-
-    return redirect(request.referrer)
-
-
-@todos.route("/edit_todo", methods=["POST"])
-def edit_todo():
-    repo_ = Repository(config.HOME_DIR / request.form["name"])
-    todos_ = repo_.todos
-
-    todos_[int(request.form["idx"])].name = request.form["description"]
-    repo_.save_todos(todos_)
+    repo_.set_todos(todos_)
 
     return redirect(request.referrer)
