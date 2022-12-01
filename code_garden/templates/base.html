@@ -10,30 +10,6 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
 </head>
-<nav class="navbar navbar-expand-lg sticky-top" style="border-bottom: 1px solid;">
-	<div class="container-fluid">
-		<a href="{{ url_for('index') }}" class="navbar-brand"><i class="bi bi-flower2"></i> CodeGarden</a>
-		<span class="spinner-border spinner-border-sm" id="spinner" style="display: none;"></span>
-		<div class="collapse navbar-collapse">
-			<ul class="navbar-nav me-auto">
-				<li class="nav-item dropdown">
-					<a data-bs-toggle="dropdown" data-bs-target="#repos" class="nav-link dropdown-toggle" id="current">Select Repository</a>
-					<div class="dropdown-menu" id="repos">
-						{% for i in repositories %}
-						<a onclick="loadAll('{{ i.name }}')" class="dropdown-item">{{ i.name }}</a>
-						{% endfor %}
-					</div>
-				</li>
-			</ul>
-			<ul class="navbar-nav ms-auto">
-				<li class="nav-item">
-					<a class="me-2 btn btn-sm btn-outline-light" onclick="setLight()" id="dark"><i class="bi bi-sun"></i></a>
-					<a class="me-2 btn btn-sm btn-outline-dark" onclick="setDark()" id="light"><i class="bi bi-moon"></i></a>
-				</li>
-			</ul>
-		</div>
-	</div>
-</nav>
 <div id="page" class="container p-4">
 	{% block body %}
 	{% endblock %}

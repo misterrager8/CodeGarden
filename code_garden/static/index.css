@@ -14,7 +14,7 @@ a, a:hover, .nav-link, .nav-link:hover {
 	cursor: pointer;
 }
 
-body, nav, .form-control, .form-control:focus {
+body, nav, .form-control, .form-control:focus, .dropdown-menu, .dropdown-item {
 	background-color: var(--primary-bg);
 	color: var(--primary-txt);
 }

@@ -45,18 +45,23 @@ class Repository(object):
     @property
     def diffs(self) -> list:
         return [
-            File(i[2:].strip(), i.strip().split()[0])
+            File(str(self.path / i[2:].strip()), i.strip().split()[0])
             for i in self.run_cmd(["git", "status", "--short"]).split("\n")
-            if i.strip()
+            if i.split()
+            and (i.strip().split()[0] == "D" or (self.path / i[2:].strip()).is_file())
         ]
 
     @property
     def branches(self) -> list:
-        return self.run_cmd(["git", "branch"]).split("\n")
+        return [
+            i.strip() for i in self.run_cmd(["git", "branch"]).split("\n") if i.strip()
+        ]
 
     @property
     def current_branch(self) -> str:
-        return ""
+        for i in self.branches:
+            if i.startswith("* "):
+                return i.replace("* ", "")
 
     def set_todos(self, todos: list):
         with open((self.path / "todos.txt"), "w") as f:
@@ -76,8 +81,8 @@ class Repository(object):
     def reset(self) -> str:
         return ""
 
-    def checkout(self, branch: str, new_branch: bool) -> str:
-        return ""
+    def checkout(self, branch: str, new_branch: bool = False) -> str:
+        return self.run_cmd(["git", "checkout", branch])
 
     def merge(self, branch: str) -> str:
         return ""
@@ -95,8 +100,8 @@ class Repository(object):
             args_, cwd=self.path, capture_output=True, text=True
         ).stdout
 
-    # def analyze(self):
-    #     ...
+    def to_dict(self) -> dict:
+        return dict(name=self.name, current_branch=self.current_branch)
 
 
 class Todo(object):
@@ -126,6 +131,10 @@ class File(object):
     @property
     def name(self) -> str:
         return self.path.split("/")[-1] or self.path.split("/")[-2]
+
+    @property
+    def content(self) -> str:
+        return open(self.path).read() if Path(self.path).exists() else "File deleted."
 
     @property
     def color(self):

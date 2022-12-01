@@ -1,9 +1,14 @@
 from flask import Blueprint, redirect, render_template, request
 
 from code_garden import config
-from code_garden.models import Repository
+from code_garden.models import File, Repository
 
 repositories = Blueprint("repositories", __name__)
+
+
+@repositories.route("/get_repository")
+def get_repository():
+    return Repository(config.HOME_DIR / request.args.get("name")).to_dict()
 
 
 @repositories.route("/get_readme")
@@ -24,6 +29,12 @@ def get_diffs():
     return dict(diffs=[i.to_dict() for i in repo_.diffs])
 
 
+@repositories.route("/get_file")
+def get_file():
+    file_ = File(request.args.get("path"))
+    return file_.content
+
+
 @repositories.route("/get_log")
 def get_log():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
@@ -40,5 +51,13 @@ def get_branches():
 def commit():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
     repo_.commit(request.form.get("msg"))
+
+    return redirect(request.referrer)
+
+
+@repositories.route("/checkout")
+def checkout():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    repo_.checkout(request.args.get("branch"))
 
     return redirect(request.referrer)
