@@ -72,7 +72,7 @@ class Repository(object):
         return ""
 
     def push(self) -> str:
-        return ""
+        return self.run_cmd(["git", "push", "origin"])
 
     def commit(self, msg: str) -> str:
         self.run_cmd(["git", "add", "-A"])

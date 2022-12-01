@@ -59,3 +59,9 @@ def checkout():
     repo_.checkout(request.args.get("branch"))
 
     return redirect(request.referrer)
+
+
+@repositories.route("/push")
+def push():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    return repo_.push()

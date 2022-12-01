@@ -148,6 +148,7 @@ function getRepo(name) {
             `);
         $('#index').html(repo(name));
         $('#branchSelect').remove();
+        $('#push').remove();
         $('#nav').append(`
             <li class="nav-item dropdown" id="branchSelect">
                 <a data-bs-toggle="dropdown" data-bs-target="#branches" class="nav-link dropdown-toggle">
@@ -156,6 +157,12 @@ function getRepo(name) {
                 </a>
                 <div class="dropdown-menu" id="branches">
                 </div>
+            </li>
+            <li class="nav-item" id="push">
+                <a class="nav-link" onclick="push('${name}')">
+                    <div class="text-muted">Remote: origin</div>
+                    Push <i class="bi bi-arrow-up-short"></i>
+                </a>
             </li>
             `);
         getBranches(name);
@@ -219,6 +226,17 @@ function checkout(name, branch) {
         name: name,
         branch: branch
     }, function(data) {
+        getRepo(name);
+    });
+}
+
+function push(name) {
+    $('#spinner').show();
+    $.get('push', {
+        name: name
+    }, function(data) {
+        $('#spinner').hide();
+        alert(data);
         getRepo(name);
     });
 }
