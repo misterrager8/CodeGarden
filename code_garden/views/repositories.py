@@ -50,9 +50,7 @@ def get_branches():
 @repositories.route("/commit", methods=["POST"])
 def commit():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
-    repo_.commit(request.form.get("msg"))
-
-    return redirect(request.referrer)
+    return repo_.commit(request.form.get("msg"))
 
 
 @repositories.route("/checkout")

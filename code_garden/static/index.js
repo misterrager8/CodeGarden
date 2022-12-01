@@ -203,10 +203,13 @@ function toggleTodo(name, id) {
 }
 
 function commit(name) {
+    $('#spinner').show();
     $.post('commit', {
         name: name,
         msg: $('#msg').val()
     }, function(data) {
+        $('#spinner').hide();
+        alert(data);
         getRepo(name);
     });
 }
