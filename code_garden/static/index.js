@@ -172,6 +172,14 @@ function getRepo(name) {
     });
 }
 
+function createRepository() {
+    $.post('create_repository', {
+        name: $('#name').val()
+    }, function(data) {
+        getRepo($('#name').val());
+    });
+}
+
 function addTodo(name) {
     $.post('create_todo', {
         name: name,

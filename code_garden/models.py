@@ -69,7 +69,12 @@ class Repository(object):
                 f.write(i.to_text() + "\n")
 
     def init(self) -> str:
-        return ""
+        self.path.mkdir()
+        (self.path / "README.md").touch()
+        (self.path / "LICENSE.md").touch()
+        (self.path / ".gitignore").touch()
+        (self.path / "todos.txt").touch()
+        return self.commit("Initial commit")
 
     def push(self) -> str:
         return self.run_cmd(["git", "push", "origin"])

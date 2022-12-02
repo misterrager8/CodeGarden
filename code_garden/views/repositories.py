@@ -6,6 +6,13 @@ from code_garden.models import File, Repository
 repositories = Blueprint("repositories", __name__)
 
 
+@repositories.route("/create_repository", methods=["POST"])
+def create_repository():
+    repo_ = Repository(config.HOME_DIR / request.form.get("name"))
+    repo_.init()
+    return redirect(request.referrer)
+
+
 @repositories.route("/get_repository")
 def get_repository():
     return Repository(config.HOME_DIR / request.args.get("name")).to_dict()
