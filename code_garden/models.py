@@ -74,6 +74,7 @@ class Repository(object):
         (self.path / "LICENSE.md").touch()
         (self.path / ".gitignore").touch()
         (self.path / "todos.txt").touch()
+        self.run_cmd(["git", "init"])
         return self.commit("Initial commit")
 
     def push(self) -> str:

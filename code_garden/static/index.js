@@ -132,7 +132,10 @@ function getFile(path) {
     $.get('get_file', {
         path: path
     }, function (data) {
-        $('#stage').html(`<div class="font-monospace" style="white-space:pre-wrap; font-size: 0.9em" id="file"></div>`);
+        $('#stage').html(`
+            <a class="btn btn-sm btn-outline-secondary mb-3" onclick="getReadme('${localStorage.getItem('lastRepoOpened')}')"><i class="bi bi-arrow-left"></i> README</a>
+            <div class="font-monospace" style="white-space:pre-wrap; font-size: 0.9em" id="file"></div>
+            `);
         $('#file').text(data);
     });
 }
