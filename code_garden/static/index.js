@@ -31,6 +31,22 @@ function settingsPage() {
     });
 }
 
+function createRepoPage() {
+    $('#index').html(`
+        <div>
+            <a onclick="getRepo('${localStorage.getItem('lastRepoOpened')}');" class="btn btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            <form onsubmit="event.preventDefault(); createRepository();" class="mt-3">
+                <div class="input-group input-group-sm mb-3">
+                    <input autocomplete="off" class="form-control" id="name" placeholder="Name" required>
+                    <a onclick="generateRepoName()" class="btn btn-outline-primary">Generate Name <i class="bi bi-shuffle"></i></a>
+                </div>
+                <textarea rows=10 autocomplete="off" class="form-control form-control-sm mb-3" id="briefDescrip" placeholder="Description"></textarea>
+                <button type="submit" class="btn btn-sm btn-outline-success w-100">Create New Repository</button>
+            </form>
+        </div>
+        `);
+}
+
 const repo = (repo_) => `
 <div class="row">
     <div class="col-3">
@@ -84,6 +100,12 @@ const todoItem = (item, repo_, id) => `
 </div>
 `;
 
+const addTodoForm = (repo_) => `
+<form onsubmit="event.preventDefault(); addTodo('${repo_}');" class="input-group input-group-sm mt-4 mb-2">
+    <input id="description" autocomplete="off" class="form-control border-success" placeholder="New Todo">
+</form>
+`;
+
 function getDiff(name) {
     $('#changes').addClass('active');
     $('#history').removeClass('active');
@@ -123,11 +145,7 @@ function getTodos(name) {
     $.get('get_todos', {
         name: name
     }, function (data) {
-        $('#todos').html(`
-            <form onsubmit="event.preventDefault(); addTodo('${name}');" class="input-group input-group-sm mt-4 mb-2">
-                <input id="description" autocomplete="off" class="form-control border-success" placeholder="New Todo">
-            </form>
-            `);
+        $('#todos').html(addTodoForm(name));
         for (let [id, x] of data.todos.entries()) {
             $('#todos').append(todoItem(x, name, id));
         }
@@ -197,7 +215,8 @@ function getRepo(name) {
 
 function createRepository() {
     $.post('create_repository', {
-        name: $('#name').val()
+        name: $('#name').val(),
+        brief_descrip: $('#briefDescrip').val()
     }, function(data) {
         getRepo($('#name').val());
     });
@@ -269,6 +288,12 @@ function push(name) {
         $('#spinner').hide();
         alert(data);
         getRepo(name);
+    });
+}
+
+function generateRepoName() {
+    $.get('generate_repo_name', function(data) {
+        $('#name').val(data);
     });
 }
 

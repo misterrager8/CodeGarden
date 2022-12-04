@@ -68,9 +68,11 @@ class Repository(object):
             for i in todos:
                 f.write(i.to_text() + "\n")
 
-    def init(self) -> str:
+    def init(self, brief_descrip: str) -> str:
         self.path.mkdir()
-        (self.path / "README.md").touch()
+        open(self.path / "README.md", "w").write(
+            f"# {self.name}\n---\n\n{brief_descrip}\n"
+        )
         (self.path / "LICENSE.md").touch()
         (self.path / ".gitignore").touch()
         (self.path / "todos.txt").touch()

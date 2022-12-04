@@ -10,9 +10,7 @@
 				<li class="nav-item dropdown">
 					<a data-bs-toggle="dropdown" data-bs-target="#repos" class="nav-link dropdown-toggle" id="current">Select Repository</a>
 					<div class="dropdown-menu" id="repos">
-						<form onsubmit="event.preventDefault(); createRepository();" class="mx-1">
-							<input autocomplete="off" class="form-control border-success" id="name" placeholder="New Repository">
-						</form>
+						<a onclick="createRepoPage()" class="dropdown-item text-success font-custom"><i class="bi bi-plus-lg"></i> New Repo</a>
 						{% for i in repositories %}
 						<a onclick="getRepo('{{ i.name }}')" class="dropdown-item">
 							<span>{{ i.name }}</span>

@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, request
 
-from code_garden import config
+from code_garden import config, generator
 from code_garden.models import File, Repository
 
 repositories = Blueprint("repositories", __name__)
@@ -9,7 +9,7 @@ repositories = Blueprint("repositories", __name__)
 @repositories.route("/create_repository", methods=["POST"])
 def create_repository():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
-    repo_.init()
+    repo_.init(request.form.get("brief_descrip"))
     return redirect(request.referrer)
 
 
@@ -72,3 +72,8 @@ def checkout():
 def push():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     return repo_.push()
+
+
+@repositories.route("/generate_repo_name")
+def generate_repo_name():
+    return generator.generate()
