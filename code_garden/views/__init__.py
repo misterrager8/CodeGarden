@@ -1,5 +1,6 @@
 from flask import current_app, render_template
 
+from code_garden import config
 from code_garden.models import Repository
 
 
@@ -11,3 +12,8 @@ def get_repositories():
 @current_app.route("/")
 def index():
     return render_template("index.html")
+
+
+@current_app.route("/settings")
+def settings():
+    return config.settings_dict

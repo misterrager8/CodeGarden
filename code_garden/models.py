@@ -107,7 +107,9 @@ class Repository(object):
         ).stdout
 
     def to_dict(self) -> dict:
-        return dict(name=self.name, current_branch=self.current_branch)
+        return dict(
+            name=self.name, current_branch=self.current_branch, path=str(self.path)
+        )
 
 
 class Todo(object):

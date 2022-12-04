@@ -17,6 +17,20 @@ function setLight() {
     $('#dark').hide();
 }
 
+function settingsPage() {
+    $.get('settings', function(data) {
+        $('#index').html(`<a onclick="getRepo('${localStorage.getItem('lastRepoOpened')}');" class="btn btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Back</a>`);
+        for (x in data) {
+            $('#index').append(`
+                <div class="form-floating mb-1">
+                    <input id="${x}" name="${x}" autocomplete="off" class="form-control border-0" value="${data[x]}">
+                    <label for="${x}">${x}</label>
+                </div>
+                `);
+        }
+    });
+}
+
 const repo = (repo_) => `
 <div class="row">
     <div class="col-3">
@@ -39,6 +53,10 @@ const repo = (repo_) => `
         </div>
     </div>
     <div class="col-9" id="stage"></div>
+</div>
+<div class="pt-5">
+    <a onclick="copyPath()" class="btn btn-sm text-secondary"><i class="bi bi-clipboard" id="clipboard"></i> Copy Path</a>
+    <a class="btn btn-sm text-danger"><i class="bi bi-trash2"></i> Delete</a>
 </div>
 `;
 
@@ -133,7 +151,7 @@ function getFile(path) {
         path: path
     }, function (data) {
         $('#stage').html(`
-            <a class="btn btn-sm btn-outline-secondary mb-3" onclick="getReadme('${localStorage.getItem('lastRepoOpened')}')"><i class="bi bi-arrow-left"></i> README</a>
+            <a class="btn btn-sm text-secondary mb-3" onclick="getReadme('${localStorage.getItem('lastRepoOpened')}')"><i class="bi bi-arrow-left"></i> Back</a>
             <div class="font-monospace" style="white-space:pre-wrap; font-size: 0.9em" id="file"></div>
             `);
         $('#file').text(data);
@@ -152,6 +170,7 @@ function getRepo(name) {
         $('#index').html(repo(name));
         $('#branchSelect').remove();
         $('#push').remove();
+        $('#copy').remove();
         $('#nav').append(`
             <li class="nav-item dropdown" id="branchSelect">
                 <a data-bs-toggle="dropdown" data-bs-target="#branches" class="nav-link dropdown-toggle">
@@ -167,6 +186,7 @@ function getRepo(name) {
                     Push <i class="bi bi-arrow-up-short"></i>
                 </a>
             </li>
+            <input id="copy" value="${data.path}" style="display:none">
             `);
         getBranches(name);
         getDiff(name);
@@ -250,4 +270,14 @@ function push(name) {
         alert(data);
         getRepo(name);
     });
+}
+
+function copyPath() {
+    copyThis = document.getElementById('copy');
+    copyThis.style.display = 'block';
+    copyThis.select();
+    document.execCommand('copy');
+    copyThis.style.display = 'none';
+    $('#clipboard').toggleClass(['bi-clipboard', 'bi-clipboard-check', 'text-success']);
+    setTimeout(function() { $('#clipboard').toggleClass(['bi-clipboard', 'bi-clipboard-check', 'text-success']); }, 1500);
 }
