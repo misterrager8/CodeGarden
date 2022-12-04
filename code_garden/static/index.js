@@ -102,7 +102,18 @@ const todoItem = (item, repo_, id) => `
 
 const addTodoForm = (repo_) => `
 <form onsubmit="event.preventDefault(); addTodo('${repo_}');" class="input-group input-group-sm mt-4 mb-2">
-    <input id="description" autocomplete="off" class="form-control border-success" placeholder="New Todo">
+    <a data-bs-toggle="dropdown" data-bs-target="#categories" class="btn" id="selected">
+        <span class="text-secondary"><i class="bi bi-caret-down-fill"></i></span>
+    </a>
+    <input id="category" type="hidden" value="">
+    <div id="categories" class="dropdown-menu">
+        <a onclick="selectCategory('FEATURE')" class="btn"><span style="color: #0d6efd"><i class="bi bi-node-plus"></i> FEATURE</span></a><br>
+        <a onclick="selectCategory('TWEAK')" class="btn"><span style="color: #fd7e14"><i class="bi bi-wrench-adjustable"></i> TWEAK</span></a><br>
+        <a onclick="selectCategory('CHORE')" class="btn"><span style="color: #6f42c1"><i class="bi bi-list-check"></i> CHORE</span></a><br>
+        <a onclick="selectCategory('BUGFIX')" class="btn"><span style="color: #dc3545"><i class="bi bi-bug"></i> BUGFIX</span></a><br>
+        <a onclick="selectCategory('')" class="btn"><span class="text-secondary"><i class="bi bi-circle"></i> MISC</span></a>
+    </div>
+    <input id="description" autocomplete="off" class="form-control" placeholder="TODO">
 </form>
 `;
 
@@ -225,6 +236,7 @@ function createRepository() {
 function addTodo(name) {
     $.post('create_todo', {
         name: name,
+        category: $('#category').val(),
         description: $('#description').val()
     }, function(data) {
         getTodos(name);
@@ -295,6 +307,26 @@ function generateRepoName() {
     $.get('generate_repo_name', function(data) {
         $('#name').val(data);
     });
+}
+
+function selectCategory(cat) {
+    $('#category').val(cat);
+    switch(cat) {
+        case 'FEATURE':
+            $('#selected').html(`<span style="color: #0d6efd"><i class="bi bi-node-plus"></i></span>`);
+            break;
+        case 'TWEAK':
+            $('#selected').html(`<span style="color: #fd7e14"><i class="bi-wrench-adjustable"></i></span>`);
+            break;
+        case 'CHORE':
+            $('#selected').html(`<span style="color: #6f42c1"><i class="bi-list-check"></i></span>`);
+            break;
+        case 'BUGFIX':
+            $('#selected').html(`<span style="color: #dc3545"><i class="bi-bug"></i></span>`);
+            break;
+        case '':
+            $('#selected').html(`<span class="text-secondary"><i class="bi-caret-down-fill"></i></span>`);
+    }
 }
 
 function copyPath() {

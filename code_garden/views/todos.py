@@ -10,7 +10,12 @@ todos = Blueprint("todos", __name__)
 def create_todo():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
     todos_ = repo_.todos
-    todos_.append(Todo(request.form.get("description"), False))
+    todos_.append(
+        Todo(
+            f"{request.form.get('category') or 'MISC'}: {request.form.get('description')}",
+            False,
+        )
+    )
 
     repo_.set_todos(todos_)
 

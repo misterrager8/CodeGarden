@@ -14,7 +14,7 @@
 						{% for i in repositories %}
 						<a onclick="getRepo('{{ i.name }}')" class="dropdown-item">
 							<span>{{ i.name }}</span>
-							{% if i.diffs|length > 0 %}<span class="float-end"><i class="bi bi-circle-fill text-primary"></i></span>{% endif %}
+							{% if i.diffs|length > 0 %}<span class="float-end"><i class="bi bi-circle text-primary"></i></span>{% endif %}
 						</a>
 						{% endfor %}
 					</div>
