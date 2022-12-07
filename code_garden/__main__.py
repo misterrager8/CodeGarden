@@ -11,9 +11,10 @@ def cli():
 
 
 @cli.command()
-@click.option("-s", "--switch", is_flag=True)
-def web(switch):
+@click.option("--debug", "-d", is_flag=True)
+def web(debug: bool):
     app = create_app(config)
-    if switch:
-        webbrowser.open(f"http://localhost:{config.PORT}")
-    app.run(port=config.PORT)
+    if not debug:
+        webbrowser.open(f"http://localhost:{config.PORT}/")
+    app.config["ENV"] = "development" if debug else "production"
+    app.run(port=config.PORT, debug=debug)
