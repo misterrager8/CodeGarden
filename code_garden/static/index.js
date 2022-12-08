@@ -94,7 +94,7 @@ const logItem = (item) => `
 
 const todoItem = (item, repo_, id) => `
 <div class="hover input-group input-group-sm mb-1 ${item.done ? 'opacity-25' : ''}">
-    <a onclick="toggleTodo('${repo_}', '${id}')" class="text-${item.done ? 'success' : 'secondary'}"><i class="bi bi-check-lg"></i></a>
+    <a onclick="toggleTodo('${repo_}', '${id}')" class="mx-2 text-${item.done ? 'success' : 'secondary'}"><i class="bi bi-check-lg"></i></a>
     <a onclick="commitTodo('${repo_}', '${id}')" class="text-secondary"><i class="bi bi-file-diff"></i></a>
     <span class="cat-badge ms-1" style="color:${getCategoryColor(item.category)}">${item.category}:</span>
     <input onchange="editTodo('${repo_}', '${id}')" id="description${id}" autocomplete="off" class="form-control border-0" value="${item.description}">
@@ -199,28 +199,23 @@ function getRepo(name) {
         name: name
     }, function (data) {
         localStorage.setItem('lastRepoOpened', name);
-        $('#current').html(`
-            <div class="small text-muted">Current Repository</div>
-            ${name}
-            `);
+        $('#current').html(`<i class="bi bi-git text-muted"> Repo: </i> ${name}`);
         $('#index').html(repo(name));
         $('#branchSelect').remove();
         $('#push').remove();
         $('#copy').remove();
         $('#refresh').remove();
         $('#nav').append(`
-            <li class="nav-item dropdown" id="branchSelect">
+            <li class="nav-item dropdown me-3" id="branchSelect">
                 <a data-bs-toggle="dropdown" data-bs-target="#branches" class="nav-link dropdown-toggle">
-                    <div class="small text-muted">Current Branch</div>
-                    ${data.current_branch}
+                    <i class="bi bi-signpost-split text-muted"> Branch: </i> ${data.current_branch}
                 </a>
                 <div class="dropdown-menu" id="branches">
                 </div>
             </li>
             <li class="nav-item" id="push">
                 <a class="nav-link" onclick="push('${name}')">
-                    <div class="text-muted">Remote: origin</div>
-                    Push <i class="bi bi-arrow-up-short"></i>
+                    <i class="bi bi-github text-muted"> Remote: origin </i> Push <i class="bi bi-arrow-up-short"></i>
                 </a>
             </li>
             <li class="nav-item" id="refresh">
@@ -228,6 +223,7 @@ function getRepo(name) {
             </li>
             <input id="copy" value="${data.path}" style="display:none">
             `);
+        $('#refresh').insertBefore($('#current').parent());
         getBranches(name);
         getDiff(name);
         getReadme(name);

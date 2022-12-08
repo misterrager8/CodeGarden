@@ -1,8 +1,6 @@
 CodeGarden.egg-info/
 .env
-.sh
 *.pyc
 .DS_Store
 docs/
-todos.txt
 todos.json

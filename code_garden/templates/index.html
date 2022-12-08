@@ -7,7 +7,7 @@
 		<span class="spinner-border spinner-border-sm" id="spinner" style="display: none;"></span>
 		<div class="collapse navbar-collapse">
 			<ul class="navbar-nav me-auto" id="nav">
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown me-3">
 					<a data-bs-toggle="dropdown" data-bs-target="#repos" class="nav-link dropdown-toggle" id="current">Select Repository</a>
 					<div class="dropdown-menu" id="repos">
 						<a onclick="createRepoPage()" class="dropdown-item text-success font-custom"><i class="bi bi-plus-lg"></i> New Repo</a>
@@ -32,5 +32,5 @@
 		</div>
 	</div>
 </nav>
-<div id="index"></div>
+<div id="index" class="mt-2"></div>
 {% endblock %}
