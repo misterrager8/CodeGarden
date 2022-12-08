@@ -4,5 +4,5 @@ CodeGarden.egg-info/
 *.pyc
 .DS_Store
 docs/
-todo.txt
 todos.txt
+todos.json

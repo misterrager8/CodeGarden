@@ -1,4 +1,5 @@
 import datetime
+import json
 import subprocess
 from pathlib import Path
 
@@ -21,15 +22,9 @@ class Repository(object):
 
     @property
     def todos(self) -> list:
-        return (
-            [
-                Todo.from_text(i.strip())
-                for i in open(self.path / "todos.txt").readlines()
-                if i.strip()
-            ]
-            if (self.path / "todos.txt").exists()
-            else []
-        )
+        with open(self.path / "todos.json") as f:
+            data = json.load(f)
+        return [Todo(i) for i in data["todos"]]
 
     @property
     def log(self, limit: int = 5) -> list:
@@ -63,21 +58,23 @@ class Repository(object):
             if i.startswith("* "):
                 return i.replace("* ", "")
 
-    def set_todos(self, todos: list):
-        with open((self.path / "todos.txt"), "w") as f:
-            for i in todos:
-                f.write(i.to_text() + "\n")
+    def create_branch(self, name: str) -> str:
+        return self.run_cmd(["git", "checkout", "-b", name])
 
-    def init(self, brief_descrip: str) -> str:
+    def set_todos(self, todos: list):
+        with open((self.path / "todos.json"), "w") as f:
+            json.dump(dict(todos=[i.data for i in todos]), f, indent=4)
+
+    def init(self, brief_descrip: str):
         self.path.mkdir()
         open(self.path / "README.md", "w").write(
             f"# {self.name}\n---\n\n{brief_descrip}\n"
         )
         (self.path / "LICENSE.md").touch()
-        (self.path / ".gitignore").touch()
-        (self.path / "todos.txt").touch()
+        open(self.path / ".gitignore", "w").write("todos.json\n")
+        open(self.path / "todos.json", "w").write('{"todos":[]}')
         self.run_cmd(["git", "init"])
-        return self.commit("Initial commit")
+        self.commit("Initial commit")
 
     def push(self) -> str:
         return self.run_cmd(["git", "push", "origin"])
@@ -115,22 +112,14 @@ class Repository(object):
 
 
 class Todo(object):
-    def __init__(self, description: str, done: bool):
-        self.description = description
-        self.done = done
+    def __init__(self, data: dict):
+        self.data = data
+
+    def to_string(self) -> str:
+        return f"{self.data['category']}: {self.data['description']}"
 
     def toggle(self):
-        self.done = not self.done
-
-    @classmethod
-    def from_text(cls, txt: str):
-        return Todo(txt[4:], txt.startswith("[x] "))
-
-    def to_text(self) -> str:
-        return f"[{'x' if self.done else ' '}] {self.description}"
-
-    def to_dict(self) -> dict:
-        return dict(description=self.description, done=self.done)
+        self.data["done"] = not self.data["done"]
 
 
 class File(object):

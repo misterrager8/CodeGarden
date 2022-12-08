@@ -95,6 +95,8 @@ const logItem = (item) => `
 const todoItem = (item, repo_, id) => `
 <div class="hover input-group input-group-sm mb-1 ${item.done ? 'opacity-25' : ''}">
     <a onclick="toggleTodo('${repo_}', '${id}')" class="text-${item.done ? 'success' : 'secondary'}"><i class="bi bi-check-lg"></i></a>
+    <a onclick="commitTodo('${repo_}', '${id}')" class="text-secondary"><i class="bi bi-file-diff"></i></a>
+    <span class="cat-badge ms-1" style="color:${getCategoryColor(item.category)}">${item.category}:</span>
     <input onchange="editTodo('${repo_}', '${id}')" id="description${id}" autocomplete="off" class="form-control border-0" value="${item.description}">
     <a onclick="deleteTodo('${repo_}', '${id}')" class="text-danger"><i class="bi bi-x-lg"></i></a>
 </div>
@@ -105,13 +107,13 @@ const addTodoForm = (repo_) => `
     <a data-bs-toggle="dropdown" data-bs-target="#categories" class="btn" id="selected">
         <span class="text-secondary"><i class="bi bi-caret-down-fill"></i></span>
     </a>
-    <input id="category" type="hidden" value="">
+    <input id="category" type="hidden" value="MISC">
     <div id="categories" class="dropdown-menu">
         <a onclick="selectCategory('FEATURE')" class="btn"><span style="color: #0d6efd"><i class="bi bi-node-plus"></i> FEATURE</span></a><br>
         <a onclick="selectCategory('TWEAK')" class="btn"><span style="color: #fd7e14"><i class="bi bi-wrench-adjustable"></i> TWEAK</span></a><br>
         <a onclick="selectCategory('CHORE')" class="btn"><span style="color: #6f42c1"><i class="bi bi-list-check"></i> CHORE</span></a><br>
         <a onclick="selectCategory('BUGFIX')" class="btn"><span style="color: #dc3545"><i class="bi bi-bug"></i> BUGFIX</span></a><br>
-        <a onclick="selectCategory('')" class="btn"><span class="text-secondary"><i class="bi bi-circle"></i> MISC</span></a>
+        <a onclick="selectCategory('MISC')" class="btn"><span class="text-secondary"><i class="bi bi-circle"></i> MISC</span></a>
     </div>
     <input id="description" autocomplete="off" class="form-control" placeholder="TODO">
 </form>
@@ -156,7 +158,7 @@ function getTodos(name) {
     $.get('get_todos', {
         name: name
     }, function (data) {
-        $('#todos').html(addTodoForm(name));
+        $('#todos').html(`${addTodoForm(name)}<div><a class="btn btn-sm text-warning" onclick="clearCompleted('${name}')">Clear Completed</a></div>`);
         for (let [id, x] of data.todos.entries()) {
             $('#todos').append(todoItem(x, name, id));
         }
@@ -167,6 +169,11 @@ function getBranches(name) {
     $.get('get_branches', {
         name: name
     }, function (data) {
+        $('#branches').append(`
+            <form onsubmit="event.preventDefault(); createBranch('${name}')">
+                <input id="newBranch" autocomplete="off" class="form-control form-control-sm border-success" placeholder="New Branch">
+            </form>
+            `);
         for (x of data.branches) {
             if (!x.startsWith('* ')) {
                 $('#branches').append(`<a onclick="checkout('${name}', '${x}')" class="dropdown-item">${x}</a>`);
@@ -200,6 +207,7 @@ function getRepo(name) {
         $('#branchSelect').remove();
         $('#push').remove();
         $('#copy').remove();
+        $('#refresh').remove();
         $('#nav').append(`
             <li class="nav-item dropdown" id="branchSelect">
                 <a data-bs-toggle="dropdown" data-bs-target="#branches" class="nav-link dropdown-toggle">
@@ -214,6 +222,9 @@ function getRepo(name) {
                     <div class="text-muted">Remote: origin</div>
                     Push <i class="bi bi-arrow-up-short"></i>
                 </a>
+            </li>
+            <li class="nav-item" id="refresh">
+                <a onclick="getRepo('${name}')" class="nav-link"><i class="bi bi-arrow-clockwise"></i></a>
             </li>
             <input id="copy" value="${data.path}" style="display:none">
             `);
@@ -262,6 +273,24 @@ function deleteTodo(name, id) {
     });
 }
 
+function commitTodo(name, id) {
+    $.get('commit_todo', {
+        name: name,
+        id: id,
+    }, function(data) {
+        $('#spinner').hide();
+        getRepo(name);
+    });
+}
+
+function clearCompleted(name) {
+    $.get('clear_completed', {
+        name: name
+    }, function(data) {
+        getRepo(name);
+    });
+}
+
 function toggleTodo(name, id) {
     $.get('toggle_todo', {
         name: name,
@@ -287,6 +316,15 @@ function checkout(name, branch) {
     $.get('checkout', {
         name: name,
         branch: branch
+    }, function(data) {
+        getRepo(name);
+    });
+}
+
+function createBranch(name) {
+    $.post('create_branch', {
+        repo: name,
+        name: $('#newBranch').val()
     }, function(data) {
         getRepo(name);
     });
@@ -324,7 +362,7 @@ function selectCategory(cat) {
         case 'BUGFIX':
             $('#selected').html(`<span style="color: #dc3545"><i class="bi-bug"></i></span>`);
             break;
-        case '':
+        case 'MISC':
             $('#selected').html(`<span class="text-secondary"><i class="bi-caret-down-fill"></i></span>`);
     }
 }
@@ -337,4 +375,28 @@ function copyPath() {
     copyThis.style.display = 'none';
     $('#clipboard').toggleClass(['bi-clipboard', 'bi-clipboard-check', 'text-success']);
     setTimeout(function() { $('#clipboard').toggleClass(['bi-clipboard', 'bi-clipboard-check', 'text-success']); }, 1500);
+}
+
+function getCategoryColor(category) {
+    switch(category) {
+        case 'FEATURE':
+            x = '#0d6efd';
+            return x;
+            break;
+        case 'TWEAK':
+            x = '#fd7e14';
+            return x;
+            break;
+        case 'CHORE':
+            x = '#6f42c1';
+            return x;
+            break;
+        case 'BUGFIX':
+            x = '#dc3545';
+            return x;
+            break;
+        case 'MISC':
+            x = 'gray';
+            return x;
+    }
 }

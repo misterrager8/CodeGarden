@@ -27,7 +27,7 @@ def get_readme():
 @repositories.route("/get_todos")
 def get_todos():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
-    return dict(todos=[i.to_dict() for i in repo_.todos])
+    return dict(todos=[i.data for i in repo_.todos])
 
 
 @repositories.route("/get_diffs")
@@ -64,6 +64,14 @@ def commit():
 def checkout():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     repo_.checkout(request.args.get("branch"))
+
+    return redirect(request.referrer)
+
+
+@repositories.route("/create_branch", methods=["POST"])
+def create_branch():
+    repo_ = Repository(config.HOME_DIR / request.form.get("repo"))
+    repo_.create_branch(request.form.get("name"))
 
     return redirect(request.referrer)
 

@@ -12,8 +12,11 @@ def create_todo():
     todos_ = repo_.todos
     todos_.append(
         Todo(
-            f"{request.form.get('category') or 'MISC'}: {request.form.get('description')}",
-            False,
+            dict(
+                description=request.form.get("description"),
+                done=False,
+                category=request.form.get("category"),
+            )
         )
     )
 
@@ -26,7 +29,9 @@ def create_todo():
 def edit_todo():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
     todos_ = repo_.todos
-    todos_[int(request.form.get("id"))].description = request.form.get("description")
+    todos_[int(request.form.get("id"))].data["description"] = request.form.get(
+        "description"
+    )
 
     repo_.set_todos(todos_)
 
@@ -51,5 +56,27 @@ def delete_todo():
     del todos_[int(request.args.get("id"))]
 
     repo_.set_todos(todos_)
+
+    return redirect(request.referrer)
+
+
+@todos.route("/commit_todo")
+def commit_todo():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    todos_ = repo_.todos
+    repo_.commit(todos_[int(request.args.get("id"))].to_string())
+    todos_[int(request.args.get("id"))].toggle()
+
+    repo_.set_todos(todos_)
+
+    return redirect(request.referrer)
+
+
+@todos.route("/clear_completed")
+def clear_completed():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    todos_ = repo_.todos
+
+    repo_.set_todos([i for i in todos_ if not i.data["done"]])
 
     return redirect(request.referrer)

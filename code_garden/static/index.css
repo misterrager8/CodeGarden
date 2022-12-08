@@ -19,11 +19,16 @@ body, nav, .form-control, .form-control:focus, .dropdown-menu, .dropdown-item {
 	color: var(--primary-txt);
 }
 
-.font-custom, .btn, .nav-link, .navbar-brand, label {
+.font-custom, .btn, .nav-link, .navbar-brand {
 	letter-spacing: 2px;
 	font-size: 0.9em;
 }
 
 .hover:hover {
 	border-bottom: 1px solid;
+}
+
+.cat-badge {
+	font-size: 0.8em;
+	padding: 5px 5px;
 }
