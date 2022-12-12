@@ -22,12 +22,17 @@
 			</ul>
 			<ul class="navbar-nav ms-auto">
 				<li class="nav-item">
-					<a class="ms-2 btn btn-sm text-light" onclick="setLight()" id="dark"><i class="bi bi-sun"></i></a>
-					<a class="ms-2 btn btn-sm text-dark" onclick="setDark()" id="light"><i class="bi bi-moon"></i></a>
+					<a class="ms-2 btn btn-sm text-light" onclick="setLight()" id="dark"><i class="bi bi-sun-fill"></i></a>
+					<a class="ms-2 btn btn-sm text-dark" onclick="setDark()" id="light"><i class="bi bi-moon-fill"></i></a>
 				</li>
 				<li class="nav-item">
 					<a class="btn btn-sm text-secondary" onclick="settingsPage()"><i class="bi bi-gear"></i></a>
 				</li>
+				{% if env == 'development' %}
+				<li class="nav-item">
+					<span class="btn btn-sm text-secondary">Developer Mode</span>
+				</li>
+				{% endif %}
 			</ul>
 		</div>
 	</div>

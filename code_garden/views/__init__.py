@@ -9,6 +9,11 @@ def get_repositories():
     return dict(repositories=Repository.all())
 
 
+@current_app.context_processor
+def get_env():
+    return dict(env=current_app.config["ENV"])
+
+
 @current_app.route("/")
 def index():
     return render_template("index.html")
