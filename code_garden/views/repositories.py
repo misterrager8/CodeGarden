@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, redirect, render_template, request
 
 from code_garden import config, generator
@@ -15,7 +17,11 @@ def create_repository():
 
 @repositories.route("/get_repository")
 def get_repository():
-    return Repository(config.HOME_DIR / request.args.get("name")).to_dict()
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    if not (repo_.path / "todos.json").exists():
+        with open(repo_.path / "todos.json", "w") as f:
+            json.dump(dict(todos=[]), f, indent=4)
+    return repo_.to_dict()
 
 
 @repositories.route("/get_readme")
