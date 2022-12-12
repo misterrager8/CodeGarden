@@ -48,6 +48,21 @@ def get_file():
     return file_.content
 
 
+@repositories.route("/get_ignored")
+def get_ignored():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    return dict(ignored=repo_.ignored)
+
+
+@repositories.route("/ignore_file")
+def ignore_file():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    file_ = File(request.args.get("path"))
+
+    repo_.ignore(file_.path)
+    return ""
+
+
 @repositories.route("/get_log")
 def get_log():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))

@@ -58,6 +58,12 @@ class Repository(object):
             if i.startswith("* "):
                 return i.replace("* ", "")
 
+    @property
+    def ignored(self) -> list:
+        return [
+            i.strip() for i in open(self.path / ".gitignore").readlines() if i.strip()
+        ]
+
     def create_branch(self, name: str) -> str:
         return self.run_cmd(["git", "checkout", "-b", name])
 
@@ -91,6 +97,9 @@ class Repository(object):
 
     def merge(self, branch: str) -> str:
         return ""
+
+    def ignore(self, file: str):
+        open(self.path / ".gitignore", "a").write("\n" + Path(file).name + "\n")
 
     @classmethod
     def all(cls) -> list:

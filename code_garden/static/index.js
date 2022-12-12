@@ -56,6 +56,8 @@ const repo = (repo_) => `
                 <a id="history" onclick="getLog('${repo_}')" class="btn btn-outline-secondary">History</a>
             </div>
             <div id="sideStage"></div>
+            <a onclick="$('#ignored').fadeToggle(150)" class="btn btn-sm text-secondary p-0 my-2"><i class="bi bi-eye-slash"></i> Show Ignored</a>
+            <div id="ignored" style="display: none"></div>
         </div>
         <div class="col-12 mt-3">
             <div id="commit"></div>
@@ -76,7 +78,8 @@ const repo = (repo_) => `
 </div>
 `;
 
-const diffItem = (item) => `
+const diffItem = (item, repo_) => `
+<a title="Add to gitignore" class="text-secondary me-1" onclick="ignoreFile('${repo_}', '${item.path}')"><i class="bi bi-eye-slash"></i></a>
 <a onclick="getFile('${item.path}')" class="hover">
     <span>${item.name}</span>
     <span class="float-end" style="color: ${item.color}"><i class="bi bi-circle"></i></span>
@@ -129,7 +132,18 @@ function getDiff(name) {
     }, function (data) {
         $('#sideStage').html(`<div class="small text-center">${data.diffs.length} changed files</div>`);
         for (x of data.diffs) {
-            $('#sideStage').append(diffItem(x));
+            $('#sideStage').append(diffItem(x, name));
+        }
+        $('#spinner').hide();
+    });
+}
+
+function getIgnored(name) {
+    $.get('get_ignored', {
+        name: name
+    }, function (data) {
+        for (x of data.ignored) {
+            $('#ignored').append(`<div><a class="hover">${x}</a></div>`);
         }
         $('#spinner').hide();
     });
@@ -206,6 +220,17 @@ function getFile(path) {
     });
 }
 
+function ignoreFile(name, path) {
+    $('#spinner').show();
+    $.get('ignore_file', {
+        name: name,
+        path: path
+    }, function (data) {
+        getRepo(name);
+        $('#spinner').hide();
+    });
+}
+
 function getRepo(name) {
     $('#spinner').show();
     $.get('get_repository', {
@@ -241,6 +266,7 @@ function getRepo(name) {
         getDiff(name);
         getReadme(name);
         getTodos(name);
+        getIgnored(name)
         $('#spinner').hide();
     });
 }
