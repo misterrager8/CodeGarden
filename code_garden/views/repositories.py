@@ -63,6 +63,15 @@ def ignore_file():
     return ""
 
 
+@repositories.route("/reset_file")
+def reset_file():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    file_ = File(request.args.get("path"))
+
+    repo_.reset(file_.path)
+    return ""
+
+
 @repositories.route("/get_log")
 def get_log():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))

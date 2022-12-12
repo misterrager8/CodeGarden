@@ -89,8 +89,8 @@ class Repository(object):
         self.run_cmd(["git", "add", "-A"])
         return self.run_cmd(["git", "commit", "-am", msg])
 
-    def reset(self) -> str:
-        return ""
+    def reset(self, file: str) -> str:
+        return self.run_cmd(["git", "checkout", "HEAD", "--", file])
 
     def checkout(self, branch: str, new_branch: bool = False) -> str:
         return self.run_cmd(["git", "checkout", branch])

@@ -80,6 +80,7 @@ const repo = (repo_) => `
 
 const diffItem = (item, repo_) => `
 <a title="Add to gitignore" class="text-secondary me-1" onclick="ignoreFile('${repo_}', '${item.path}')"><i class="bi bi-eye-slash"></i></a>
+<a class="text-danger me-1" onclick="resetFile('${repo_}', '${item.path}')"><i class="bi bi-x-lg"></i></a>
 <a onclick="getFile('${item.path}')" class="hover">
     <span>${item.name}</span>
     <span class="float-end" style="color: ${item.color}"><i class="bi bi-circle"></i></span>
@@ -228,6 +229,17 @@ function getFile(path) {
 function ignoreFile(name, path) {
     $('#spinner').show();
     $.get('ignore_file', {
+        name: name,
+        path: path
+    }, function (data) {
+        getRepo(name);
+        $('#spinner').hide();
+    });
+}
+
+function resetFile(name, path) {
+    $('#spinner').show();
+    $.get('reset_file', {
         name: name,
         path: path
     }, function (data) {
