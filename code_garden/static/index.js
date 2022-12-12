@@ -120,6 +120,7 @@ const addTodoForm = (repo_) => `
 `;
 
 function getDiff(name) {
+    $('#spinner').show();
     $('#changes').addClass('active');
     $('#history').removeClass('active');
     $('#sideStage').html('');
@@ -130,10 +131,12 @@ function getDiff(name) {
         for (x of data.diffs) {
             $('#sideStage').append(diffItem(x));
         }
+        $('#spinner').hide();
     });
 }
 
 function getLog(name) {
+    $('#spinner').show();
     $('#changes').removeClass('active');
     $('#history').addClass('active');
     $('#sideStage').html('');
@@ -143,18 +146,22 @@ function getLog(name) {
         for (x of data.log) {
             $('#sideStage').append(logItem(x));
         }
+        $('#spinner').hide();
     });
 }
 
 function getReadme(name) {
+    $('#spinner').show();
     $.get('get_readme', {
         name: name
     }, function (data) {
         $('#stage').html(data);
+        $('#spinner').hide();
     });
 }
 
 function getTodos(name) {
+    $('#spinner').show();
     $.get('get_todos', {
         name: name
     }, function (data) {
@@ -162,10 +169,12 @@ function getTodos(name) {
         for (let [id, x] of data.todos.entries()) {
             $('#todos').append(todoItem(x, name, id));
         }
+        $('#spinner').hide();
     });
 }
 
 function getBranches(name) {
+    $('#spinner').show();
     $.get('get_branches', {
         name: name
     }, function (data) {
@@ -179,10 +188,12 @@ function getBranches(name) {
                 $('#branches').append(`<a onclick="checkout('${name}', '${x}')" class="dropdown-item">${x}</a>`);
             }
         }
+        $('#spinner').hide();
     });
 }
 
 function getFile(path) {
+    $('#spinner').show();
     $.get('get_file', {
         path: path
     }, function (data) {
@@ -191,10 +202,12 @@ function getFile(path) {
             <div class="font-monospace" style="white-space:pre-wrap; font-size: 0.9em" id="file"></div>
             `);
         $('#file').text(data);
+        $('#spinner').hide();
     });
 }
 
 function getRepo(name) {
+    $('#spinner').show();
     $.get('get_repository', {
         name: name
     }, function (data) {
@@ -228,71 +241,85 @@ function getRepo(name) {
         getDiff(name);
         getReadme(name);
         getTodos(name);
+        $('#spinner').hide();
     });
 }
 
 function createRepository() {
+    $('#spinner').show();
     $.post('create_repository', {
         name: $('#name').val(),
         brief_descrip: $('#briefDescrip').val()
     }, function(data) {
         getRepo($('#name').val());
+        $('#spinner').hide();
     });
 }
 
 function addTodo(name) {
+    $('#spinner').show();
     $.post('create_todo', {
         name: name,
         category: $('#category').val(),
         description: $('#description').val()
     }, function(data) {
         getTodos(name);
+        $('#spinner').hide();
     });
 }
 
 function editTodo(name, id) {
+    $('#spinner').show();
     $.post('edit_todo', {
         name: name,
         id: id,
         description: $('#description' + id).val()
     }, function(data) {
         getTodos(name);
+        $('#spinner').hide();
     });
 }
 
 function deleteTodo(name, id) {
+    $('#spinner').show();
     $.get('delete_todo', {
         name: name,
         id: id,
     }, function(data) {
         getTodos(name);
+        $('#spinner').hide();
     });
 }
 
 function commitTodo(name, id) {
+    $('#spinner').show();
     $.get('commit_todo', {
         name: name,
         id: id,
     }, function(data) {
-        $('#spinner').hide();
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
 function clearCompleted(name) {
+    $('#spinner').show();
     $.get('clear_completed', {
         name: name
     }, function(data) {
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
 function toggleTodo(name, id) {
+    $('#spinner').show();
     $.get('toggle_todo', {
         name: name,
         id: id,
     }, function(data) {
         getTodos(name);
+        $('#spinner').hide();
     });
 }
 
@@ -305,24 +332,29 @@ function commit(name) {
         $('#spinner').hide();
         alert(data);
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
 function checkout(name, branch) {
+    $('#spinner').show();
     $.get('checkout', {
         name: name,
         branch: branch
     }, function(data) {
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
 function createBranch(name) {
+    $('#spinner').show();
     $.post('create_branch', {
         repo: name,
         name: $('#newBranch').val()
     }, function(data) {
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
@@ -331,9 +363,9 @@ function push(name) {
     $.get('push', {
         name: name
     }, function(data) {
-        $('#spinner').hide();
         alert(data);
         getRepo(name);
+        $('#spinner').hide();
     });
 }
 
