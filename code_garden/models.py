@@ -96,7 +96,7 @@ class Repository(object):
         return self.run_cmd(["git", "checkout", branch])
 
     def merge(self, branch: str) -> str:
-        return ""
+        return self.run_cmd(["git", "merge", branch])
 
     def ignore(self, file: str):
         open(self.path / ".gitignore", "a").write("\n" + Path(file).name + "\n")

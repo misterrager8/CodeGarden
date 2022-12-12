@@ -199,7 +199,12 @@ function getBranches(name) {
             `);
         for (x of data.branches) {
             if (!x.startsWith('* ')) {
-                $('#branches').append(`<a onclick="checkout('${name}', '${x}')" class="dropdown-item">${x}</a>`);
+                $('#branches').append(`
+                    <div class="dropdown-item d-flex justify-content-between">
+                        <a onclick="checkout('${name}', '${x}')">${x}</a>
+                        <a onclick="merge('${name}', '${x}')"><i class="bi bi-sign-merge-left"></i></a>
+                    </div>
+                    `);
             }
         }
         $('#spinner').hide();
@@ -370,6 +375,18 @@ function checkout(name, branch) {
     }, function(data) {
         getRepo(name);
         $('#spinner').hide();
+    });
+}
+
+function merge(name, branch) {
+    $('#spinner').show();
+    $.get('merge', {
+        name: name,
+        branch: branch
+    }, function(data) {
+        getRepo(name);
+        $('#spinner').hide();
+        alert(data);
     });
 }
 

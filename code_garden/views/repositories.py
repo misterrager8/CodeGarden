@@ -89,6 +89,12 @@ def checkout():
     return redirect(request.referrer)
 
 
+@repositories.route("/merge")
+def merge():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    return repo_.merge(request.args.get("branch"))
+
+
 @repositories.route("/create_branch", methods=["POST"])
 def create_branch():
     repo_ = Repository(config.HOME_DIR / request.form.get("repo"))
