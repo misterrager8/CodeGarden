@@ -31,20 +31,38 @@ function settingsPage() {
     });
 }
 
-function createRepoPage() {
-    $('#index').html(`
-        <div>
-            <a onclick="getRepo('${localStorage.getItem('lastRepoOpened')}');" class="btn btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Back</a>
-            <form onsubmit="event.preventDefault(); createRepository();" class="mt-3">
-                <div class="input-group input-group-sm mb-3">
-                    <input autocomplete="off" class="form-control" id="name" placeholder="Name" required>
-                    <a onclick="generateRepoName()" class="btn btn-outline-primary">Generate Name <i class="bi bi-shuffle"></i></a>
+function createRepoPage(clone) {
+    if (!clone) {
+        $('#index').html(`
+            <div>
+                <a onclick="getRepo('${localStorage.getItem('lastRepoOpened')}');" class="btn btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+                <div class="mt-3">
+                    <a class="btn btn-sm btn-outline-secondary" onclick="createRepoPage(true)"><i class="bi bi-git"></i> Clone Repo</a>
+                    <form onsubmit="event.preventDefault(); createRepository();" class="mt-3">
+                        <div class="input-group input-group-sm mb-3">
+                            <input autocomplete="off" class="form-control" id="name" placeholder="Name" required>
+                            <a onclick="generateRepoName()" class="btn btn-outline-primary">Generate Name <i class="bi bi-shuffle"></i></a>
+                        </div>
+                        <textarea rows=10 autocomplete="off" class="form-control form-control-sm mb-3" id="briefDescrip" placeholder="Description"></textarea>
+                        <button type="submit" class="btn btn-sm btn-outline-success w-100">Create New Repository</button>
+                    </form>
                 </div>
-                <textarea rows=10 autocomplete="off" class="form-control form-control-sm mb-3" id="briefDescrip" placeholder="Description"></textarea>
-                <button type="submit" class="btn btn-sm btn-outline-success w-100">Create New Repository</button>
-            </form>
-        </div>
-        `);
+            </div>
+            `);
+    } else {
+        $('#index').html(`
+            <div>
+                <a onclick="getRepo('${localStorage.getItem('lastRepoOpened')}');" class="btn btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+                <div class="mt-3">
+                    <a class="btn btn-sm btn-outline-secondary" onclick="createRepoPage(false)"><i class="bi bi-plus-lg"></i> Create New Repo</a>
+                    <form onsubmit="event.preventDefault(); cloneRepository();" class="input-group input-group-sm mt-3">
+                        <input autocomplete="off" class="form-control" id="url" placeholder="Git URL" required>
+                        <button type="submit" class="btn btn-sm btn-outline-success">Clone Repository</button>
+                    </form>
+                </div>
+            </div>
+            `);
+    }
 }
 
 const repo = (repo_) => `
@@ -74,7 +92,8 @@ const repo = (repo_) => `
 </div>
 <div class="pt-5">
     <a onclick="copyPath()" class="btn btn-sm text-secondary"><i class="bi bi-clipboard" id="clipboard"></i> Copy Path</a>
-    <a class="btn btn-sm text-danger"><i class="bi bi-trash2"></i> Delete</a>
+    <a onclick="$('#delete-repo').fadeToggle(150);" class="btn btn-sm text-danger"><i class="bi bi-trash2"></i> Delete</a>
+    <a onclick="deleteRepository('${repo_}')" id="delete-repo" style="display: none" class="btn btn-sm text-danger">Delete?</a>
 </div>
 `;
 
@@ -131,7 +150,12 @@ function getDiff(name) {
     $.get('get_diffs', {
         name: name
     }, function (data) {
-        $('#sideStage').html(`<div class="small text-center">${data.diffs.length} changed files</div>`);
+        $('#sideStage').html(`
+            <div class="small text-center">
+                <div>${data.diffs.length} changed files</div>
+                ${data.diffs.length > 0 ? `<a title="This cannot be undone." class="text-danger hover" onclick="resetAll('${name}')">Reset All</a>` : ''}
+            </div>
+            `);
         for (x of data.diffs) {
             $('#sideStage').append(diffItem(x, name));
         }
@@ -194,7 +218,7 @@ function getBranches(name) {
         name: name
     }, function (data) {
         $('#branches').append(`
-            <form onsubmit="event.preventDefault(); createBranch('${name}')">
+            <form class="m-1" onsubmit="event.preventDefault(); createBranch('${name}')">
                 <input id="newBranch" autocomplete="off" class="form-control form-control-sm border-success" placeholder="New Branch">
             </form>
             `);
@@ -203,7 +227,10 @@ function getBranches(name) {
                 $('#branches').append(`
                     <div class="dropdown-item d-flex justify-content-between">
                         <a onclick="checkout('${name}', '${x}')">${x}</a>
-                        <a onclick="merge('${name}', '${x}')"><i class="bi bi-sign-merge-left"></i></a>
+                        <div>
+                            <a onclick="merge('${name}', '${x}')"><i class="bi bi-sign-merge-left"></i></a>
+                            <a onclick="deleteBranch('${name}', '${x}')" class="text-danger" onclick=""><i class="bi bi-x-lg"></i></a>
+                        </div>
                     </div>
                     `);
             }
@@ -242,6 +269,16 @@ function resetFile(name, path) {
     $.get('reset_file', {
         name: name,
         path: path
+    }, function (data) {
+        getRepo(name);
+        $('#spinner').hide();
+    });
+}
+
+function resetAll(name) {
+    $('#spinner').show();
+    $.get('reset_all', {
+        name: name
     }, function (data) {
         getRepo(name);
         $('#spinner').hide();
@@ -296,6 +333,27 @@ function createRepository() {
     }, function(data) {
         getRepo($('#name').val());
         $('#spinner').hide();
+    });
+}
+
+function cloneRepository () {
+    $('#spinner').show();
+    $.post('clone_repository', {
+        url: $('#url').val()
+    }, function(data) {
+        $('#spinner').hide();
+        alert(data);
+        window.location.reload();
+    });
+}
+
+function deleteRepository(name) {
+    $('#spinner').show();
+    $.get('delete_repository', {
+        name: name,
+    }, function(data) {
+        localStorage.setItem('lastRepoOpened', '');
+        window.location.reload();
     });
 }
 
@@ -407,6 +465,17 @@ function createBranch(name) {
     $.post('create_branch', {
         repo: name,
         name: $('#newBranch').val()
+    }, function(data) {
+        getRepo(name);
+        $('#spinner').hide();
+    });
+}
+
+function deleteBranch(name, branch) {
+    $('#spinner').show();
+    $.get('delete_branch', {
+        repo: name,
+        name: branch
     }, function(data) {
         getRepo(name);
         $('#spinner').hide();

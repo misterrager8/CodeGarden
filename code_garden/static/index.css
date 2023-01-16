@@ -1,11 +1,11 @@
 :root, html[data-theme='light'] {
-	--primary-bg: white;
+	--primary-bg: #cccccc;
 	--primary-txt: #1a1a1a;
 }
 
 html[data-theme='dark'] {
 	--primary-bg: #1a1a1a;
-	--primary-txt: white;
+	--primary-txt: #cccccc;
 }
 
 a, a:hover, .nav-link, .nav-link:hover {
@@ -31,4 +31,12 @@ body, nav, .form-control, .form-control:focus, .dropdown-menu, .dropdown-item {
 .cat-badge {
 	font-size: 0.8em;
 	padding: 5px 5px;
+}
+
+.form-control {
+	border-color: inherit;
+}
+
+a[class*='warning'] {
+	color: darkorange !important;
 }

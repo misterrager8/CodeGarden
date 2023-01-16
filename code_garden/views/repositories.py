@@ -15,6 +15,18 @@ def create_repository():
     return redirect(request.referrer)
 
 
+@repositories.route("/clone_repository", methods=["POST"])
+def clone_repository():
+    return Repository.clone(request.form.get("url"))
+
+
+@repositories.route("/delete_repository")
+def delete_repository():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    repo_.delete()
+    return redirect(request.referrer)
+
+
 @repositories.route("/get_repository")
 def get_repository():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
@@ -72,6 +84,14 @@ def reset_file():
     return ""
 
 
+@repositories.route("/reset_all")
+def reset_all():
+    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+    repo_.reset_all()
+
+    return ""
+
+
 @repositories.route("/get_log")
 def get_log():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
@@ -108,6 +128,14 @@ def merge():
 def create_branch():
     repo_ = Repository(config.HOME_DIR / request.form.get("repo"))
     repo_.create_branch(request.form.get("name"))
+
+    return redirect(request.referrer)
+
+
+@repositories.route("/delete_branch")
+def delete_branch():
+    repo_ = Repository(config.HOME_DIR / request.args.get("repo"))
+    print(repo_.delete_branch(request.args.get("name")))
 
     return redirect(request.referrer)
 

@@ -10,7 +10,7 @@
 				<li class="nav-item dropdown me-3">
 					<a data-bs-toggle="dropdown" data-bs-target="#repos" class="nav-link dropdown-toggle" id="current">Select Repository</a>
 					<div class="dropdown-menu" id="repos">
-						<a onclick="createRepoPage()" class="dropdown-item text-success font-custom"><i class="bi bi-plus-lg"></i> New Repo</a>
+						<a onclick="createRepoPage(false)" class="dropdown-item text-success font-custom"><i class="bi bi-plus-lg"></i> New Repo</a>
 						{% for i in repositories %}
 						<a onclick="getRepo('{{ i.name }}')" class="dropdown-item">
 							<span>{{ i.name }}</span>

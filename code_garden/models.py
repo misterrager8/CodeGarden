@@ -1,5 +1,6 @@
 import datetime
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -67,6 +68,9 @@ class Repository(object):
     def create_branch(self, name: str) -> str:
         return self.run_cmd(["git", "checkout", "-b", name])
 
+    def delete_branch(self, name: str) -> str:
+        return self.run_cmd(["git", "branch", "-D", name])
+
     def set_todos(self, todos: list):
         with open((self.path / "todos.json"), "w") as f:
             json.dump(dict(todos=[i.data for i in todos]), f, indent=4)
@@ -82,6 +86,9 @@ class Repository(object):
         self.run_cmd(["git", "init"])
         self.commit("Initial commit")
 
+    def delete(self):
+        shutil.rmtree(self.path)
+
     def push(self) -> str:
         return self.run_cmd(["git", "push", "origin"])
 
@@ -91,6 +98,10 @@ class Repository(object):
 
     def reset(self, file: str) -> str:
         return self.run_cmd(["git", "checkout", "HEAD", "--", file])
+
+    def reset_all(self):
+        self.run_cmd(["git", "checkout", "."])
+        self.run_cmd(["git", "clean", "-fd"])
 
     def checkout(self, branch: str, new_branch: bool = False) -> str:
         return self.run_cmd(["git", "checkout", branch])
@@ -108,6 +119,12 @@ class Repository(object):
             for i in config.HOME_DIR.iterdir()
             if i.is_dir() and (i / ".git").exists()
         ]
+
+    @classmethod
+    def clone(cls, url: str) -> str:
+        return subprocess.run(
+            ["git", "clone", url], cwd=config.HOME_DIR, capture_output=True, text=True
+        ).stdout
 
     def run_cmd(self, args_: list) -> str:
         return subprocess.run(
