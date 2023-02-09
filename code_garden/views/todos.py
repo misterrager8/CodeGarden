@@ -22,7 +22,7 @@ def create_todo():
 
     repo_.set_todos(todos_)
 
-    return redirect(request.referrer)
+    return dict(todos=[i.data for i in repo_.todos])
 
 
 @todos.route("/edit_todo", methods=["POST"])
@@ -46,7 +46,7 @@ def toggle_todo():
 
     repo_.set_todos(todos_)
 
-    return redirect(request.referrer)
+    return dict(todos=[i.data for i in repo_.todos])
 
 
 @todos.route("/delete_todo")
@@ -57,7 +57,7 @@ def delete_todo():
 
     repo_.set_todos(todos_)
 
-    return redirect(request.referrer)
+    return dict(todos=[i.data for i in repo_.todos])
 
 
 @todos.route("/commit_todo")

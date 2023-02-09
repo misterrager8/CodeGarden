@@ -2,5 +2,4 @@ CodeGarden.egg-info/
 .env
 *.pyc
 .DS_Store
-docs/
 todos.json

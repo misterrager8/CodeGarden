@@ -166,6 +166,8 @@ class File(object):
         choices = {
             "M": "orange",
             "A": "green",
+            "AM": "green",
+            "MM": "green",
             "D": "red",
             "R": "yellow",
             "??": "green",

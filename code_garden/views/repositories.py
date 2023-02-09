@@ -33,7 +33,15 @@ def get_repository():
     if not (repo_.path / "todos.json").exists():
         with open(repo_.path / "todos.json", "w") as f:
             json.dump(dict(todos=[]), f, indent=4)
-    return repo_.to_dict()
+    return dict(
+        repo=repo_.to_dict(),
+        log=[i.to_dict() for i in repo_.log],
+        readme=repo_.readme,
+        todos=[i.data for i in repo_.todos],
+        diffs=[i.to_dict() for i in repo_.diffs],
+        branches=repo_.branches,
+        ignored=repo_.ignored,
+    )
 
 
 @repositories.route("/get_readme")

@@ -4,9 +4,9 @@ from code_garden import config
 from code_garden.models import Repository
 
 
-@current_app.context_processor
-def get_repositories():
-    return dict(repositories=Repository.all())
+@current_app.route("/get_repos")
+def get_repos():
+    return dict(repos=[i.to_dict() for i in Repository.all()])
 
 
 @current_app.context_processor
