@@ -24,7 +24,7 @@ function Navbar() {
                     {theme !== 'coral' && <a onClick={() => changeTheme('coral')} className="dropdown-item small">coral</a>}
                 </div>
                 <a className="btn btn-outline-secondary"><i className="bi bi-gear"></i> Settings</a>
-                <a className="btn btn-outline-secondary"><i className="bi bi-info-circle"></i> About</a>
+                <a target="_blank" href="https://github.com/misterrager8/CodeGarden/" className="btn btn-outline-secondary"><i className="bi bi-info-circle"></i> About</a>
             </div>
         </nav>
         );
@@ -32,6 +32,7 @@ function Navbar() {
 
 function Dashboard() {
     const [loading, setLoading] = React.useState(false);
+    const [deleting, setDeleting] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
     const [repos, setRepos] = React.useState([]);
     const [currentRepo, setCurrentRepo] = React.useState([]);
@@ -65,6 +66,28 @@ function Dashboard() {
             setIgnored(data.ignored);
 
             setLoading(false);
+        });
+    }
+
+    const createRepository = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        $.post('create_repository', {
+            name: $('#new-repo-name').val(),
+            brief_descrip: $('#new-repo-desc').val()
+        }, function(data) {
+            getRepo(data.name);
+            setLoading(false);
+            $('#new-repo').modal('toggle'); 
+        });
+    }
+
+    const deleteRepository = () => {
+        $.get('/delete_repository', {
+            name: currentRepo.name,
+        }, function(data) {
+            setCurrentRepo([]);
+            setRepos(data.repos);
         });
     }
 
@@ -149,7 +172,7 @@ function Dashboard() {
                 {currentRepo.length !== 0 && <a onClick={() => getRepo(currentRepo.name)} className="btn btn-sm text-secondary"><i className="bi bi-arrow-clockwise"></i></a>}
                 <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-target="#repos" data-bs-toggle="dropdown"><i className="bi bi-git"></i> {currentRepo ==! [] ? 'Select Repository' : currentRepo.name}</a>
                 <div id="repos" className="dropdown-menu">
-                    <a className="dropdown-item small"><i className="bi bi-plus-circle"></i> New Repository</a>
+                    <a data-bs-target="#new-repo" data-bs-toggle="modal" className="dropdown-item small"><i className="bi bi-plus-circle"></i> New Repository</a>
                     {repos.map((x, id) => (
                         <a onClick={() => getRepo(x.name)} key={id} className="dropdown-item small">{x.name}</a>
                         ))}
@@ -166,7 +189,8 @@ function Dashboard() {
                             ))}
                     </div>
                     <a onClick={() => copyPath()} className={'btn btn-sm text-' + (copied?'success':'secondary')}><i className={'bi bi-' + (copied?'check-lg':'clipboard')}></i> Copy Path</a>
-                    <a className="btn btn-sm text-danger"><i className="bi bi-x-circle"></i> Delete Repository</a>
+                    <a onClick={() => setDeleting(!deleting)} className="btn btn-sm text-danger"><i className="bi bi-x-circle"></i> Delete Repository</a>
+                    {deleting && <a onClick={() => deleteRepository()} className="btn btn-sm text-danger">Delete?</a>}
                 </span>)}
             </div>
             {currentRepo.length !== 0 && (
@@ -224,6 +248,17 @@ function Dashboard() {
                     <div className="col-9" dangerouslySetInnerHTML={{__html:readme }}></div>
                 </div>
             )}
+        <div className="modal" id="new-repo">
+            <div className="modal-dialog">
+                <div className="modal-content p-4">
+                    <form onSubmit={(e) => createRepository(e)}>
+                        <input autoComplete="off" className="form-control mb-3" placeholder="Name" id="new-repo-name" />
+                        <textarea rows="15" className="form-control mb-3" placeholder="Description" id="new-repo-desc"></textarea>
+                        <button type="submit" className="btn btn-outline-success"> Initialize Repository</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         </div>
         );
 }

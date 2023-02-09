@@ -28,7 +28,7 @@ html[data-theme='coral'] {
 	--primary-txt: #520500;
 }
 
-body, nav, .form-control, .form-control:focus, .dropdown-item, .dropdown-menu {
+body, .modal-content, nav, .form-control, .form-control:focus, .dropdown-item, .dropdown-menu {
 	background-color: var(--primary-bg);
 	color: var(--primary-txt);
 }

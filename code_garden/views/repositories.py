@@ -12,7 +12,7 @@ repositories = Blueprint("repositories", __name__)
 def create_repository():
     repo_ = Repository(config.HOME_DIR / request.form.get("name"))
     repo_.init(request.form.get("brief_descrip"))
-    return redirect(request.referrer)
+    return repo_.to_dict()
 
 
 @repositories.route("/clone_repository", methods=["POST"])
@@ -24,7 +24,7 @@ def clone_repository():
 def delete_repository():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     repo_.delete()
-    return redirect(request.referrer)
+    return dict(repos=[i.to_dict() for i in Repository.all()])
 
 
 @repositories.route("/get_repository")
