@@ -30,6 +30,191 @@ function Navbar() {
         );
 }
 
+function NewBranchForm(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const createBranch = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        $.post('/create_branch', {
+            repo: props.repo.name,
+            name: $('#new-branch').val()
+        }, function(data) {
+            props.callback(props.repo.name);
+            setLoading(false);
+        });
+    }
+
+    return (
+        <div className="p-1">
+            {loading && <span className="spinner-border spinner-border-sm"></span>}
+            <form className="input-group input-group-sm" onSubmit={(e) => createBranch(e)}>
+                <input autoComplete="off" className="form-control border-success" placeholder="New Branch" id="new-branch" />
+            </form>
+        </div>
+        );
+}
+
+function NewTodoForm(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const createTodo = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        $.post('/create_todo', {
+            name: props.repo.name,
+            description: $('#new-todo').val()
+        }, function(data) {
+            props.callback(props.repo.name);
+            setLoading(false);
+            $('#new-todo').val('');
+        });
+    }
+
+    return (
+        <form className="input-group input-group-sm my-2" onSubmit={(e) => createTodo(e)}>
+            <input className="form-control" placeholder="New TODO" autoComplete="off" id="new-todo" />
+        </form>
+        );
+}
+
+function NewRepoForm(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const createRepository = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        $.post('/create_repository', {
+            name: $('#new-repo-name').val(),
+            brief_descrip: $('#new-repo-desc').val()
+        }, function(data) {
+            props.callback(data.name);
+            setLoading(false);
+            $('#new-repo').modal('toggle'); 
+        });
+    }
+
+    return (
+        <form onSubmit={(e) => createRepository(e)}>
+            <input autoComplete="off" className="form-control mb-3" placeholder="Name" id="new-repo-name" />
+            <textarea rows="15" className="form-control mb-3" placeholder="Description" id="new-repo-desc"></textarea>
+            <button type="submit" className="btn btn-outline-success"> Initialize Repository</button>
+        </form>
+        );
+}
+
+function CommitForm(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const commit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        $.post('/commit', {
+            name: props.repo.name,
+            msg: $('#commit-msg').val()
+        }, function(data) {
+            props.callback(props.repo.name);
+        });
+    }
+
+    return (
+        <form className="input-group input-group-sm my-2" onSubmit={(e) => commit(e)}>
+            <input className="form-control border-primary" placeholder="Commit" autoComplete="off" id="commit-msg" />
+        </form>
+        );
+}
+
+function BranchItem(props) {
+    const checkout = () => {
+        $.get('/checkout', {
+            name: props.repo.name,
+            branch: props.branch
+        }, function(data) {
+            props.callback(props.repo.name);
+        });
+    }
+
+    return (<a onClick={() => checkout(props.branch)} className="dropdown-item small">{props.branch}</a>);
+}
+
+function LogItem(props) {
+    return (
+        <div className="text-truncate mb-2">
+            <div className="fw-bold">{props.item.msg}</div>
+            <div className="small">{props.item.timestamp}</div>
+        </div>
+        );
+}
+
+function TodoItem(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const toggleTodo = () => {
+        setLoading(true);
+        $.get('/toggle_todo', {
+            name: props.repo.name,
+            id: props.id
+        }, function(data) {
+            props.callback(props.repo.name);
+            setLoading(false);
+        });
+    }
+
+    const deleteTodo = () => {
+        setLoading(true);
+        $.get('/delete_todo', {
+            name: props.repo.name,
+            id: props.id
+        }, function(data) {
+            props.callback(props.repo.name);
+            setLoading(false);
+        });
+    }
+
+    return (
+        <div className={'hover input-group input-group-sm' + (props.todo.done ? ' opacity-25' : '')}>
+            <a onClick={() => toggleTodo()} className={'px-1 btn btn-sm text-' + (props.todo.done ? 'success' : 'muted')}><i className="bi bi-check-lg"></i></a>
+            <input autoComplete="off" className="form-control border-0" defaultValue={props.todo.description}/>
+            <a onClick={() => deleteTodo()} className="btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a>
+        </div>
+        );
+}
+
+function DiffItem(props) {
+    const [loading, setLoading] = React.useState(false);
+
+    const ignoreFile = () => {
+        $.get('/ignore_file', {
+            name: props.repo.name,
+            path: props.item.path
+        }, function (data) {
+            props.callback(props.repo.name);
+        });
+    }
+
+    const resetFile = () => {
+        $.get('/reset_file', {
+            name: props.repo.name,
+            path: props.item.path
+        }, function (data) {
+            props.callback(props.repo.name);
+        });
+    }
+
+    return (
+        <div className="hover text-truncate d-flex justify-content-between">
+            <div>
+                <span className="me-2" style={{ color: props.item.color }}><i className="bi bi-circle"></i></span>
+                <span>{props.item.name}</span>
+            </div>
+            <div>
+                <a title="Add to gitignore" className="text-secondary me-1" onClick={() => ignoreFile(props.item.path)}><i className="bi bi-eye-slash"></i></a>
+                <a className="text-danger me-1" onClick={() => resetFile(props.item.path)}><i className="bi bi-x-lg"></i></a>
+            </div>
+        </div>
+        );
+}
+
 function Dashboard() {
     const [loading, setLoading] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -69,19 +254,6 @@ function Dashboard() {
         });
     }
 
-    const createRepository = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        $.post('create_repository', {
-            name: $('#new-repo-name').val(),
-            brief_descrip: $('#new-repo-desc').val()
-        }, function(data) {
-            getRepo(data.name);
-            setLoading(false);
-            $('#new-repo').modal('toggle'); 
-        });
-    }
-
     const deleteRepository = () => {
         $.get('/delete_repository', {
             name: currentRepo.name,
@@ -91,71 +263,11 @@ function Dashboard() {
         });
     }
 
-    const createTodo = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        $.post('/create_todo', {
-            name: currentRepo.name,
-            description: $('#new-todo').val(),
-            category: 'MISC'
-        }, function(data) {
-            setTodos(data.todos);
-            setLoading(false);
-            $('#new-todo').val('');
-        })
-    }
-
-    const toggleTodo = (id) => {
-        setLoading(true);
-        $.get('/toggle_todo', {
-            name: currentRepo.name,
-            id: id
-        }, function(data) {
-            setTodos(data.todos);
-            setLoading(false);
-        })
-    }
-
-    const deleteTodo = (id) => {
-        setLoading(true);
-        $.get('/delete_todo', {
-            name: currentRepo.name,
-            id: id
-        }, function(data) {
-            setTodos(data.todos);
-            setLoading(false);
-        })
-    }
-
-    const commit = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        $.post('/commit', {
-            name: currentRepo.name,
-            msg: $('#commit-msg').val()
+    const clearCompleted = () => {
+        $.get('/clear_completed', {
+            name: currentRepo.name
         }, function(data) {
             getRepo(currentRepo.name);
-        });
-    }
-
-    const createBranch = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        $.post('/create_branch', {
-            repo: currentRepo.name,
-            name: $('#new-branch').val()
-        }, function(data) {
-            getRepo(currentRepo.name);
-            setLoading(false);
-        });
-    }
-
-    const checkout = (branch) => {
-        $.get('/checkout', {
-            name: currentRepo.name,
-            branch: branch
-        }, function(data) {
-            getRepo(name);
         });
     }
 
@@ -173,20 +285,14 @@ function Dashboard() {
                 <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-target="#repos" data-bs-toggle="dropdown"><i className="bi bi-git"></i> {currentRepo ==! [] ? 'Select Repository' : currentRepo.name}</a>
                 <div id="repos" className="dropdown-menu">
                     <a data-bs-target="#new-repo" data-bs-toggle="modal" className="dropdown-item small"><i className="bi bi-plus-circle"></i> New Repository</a>
-                    {repos.map((x, id) => (
-                        <a onClick={() => getRepo(x.name)} key={id} className="dropdown-item small">{x.name}</a>
-                        ))}
+                    {repos.map((x, id) => (<a onClick={() => getRepo(x.name)} key={id} className="dropdown-item small">{x.name}</a>))}
                 </div>
                 {currentRepo.length !== 0 && (
                 <span>
                     <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-target="#branches" data-bs-toggle="dropdown"><i className="bi bi-signpost-split"></i> {currentRepo.current_branch}</a>
                     <div id="branches" className="dropdown-menu">
-                        <form className="input-group input-group-sm p-1" onSubmit={(e) => createBranch(e)}>
-                            <input autoComplete="off" className="form-control border-success" placeholder="New Branch" id="new-branch" />
-                        </form>
-                        {branches.map((x, id) => (
-                            <a onClick={() => checkout(x)} key={id} className="dropdown-item small">{x}</a>
-                            ))}
+                        <NewBranchForm repo={currentRepo} callback={getRepo}/>
+                        {branches.map((x, id) => (<BranchItem key={id} repo={currentRepo} branch={x} callback={getRepo}/>))}
                     </div>
                     <a onClick={() => copyPath()} className={'btn btn-sm text-' + (copied?'success':'secondary')}><i className={'bi bi-' + (copied?'check-lg':'clipboard')}></i> Copy Path</a>
                     <a onClick={() => setDeleting(!deleting)} className="btn btn-sm text-danger"><i className="bi bi-x-circle"></i> Delete Repository</a>
@@ -199,66 +305,42 @@ function Dashboard() {
                         {diffs.length !== 0 &&
                         <div>
                             <p className="text-center heading fw-bold">Changes</p>
-                            <form className="input-group input-group-sm my-2" onSubmit={(e) => commit(e)}>
-                                <input className="form-control border-primary" placeholder="Commit" autoComplete="off" id="commit-msg" />
-                            </form>
+                            <CommitForm repo={currentRepo} callback={getRepo} />
                             <div className="mb-3">
-                            {diffs.map((x, id) => (
-                                <div className="hover text-truncate" key={id}>
-                                    <span className="me-2" style={{ color: x.color }}><i class="bi bi-circle"></i></span>
-                                    <span>{x.name}</span>
-                                </div>
-                            ))}
+                                {diffs.map((x, id) => (<DiffItem key={id} item={x} repo={currentRepo} callback={getRepo}/>))}
                             </div>
                         </div>}
 
                         <p className="text-center heading fw-bold">History</p>
                         <div className="mb-3">
-                        {log.map((x, id) => (
-                            <div className="text-truncate mb-2" key={id}>
-                                <div className="fw-bold">{x.msg}</div>
-                                <div className="small">{x.timestamp}</div>
-                            </div>
-                        ))}
+                            {log.map((x, id) => (<LogItem key={id} item={x}/>))}
                         </div>
 
                         <p className="text-center heading fw-bold">TODOs</p>
-                        <form className="input-group input-group-sm my-2" onSubmit={(e) => createTodo(e)}>
-                            <input className="form-control" placeholder="New TODO" autoComplete="off" id="new-todo" />
-                        </form>
+                        <NewTodoForm repo={currentRepo} callback={getRepo} />
+                        <a className="btn btn-sm text-warning" onClick={() => clearCompleted()}>Clear Completed</a>
                         <div className="mb-3">
-                        {todos.map((x, id) => (
-                            <div className={'hover input-group input-group-sm' + (x.done ? ' opacity-25' : '')} key={id}>
-                                <a onClick={() => toggleTodo(id)} className={'btn btn-sm text-' + (x.done ? 'success' : 'muted')}><i className="bi bi-check-lg"></i></a>
-                                <span className="btn text-secondary pe-0">{x.category}:</span>
-                                <input autoComplete="off" className="form-control border-0" defaultValue={x.description}/>
-                                <a onClick={() => deleteTodo(id)} className="btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a>
-                            </div>
-                        ))}
+                            {todos.map((x, id) => (<TodoItem todo={x} key={id} id={id} callback={getRepo} repo={currentRepo}/>))}
                         </div>
 
                         <p className="text-center heading fw-bold">Ignored</p>
                         <div className="mb-3">
-                        {ignored.map((x, id) => (
-                            <div className="hover text-truncate" key={id}>{x}</div>
-                        ))}
+                            {ignored.map((x, id) => (<div className="hover text-truncate" key={id}>{x}</div>))}
                         </div>
                     </div>
 
                     <div className="col-9" dangerouslySetInnerHTML={{__html:readme }}></div>
                 </div>
             )}
-        <div className="modal" id="new-repo">
-            <div className="modal-dialog">
-                <div className="modal-content p-4">
-                    <form onSubmit={(e) => createRepository(e)}>
-                        <input autoComplete="off" className="form-control mb-3" placeholder="Name" id="new-repo-name" />
-                        <textarea rows="15" className="form-control mb-3" placeholder="Description" id="new-repo-desc"></textarea>
-                        <button type="submit" className="btn btn-outline-success"> Initialize Repository</button>
-                    </form>
+
+            <div className="modal" id="new-repo">
+                <div className="modal-dialog">
+                    <div className="modal-content p-4">
+                        <NewRepoForm callback={getRepo}/>
+                    </div>
                 </div>
             </div>
-        </div>
+
         </div>
         );
 }

@@ -142,7 +142,7 @@ class Todo(object):
         self.data = data
 
     def to_string(self) -> str:
-        return f"{self.data['category']}: {self.data['description']}"
+        return self.data["description"]
 
     def toggle(self):
         self.data["done"] = not self.data["done"]
