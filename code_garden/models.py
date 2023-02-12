@@ -19,7 +19,8 @@ class Repository(object):
 
     @property
     def readme(self) -> str:
-        return markdown.markdown(open(self.path / "README.md").read())
+        _ = open(self.path / "README.md").read()
+        return dict(md=markdown.markdown(_), txt=_)
 
     @property
     def todos(self) -> list:

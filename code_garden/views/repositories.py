@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, redirect, render_template, request
 
-from code_garden import config, generator
+from code_garden import config
 from code_garden.models import File, Repository
 
 repositories = Blueprint("repositories", __name__)
@@ -44,9 +44,11 @@ def get_repository():
     )
 
 
-@repositories.route("/get_readme")
-def get_readme():
-    repo_ = Repository(config.HOME_DIR / request.args.get("name"))
+@repositories.post("/edit_readme")
+def edit_readme():
+    repo_ = Repository(config.HOME_DIR / request.form.get("name"))
+    open(repo_.path / "README.md", "w").write(request.form.get("txt"))
+
     return repo_.readme
 
 
@@ -152,8 +154,3 @@ def delete_branch():
 def push():
     repo_ = Repository(config.HOME_DIR / request.args.get("name"))
     return repo_.push()
-
-
-@repositories.route("/generate_repo_name")
-def generate_repo_name():
-    return generator.generate()

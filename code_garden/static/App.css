@@ -53,9 +53,10 @@ a, a:hover {
 	color: inherit !important;
 }
 
-.btn-outline-secondary:hover, .dropdown-toggle.show {
+.btn-outline-secondary:hover, .dropdown-toggle.show, .btn.active {
 	background-color: var(--primary-txt) !important;
 	color: var(--primary-bg) !important;
+	border-color: var(--primary-txt);
 }
 
 .form-control {

@@ -49,7 +49,7 @@ function NewBranchForm(props) {
         <div className="p-1">
             {loading && <span className="spinner-border spinner-border-sm"></span>}
             <form className="input-group input-group-sm" onSubmit={(e) => createBranch(e)}>
-                <input autoComplete="off" className="form-control border-success" placeholder="New Branch" id="new-branch" />
+                <input required autoComplete="off" className="form-control border-success" placeholder="New Branch" id="new-branch" />
             </form>
         </div>
         );
@@ -73,13 +73,14 @@ function NewTodoForm(props) {
 
     return (
         <form className="input-group input-group-sm my-2" onSubmit={(e) => createTodo(e)}>
-            <input className="form-control" placeholder="New TODO" autoComplete="off" id="new-todo" />
+            <input required className="form-control" placeholder="New TODO" autoComplete="off" id="new-todo" />
         </form>
         );
 }
 
 function NewRepoForm(props) {
     const [loading, setLoading] = React.useState(false);
+    const [mode, setMode] = React.useState('init');
 
     const createRepository = (e) => {
         e.preventDefault();
@@ -94,12 +95,59 @@ function NewRepoForm(props) {
         });
     }
 
+    const cloneRepository = () => {
+        $.post('/clone_repository', {
+            url: $('#git-url').val()
+        }, function(data) {
+            window.location.reload();
+        });
+    }
+
+    const generateName = () => {
+        let adjective;
+        let noun;
+
+        $.ajax({
+            url: 'https://random-word-form.herokuapp.com/random/adjective',
+            async: false,
+            success: function(data) {
+                adjective = data[0];
+            }
+        });
+
+        $.ajax({
+            url: 'https://random-word-form.herokuapp.com/random/noun',
+            async: false,
+            success: function(data) {
+                noun = data[0];
+            }
+        });
+
+        $('#new-repo-name').val(`${adjective.toLowerCase()}-${noun.toLowerCase()}`);
+    }
+
     return (
-        <form onSubmit={(e) => createRepository(e)}>
-            <input autoComplete="off" className="form-control mb-3" placeholder="Name" id="new-repo-name" />
-            <textarea rows="15" className="form-control mb-3" placeholder="Description" id="new-repo-desc"></textarea>
-            <button type="submit" className="btn btn-outline-success"> Initialize Repository</button>
-        </form>
+        <div>
+            <div className="btn-group btn-group-sm my-2 col-6 offset-3">
+                <a onClick={() => setMode('init')} className={'btn btn-outline-secondary' + (mode === 'init' ? ' active' : '')}>Init</a>
+                <a onClick={() => setMode('clone')} className={'btn btn-outline-secondary' + (mode === 'clone' ? ' active' : '')}>Clone</a>
+            </div>
+            {mode === 'init' ? (
+                <form onSubmit={(e) => createRepository(e)}>
+                    <div className="input-group input-group-sm mb-3">
+                        <input required autoComplete="off" className="form-control" placeholder="Name" id="new-repo-name" />
+                        <a className="btn btn-outline-primary" onClick={() => generateName()}><i className="bi bi-shuffle"></i> Random Name</a>
+                    </div>
+                    <textarea rows="15" className="form-control form-control-sm mb-3" placeholder="Description" id="new-repo-desc"></textarea>
+                    <button type="submit" className="btn btn-sm btn-outline-success w-100"> Initialize Repository</button>
+                </form>
+                ) : (
+                <form onSubmit={() => cloneRepository()}>
+                    <input required autoComplete="off" className="form-control form-control-sm mb-3" placeholder="Git URL" id="git-url" />
+                    <button type="submit" className="btn btn-sm btn-outline-success w-100"> Clone Repository</button>
+                </form>
+                )}
+        </div>
         );
 }
 
@@ -119,12 +167,14 @@ function CommitForm(props) {
 
     return (
         <form className="input-group input-group-sm my-2" onSubmit={(e) => commit(e)}>
-            <input className="form-control border-primary" placeholder="Commit" autoComplete="off" id="commit-msg" />
+            <input required className="form-control border-primary" placeholder="Commit" autoComplete="off" id="commit-msg" />
         </form>
         );
 }
 
 function BranchItem(props) {
+    const [deleting, setDeleting] = React.useState(false);
+
     const checkout = () => {
         $.get('/checkout', {
             name: props.repo.name,
@@ -134,7 +184,24 @@ function BranchItem(props) {
         });
     }
 
-    return (<a onClick={() => checkout(props.branch)} className="dropdown-item small">{props.branch}</a>);
+    const deleteBranch = () => {
+        $.get('/delete_branch', {
+            repo: props.repo.name,
+            name: props.branch
+        }, function(data) {
+            props.callback(props.repo.name);
+        });
+    }
+
+    return (
+        <div className="dropdown-item small d-flex justify-content-between">
+            <a onClick={() => checkout(props.branch)} className="">{props.branch}</a>
+            <span className="">
+                <a onClick={() => setDeleting(!deleting)} className="text-danger"><i className="bi bi-x-lg"></i></a>
+                {deleting && <a onClick={() => deleteBranch(props.branch)} className="text-danger">Delete?</a>}
+            </span>
+        </div>
+        );
 }
 
 function LogItem(props) {
@@ -171,11 +238,23 @@ function TodoItem(props) {
         });
     }
 
+    const commitTodo = () => {
+        setLoading(true);
+        $.get('/commit_todo', {
+            name: props.repo.name,
+            id: props.id,
+        }, function(data) {
+            props.callback(props.repo.name);
+            setLoading(false);
+        });
+    }
+
     return (
         <div className={'hover input-group input-group-sm' + (props.todo.done ? ' opacity-25' : '')}>
-            <a onClick={() => toggleTodo()} className={'px-1 btn btn-sm text-' + (props.todo.done ? 'success' : 'muted')}><i className="bi bi-check-lg"></i></a>
+            <a onClick={() => toggleTodo()} className={'px-1 btn text-' + (props.todo.done ? 'success' : 'muted')}><i className="bi bi-check-lg"></i></a>
+            <a onClick={() => commitTodo()} className="px-1 btn text-secondary"><i className="bi bi-file-diff"></i></a>
             <input autoComplete="off" className="form-control border-0" defaultValue={props.todo.description}/>
-            <a onClick={() => deleteTodo()} className="btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a>
+            <a onClick={() => deleteTodo()} className="btn text-danger"><i className="bi bi-x-lg"></i></a>
         </div>
         );
 }
@@ -215,6 +294,39 @@ function DiffItem(props) {
         );
 }
 
+function Readme(props) {
+    const [saved, setSaved] = React.useState(false);
+    const [mode, setMode] = React.useState('view');
+
+    const editReadme = () => {
+        $.post('/edit_readme', {
+            name: props.repo.name,
+            txt: $('#txt').val()
+        }, function(data) {
+            props.callback(props.repo.name);
+            setSaved(true);
+            setTimeout(function() { setSaved(false); }, 1500);
+        });
+    }
+
+    return (
+        <div>
+            <div className="btn-group btn-group-sm my-2 col-4 offset-4">
+                <a onClick={() => setMode('view')} className={'btn btn-outline-secondary' + (mode === 'view' ? ' active' : '')}><i className="bi bi-eye"></i> View</a>
+                <a onClick={() => setMode('edit')} className={'btn btn-outline-secondary' + (mode === 'edit' ? ' active' : '')}><i className="bi bi-pen"></i> Edit</a>
+            </div>
+            {mode === 'view' ? (
+                <div dangerouslySetInnerHTML={{__html:props.readme.md }}></div>
+                ) : (
+                <div>
+                    <a onClick={() => editReadme()} className="btn btn-sm btn-outline-success w-100 my-2"><i className={'bi bi-' + (saved ? 'check-lg' : 'save2')}></i>  {saved ? 'Saved.' : 'Save'}</a>
+                    <textarea id="txt" className="form-control form-control-sm" defaultValue={props.readme.txt} rows="30"></textarea>
+                </div>
+                )}
+        </div>
+        );
+}
+
 function Dashboard() {
     const [loading, setLoading] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
@@ -233,6 +345,7 @@ function Dashboard() {
         setLoading(true);
         $.get('/get_repos', function(data) {
             setRepos(data.repos);
+            localStorage.getItem('last-repo-opened') && getRepo(localStorage.getItem('last-repo-opened'));
             setLoading(false);
         });
     }, []);
@@ -251,6 +364,7 @@ function Dashboard() {
             setIgnored(data.ignored);
 
             setLoading(false);
+            localStorage.setItem('last-repo-opened', data.repo.name);
         });
     }
 
@@ -271,6 +385,14 @@ function Dashboard() {
         });
     }
 
+    const resetAll = () => {
+        $.get('/reset_all', {
+            name: currentRepo.name
+        }, function (data) {
+            getRepo(currentRepo.name);
+        });
+    }
+
     const copyPath = () => {
         navigator.clipboard.writeText(currentRepo.path);
         setCopied(true);
@@ -284,7 +406,7 @@ function Dashboard() {
                 {currentRepo.length !== 0 && <a onClick={() => getRepo(currentRepo.name)} className="btn btn-sm text-secondary"><i className="bi bi-arrow-clockwise"></i></a>}
                 <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-target="#repos" data-bs-toggle="dropdown"><i className="bi bi-git"></i> {currentRepo ==! [] ? 'Select Repository' : currentRepo.name}</a>
                 <div id="repos" className="dropdown-menu">
-                    <a data-bs-target="#new-repo" data-bs-toggle="modal" className="dropdown-item small"><i className="bi bi-plus-circle"></i> New Repository</a>
+                    <a data-bs-target="#new-repo" data-bs-toggle="modal" className="dropdown-item small text-success"><i className="bi bi-plus-circle"></i> New Repository</a>
                     {repos.map((x, id) => (<a onClick={() => getRepo(x.name)} key={id} className="dropdown-item small">{x.name}</a>))}
                 </div>
                 {currentRepo.length !== 0 && (
@@ -305,6 +427,7 @@ function Dashboard() {
                         {diffs.length !== 0 &&
                         <div>
                             <p className="text-center heading fw-bold">Changes</p>
+                            <a title="This cannot be undone." className="btn btn-sm text-danger hover" onClick={() => resetAll()}>Reset All</a>
                             <CommitForm repo={currentRepo} callback={getRepo} />
                             <div className="mb-3">
                                 {diffs.map((x, id) => (<DiffItem key={id} item={x} repo={currentRepo} callback={getRepo}/>))}
@@ -328,8 +451,9 @@ function Dashboard() {
                             {ignored.map((x, id) => (<div className="hover text-truncate" key={id}>{x}</div>))}
                         </div>
                     </div>
-
-                    <div className="col-9" dangerouslySetInnerHTML={{__html:readme }}></div>
+                    <div className="col-9">
+                        <Readme repo={currentRepo} readme={readme} callback={getRepo} />
+                    </div>
                 </div>
             )}
 
