@@ -2,79 +2,104 @@ import datetime
 import json
 import shutil
 import subprocess
-from pathlib import Path
 
 import markdown
 
-from code_garden import config
+from . import config
 
 
 class Repository(object):
-    def __init__(self, path: Path):
-        self.path = path
+    def __init__(self, name: str):
+        self.name = name
 
     @property
-    def name(self) -> str:
-        return self.path.name
+    def path(self):
+        return config.HOME_DIR / self.name
+
+    def run_command(self, cmd: list):
+        return subprocess.run(cmd, cwd=self.path, text=True, capture_output=True).stdout
 
     @property
-    def readme(self) -> str:
-        _ = open(self.path / "README.md").read()
-        return dict(md=markdown.markdown(_), txt=_)
-
-    @property
-    def todos(self) -> list:
-        with open(self.path / "todos.json") as f:
-            data = json.load(f)
-        return [Todo(i) for i in data["todos"]]
-
-    @property
-    def log(self, limit: int = 5) -> list:
+    def branches(self):
         return [
-            LogItem(
-                i.split("\t")[0], datetime.datetime.fromtimestamp(int(i.split("\t")[1]))
-            )
-            for i in self.run_cmd(
-                ["git", "log", "--pretty=format:%s\t%at", f"-{str(limit)}"]
-            ).split("\n")
+            Branch(self.name, i.strip())
+            for i in self.run_command(["git", "branch"]).split("\n")
+            if i.strip()
         ]
 
     @property
-    def diffs(self) -> list:
-        return [
-            File(str(self.path / i[2:].strip()), i.strip().split()[0])
-            for i in self.run_cmd(["git", "status", "--short"]).split("\n")
-            if i.split()
-            and (i.strip().split()[0] == "D" or (self.path / i[2:].strip()).is_file())
-        ]
-
-    @property
-    def branches(self) -> list:
-        return [
-            i.strip() for i in self.run_cmd(["git", "branch"]).split("\n") if i.strip()
-        ]
-
-    @property
-    def current_branch(self) -> str:
-        for i in self.branches:
+    def current_branch(self):
+        for i in self.run_command(["git", "branch"]).split("\n"):
             if i.startswith("* "):
                 return i.replace("* ", "")
 
     @property
-    def ignored(self) -> list:
+    def log(self):
+        _ = []
+        for i in self.run_command(
+            ["git", "log", "--oneline", "-5", "--pretty=format:%s\t%at\t%h"]
+        ).split("\n"):
+            if len(i.strip().split("\t")) == 2:
+                _.append(
+                    LogItem(
+                        self.name,
+                        "[No Commit Message]",
+                        datetime.datetime.min,
+                        i.strip().split("\t")[0],
+                    )
+                )
+            else:
+                _.append(
+                    LogItem(
+                        self.name,
+                        i.strip().split("\t")[0],
+                        datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+                        i.strip().split("\t")[2],
+                    )
+                )
+
+        return _
+
+    @property
+    def todos(self):
+        return (
+            [
+                Todo(self.name, i.strip())
+                for i in open(self.path / "todos.txt").readlines()
+                if i.strip()
+            ]
+            if (self.path / "todos.txt").exists()
+            else []
+        )
+
+    @property
+    def diffs(self):
         return [
-            i.strip() for i in open(self.path / ".gitignore").readlines() if i.strip()
+            DiffItem(self.name, (self.path / i.strip().split()[1]).name)
+            for i in self.run_command(["git", "status", "--short"]).split("\n")
+            if i.strip()
         ]
 
-    def create_branch(self, name: str) -> str:
-        return self.run_cmd(["git", "checkout", "-b", name])
+    @property
+    def readme(self):
+        raw = open(self.path / "README.md").read()
+        return dict(txt=raw, md=markdown.markdown(raw))
 
-    def delete_branch(self, name: str) -> str:
-        return self.run_cmd(["git", "branch", "-D", name])
+    @property
+    def ignored(self):
+        return [
+            IgnoreItem(self.name, i.strip())
+            for i in open(self.path / ".gitignore").readlines()
+            if i.strip()
+        ]
 
-    def set_todos(self, todos: list):
-        with open((self.path / "todos.json"), "w") as f:
-            json.dump(dict(todos=[i.data for i in todos]), f, indent=4)
+    @classmethod
+    def all(cls):
+        return [
+            Repository(i.name)
+            for i in config.HOME_DIR.iterdir()
+            if i.is_dir() and (i / ".git").exists()
+        ]
 
     def init(self, brief_descrip: str):
         self.path.mkdir()
@@ -82,114 +107,171 @@ class Repository(object):
             f"# {self.name}\n---\n\n{brief_descrip}\n"
         )
         (self.path / "LICENSE.md").touch()
-        open(self.path / ".gitignore", "w").write("todos.json\n")
-        open(self.path / "todos.json", "w").write('{"todos":[]}')
-        self.run_cmd(["git", "init"])
-        self.commit("Initial commit")
+        open(self.path / ".gitignore", "w").write("todos.txt\n")
+        (self.path / "todos.txt").touch()
+        self.run_command(["git", "init"])
+        self.commit("Initial commit", True)
+
+    @classmethod
+    def clone(cls, url: str):
+        subprocess.run(["git", "clone", url], cwd=config.HOME_DIR)
 
     def delete(self):
         shutil.rmtree(self.path)
 
-    def push(self) -> str:
-        return self.run_cmd(["git", "push", "origin"])
+    def edit_readme(self, content: str):
+        open((self.path / "README.md"), "w").write(content)
 
-    def commit(self, msg: str) -> str:
-        self.run_cmd(["git", "add", "-A"])
-        return self.run_cmd(["git", "commit", "-am", msg])
-
-    def reset(self, file: str) -> str:
-        return self.run_cmd(["git", "checkout", "HEAD", "--", file])
+    def commit(self, msg: str, add_all: bool = False):
+        self.run_command(["git", "add", "-A"])
+        self.run_command(["git", "commit", "-am", msg])
 
     def reset_all(self):
-        self.run_cmd(["git", "checkout", "."])
-        self.run_cmd(["git", "clean", "-fd"])
+        self.run_command(["git", "checkout", "."])
+        self.run_command(["git", "clean", "-fd"])
 
-    def checkout(self, branch: str, new_branch: bool = False) -> str:
-        return self.run_cmd(["git", "checkout", branch])
-
-    def merge(self, branch: str) -> str:
-        return self.run_cmd(["git", "merge", branch])
-
-    def ignore(self, file: str):
-        open(self.path / ".gitignore", "a").write("\n" + Path(file).name + "\n")
-
-    @classmethod
-    def all(cls) -> list:
-        return [
-            Repository(i)
-            for i in config.HOME_DIR.iterdir()
-            if i.is_dir() and (i / ".git").exists()
-        ]
-
-    @classmethod
-    def clone(cls, url: str) -> str:
-        return subprocess.run(
-            ["git", "clone", url], cwd=config.HOME_DIR, capture_output=True, text=True
-        ).stdout
-
-    def run_cmd(self, args_: list) -> str:
-        return subprocess.run(
-            args_, cwd=self.path, capture_output=True, text=True
-        ).stdout
-
-    def to_dict(self) -> dict:
+    def to_dict(self):
         return dict(
-            name=self.name, current_branch=self.current_branch, path=str(self.path)
+            name=self.name,
+            path=str(self.path),
+            branches=[i.to_dict() for i in self.branches],
+            current_branch=self.current_branch,
+            log=[i.to_dict() for i in self.log],
+            todos=[i.to_dict() for i in self.todos],
+            diffs=[i.to_dict() for i in self.diffs],
+            readme=self.readme,
+            ignored=[i.to_dict() for i in self.ignored],
         )
 
 
-class Todo(object):
-    def __init__(self, data: dict):
-        self.data = data
+class Branch(object):
+    def __init__(self, repository, name):
+        self.repository = repository
+        self.name = name
 
-    def to_string(self) -> str:
-        return self.data["description"]
+    def create(self):
+        Repository(self.repository).run_command(["git", "checkout", "-b", self.name])
 
-    def toggle(self):
-        self.data["done"] = not self.data["done"]
+    def delete(self):
+        Repository(self.repository).run_command(["git", "branch", "-D", self.name])
 
+    def checkout(self):
+        Repository(self.repository).run_command(["git", "checkout", self.name])
 
-class File(object):
-    def __init__(self, path: str, status: str = None):
-        self.path = path
-        self.status = status
+    def merge(self, other_branch):
+        Repository(self.repository).run_command(["git", "merge", other_branch])
 
-    @property
-    def name(self) -> str:
-        return self.path.split("/")[-1] or self.path.split("/")[-2]
+    def compare(self, other="master"):
+        return [
+            LogItem(
+                self.repository,
+                i.strip().split("\t")[0],
+                datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+                i.strip().split("\t")[2],
+            )
+            for i in Repository(self.repository)
+            .run_command(
+                [
+                    "git",
+                    "log",
+                    f"{other}..{self.name}",
+                    "--oneline",
+                    "--pretty=format:%s\t%at\t%h",
+                ]
+            )
+            .split("\n")
+            if i.strip()
+        ]
 
-    @property
-    def content(self) -> str:
-        return open(self.path).read() if Path(self.path).exists() else "File deleted."
-
-    @property
-    def color(self):
-        choices = {
-            "M": "orange",
-            "A": "green",
-            "AM": "green",
-            "MM": "green",
-            "D": "red",
-            "R": "yellow",
-            "??": "green",
-        }
-        return choices[self.status]
-
-    def to_dict(self) -> dict:
+    def to_dict(self):
         return dict(
-            path=self.path,
-            status=self.status,
-            color=self.color,
+            repository=self.repository,
             name=self.name,
+            comparison=[i.to_dict() for i in self.compare()],
         )
 
 
 class LogItem(object):
-    def __init__(self, msg: str, timestamp: datetime.datetime):
-        self.msg = msg
+    def __init__(self, repository, name, timestamp, abbrev_hash):
+        self.repository = repository
+        self.name = name
         self.timestamp = timestamp
+        self.abbrev_hash = abbrev_hash
 
-    def to_dict(self) -> dict:
+    def to_dict(self):
         return dict(
-            msg=self.msg, timestamp=self.timestamp.strftime("%B %-d, %Y @ %-I:%M %p")
+            repository=self.repository,
+            name=self.name,
+            timestamp=self.timestamp.strftime("%B %-d, %Y @ %-I:%M %p"),
+            abbrev_hash=self.abbrev_hash,
         )
+
+
+class Todo(object):
+    def __init__(self, repository, name):
+        self.repository = repository
+        self.name = name
+
+    def create(self):
+        todos_ = Repository(self.repository).todos
+        todos_.append(self)
+
+        with open((Repository(self.repository).path / "todos.txt"), "w") as f:
+            for i in todos_:
+                f.write(f"{i.name}\n")
+
+    @classmethod
+    def edit(cls, repository, id, new_name):
+        todos_ = Repository(repository).todos
+        todos_[id].name = new_name
+
+        with open((Repository(repository).path / "todos.txt"), "w") as f:
+            for i in todos_:
+                f.write(f"{i.name}\n")
+
+    @classmethod
+    def delete(cls, repository, id):
+        todos_ = Repository(repository).todos
+        del todos_[id]
+
+        with open((Repository(repository).path / "todos.txt"), "w") as f:
+            for i in todos_:
+                f.write(f"{i.name}\n")
+
+    def to_dict(self):
+        return dict(repository=self.repository, name=self.name)
+
+
+class DiffItem(object):
+    def __init__(self, repository, name):
+        self.repository = repository
+        self.name = name
+
+    def to_dict(self):
+        return dict(repository=self.repository, name=self.name)
+
+
+class IgnoreItem(object):
+    def __init__(self, repository, name):
+        self.repository = repository
+        self.name = name
+
+    def create(self):
+        ignores_ = Repository(self.repository).ignored
+        ignores_.append(self)
+
+        with open((Repository(self.repository).path / ".gitignore"), "w") as f:
+            for i in ignores_:
+                f.write(f"{i.name}\n")
+
+    @classmethod
+    def delete(cls, repository, id):
+        ignores_ = Repository(repository).ignored
+        del ignores_[id]
+
+        with open((Repository(repository).path / ".gitignore"), "w") as f:
+            for i in ignores_:
+                f.write(f"{i.name}\n")
+
+    def to_dict(self):
+        return dict(repository=self.repository, name=self.name)

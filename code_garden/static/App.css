@@ -43,23 +43,22 @@ a, a:hover {
 	letter-spacing: 1px;
 }
 
-.btn-outline-secondary {
-	background-color: inherit;
-	color: inherit;
-	border: 1px solid;
-}
-
 .text-secondary {
-	color: inherit !important;
+	color: var(--primary-txt) !important;
 }
 
-.btn-outline-secondary:hover, .dropdown-toggle.show, .btn.active {
-	background-color: var(--primary-txt) !important;
-	color: var(--primary-bg) !important;
+.btn-outline-secondary {
 	border-color: var(--primary-txt);
+	color: var(--primary-txt);
 }
 
-.form-control {
+.btn-outline-secondary:hover, .btn.active, .dropdown-item.active {
+	border-color: var(--primary-txt);
+	color: var(--primary-bg) !important;
+	background-color: var(--primary-txt);
+}
+
+.form-control, .dropdown-menu {
 	border: 1px solid;
 }
 
@@ -70,4 +69,8 @@ a, a:hover {
 
 .hover:hover {
 	border-bottom: 1px solid;
+}
+
+.row {
+	padding: 1px !important;
 }
