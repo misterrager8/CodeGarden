@@ -3,3 +3,5 @@ CodeGarden.egg-info/
 *.pyc
 .DS_Store
 todos.txt
+.coverage
+htmlcov/

@@ -252,6 +252,17 @@ function App() {
             getRepository(currentRepository.name);
             setLoading(false);
         });
+    }    
+
+    const resetFile = (name) => {
+        setLoading(true);
+        $.get('/reset_file', {
+            repository: currentRepository.name,
+            name: name
+        }, function (data) {
+            getRepository(currentRepository.name);
+            setLoading(false);
+        });
     }
 
     const getSettings = () => {
@@ -369,7 +380,7 @@ function App() {
                                     {currentRepository.diffs.map((x, id) => (
                                         <div key={id} className="row hover">
                                             <div className="col">{x.name}</div>
-                                            <span className="col"><a className="float-end btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a></span>
+                                            <span className="col"><a onClick={() => resetFile(x.name)} className="float-end btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a></span>
                                         </div>
                                     ) )}
                                 </div>

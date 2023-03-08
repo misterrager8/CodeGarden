@@ -1,7 +1,7 @@
 from flask import current_app, render_template, request
 
 from . import config
-from .models import Branch, IgnoreItem, Repository, Todo
+from .models import Branch, DiffItem, IgnoreItem, Repository, Todo
 
 
 @current_app.get("/")
@@ -130,6 +130,14 @@ def create_ignore():
 @current_app.get("/delete_ignore")
 def delete_ignore():
     IgnoreItem.delete(request.args.get("repository"), int(request.args.get("id")))
+
+    return ""
+
+
+@current_app.get("/reset_file")
+def reset_file():
+    diff_ = DiffItem(request.args.get("repository"), request.args.get("name"))
+    diff_.reset()
 
     return ""
 

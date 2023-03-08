@@ -13,6 +13,11 @@ def cli():
 @cli.command()
 @click.option("--debug", "-d", is_flag=True)
 def web(debug: bool):
+    """Launch web interface for CodeGarden.
+
+    Args:
+        debug (bool): Debug mode
+    """
     app = create_app(config)
     if not debug:
         webbrowser.open(f"http://localhost:{config.PORT}/")

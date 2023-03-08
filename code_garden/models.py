@@ -9,6 +9,22 @@ from . import config
 
 
 class Repository(object):
+    """A Git repository object.
+
+    All Repositories should have (1) a README.md file, and (2) a .git folder.
+
+    Attributes:
+        path: Full path of the Repository.
+        branches: All local branches of the Repository.
+        current_branch: The currently checked-out branch.
+        log: List of (5 default) commits, sorted by most recent.
+        todos: List of tasks found in the todos.txt file.
+        diffs: List of all changed file in the current Repository.
+        readme: Dict object of text in the README.md file 'txt' is the plaintext content, 'md' is the Markdown-formatted text.
+        ignored: List of items in the .gitignore file.
+
+    """
+
     def __init__(self, name: str):
         self.name = name
 
@@ -17,6 +33,11 @@ class Repository(object):
         return config.HOME_DIR / self.name
 
     def run_command(self, cmd: list):
+        """Run command in the Repository's directory.
+
+        Args:
+            cmd (list): List of arguments in the command. (splitting whitespace on text is recommended)
+        """
         return subprocess.run(cmd, cwd=self.path, text=True, capture_output=True).stdout
 
     @property
@@ -95,6 +116,7 @@ class Repository(object):
 
     @classmethod
     def all(cls):
+        """Get all Repositories in the home directory."""
         return [
             Repository(i.name)
             for i in config.HOME_DIR.iterdir()
@@ -102,6 +124,11 @@ class Repository(object):
         ]
 
     def init(self, brief_descrip: str):
+        """Create a new Repository.
+
+        Args:
+            brief_descrip (str): Short description of what the Repository contains.
+        """
         self.path.mkdir()
         open(self.path / "README.md", "w").write(
             f"# {self.name}\n---\n\n{brief_descrip}\n"
@@ -114,23 +141,41 @@ class Repository(object):
 
     @classmethod
     def clone(cls, url: str):
+        """Clone a Repository.
+
+        Args:
+            url (str): URL of the Git Repository.
+        """
         subprocess.run(["git", "clone", url], cwd=config.HOME_DIR)
 
     def delete(self):
+        """Delete this Repository."""
         shutil.rmtree(self.path)
 
     def edit_readme(self, content: str):
+        """Edit this Repository's README file.
+
+        Args:
+            content (str): New plaintext content of the README.
+        """
         open((self.path / "README.md"), "w").write(content)
 
-    def commit(self, msg: str, add_all: bool = False):
+    def commit(self, msg: str):
+        """Commit all local changes to git.
+
+        Args:
+            msg (str): Commit message.
+        """
         self.run_command(["git", "add", "-A"])
         self.run_command(["git", "commit", "-am", msg])
 
     def reset_all(self):
+        """Discard all local changes, reset Repository to most recent commit."""
         self.run_command(["git", "checkout", "."])
         self.run_command(["git", "clean", "-fd"])
 
     def to_dict(self):
+        """Get a dict representation of the Repository object (for API usage)."""
         return dict(
             name=self.name,
             path=str(self.path),
@@ -145,45 +190,39 @@ class Repository(object):
 
 
 class Branch(object):
+    """Branch object.
+
+    Attributes:
+        repository (str): name of the containing Repository
+        name (str): name of this branch.
+    """
+
     def __init__(self, repository, name):
         self.repository = repository
         self.name = name
 
     def create(self):
+        """Create a new branch."""
         Repository(self.repository).run_command(["git", "checkout", "-b", self.name])
 
     def delete(self):
+        """Delete this branch."""
         Repository(self.repository).run_command(["git", "branch", "-D", self.name])
 
     def checkout(self):
+        """Checkout this branch."""
         Repository(self.repository).run_command(["git", "checkout", self.name])
 
     def merge(self, other_branch):
+        """Merge this branch with another.
+
+        Args:
+            other_branch (str): Other branch to merge with.
+        """
         Repository(self.repository).run_command(["git", "merge", other_branch])
 
-    def compare(self, other="master"):
-        return [
-            LogItem(
-                self.repository,
-                i.strip().split("\t")[0],
-                datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
-                i.strip().split("\t")[2],
-            )
-            for i in Repository(self.repository)
-            .run_command(
-                [
-                    "git",
-                    "log",
-                    f"{other}..{self.name}",
-                    "--oneline",
-                    "--pretty=format:%s\t%at\t%h",
-                ]
-            )
-            .split("\n")
-            if i.strip()
-        ]
-
     def to_dict(self):
+        """Get a dict representation of this object (for API use)."""
         return dict(
             repository=self.repository,
             name=self.name,
@@ -192,6 +231,13 @@ class Branch(object):
 
 
 class LogItem(object):
+    """Commit item from log.
+
+    Attributes:
+        repository (str): name of the containing Repository
+        name (str): subject line of this commit.
+    """
+
     def __init__(self, repository, name, timestamp, abbrev_hash):
         self.repository = repository
         self.name = name
@@ -199,6 +245,7 @@ class LogItem(object):
         self.abbrev_hash = abbrev_hash
 
     def to_dict(self):
+        """Get a dict representation of this object (for API use)."""
         return dict(
             repository=self.repository,
             name=self.name,
@@ -208,11 +255,19 @@ class LogItem(object):
 
 
 class Todo(object):
+    """Todo item found in todos.txt.
+
+    Attributes:
+        repository (str): name of the containing Repository
+        name (str): description of this Todo item.
+    """
+
     def __init__(self, repository, name):
         self.repository = repository
         self.name = name
 
     def create(self):
+        """Create a new Todo."""
         todos_ = Repository(self.repository).todos
         todos_.append(self)
 
@@ -222,6 +277,13 @@ class Todo(object):
 
     @classmethod
     def edit(cls, repository, id, new_name):
+        """Edit a Todo item.
+
+        Args:
+            repository (str): name of the Repository that contains this Todo.
+            id (int): index, or location, of the Todo in the list.
+            new_name (str): new description of the Todo item.
+        """
         todos_ = Repository(repository).todos
         todos_[id].name = new_name
 
@@ -231,6 +293,12 @@ class Todo(object):
 
     @classmethod
     def delete(cls, repository, id):
+        """Delete a Todo item.
+
+        Args:
+            repository (str): name of the Repository that contains this Todo.
+            id (int): index, or location, of the Todo in the list.
+        """
         todos_ = Repository(repository).todos
         del todos_[id]
 
@@ -239,24 +307,51 @@ class Todo(object):
                 f.write(f"{i.name}\n")
 
     def to_dict(self):
+        """Get a dict representation of this object (for API use)."""
         return dict(repository=self.repository, name=self.name)
 
 
 class DiffItem(object):
+    """Changed item in the Repository.
+
+    Attributes:
+        repository (str): name of the containing Repository
+        name (str): name of this file.
+    """
+
     def __init__(self, repository, name):
         self.repository = repository
         self.name = name
 
+    @property
+    def path(self):
+        return Repository(self.repository).path / self.name
+
+    def reset(self):
+        """Reset this file to its original state in the most recent commit."""
+        Repository(self.repository).run_command(
+            ["git", "checkout", "HEAD", "--", str(self.path)]
+        )
+
     def to_dict(self):
-        return dict(repository=self.repository, name=self.name)
+        """Get a dict representation of this object (for API use)."""
+        return dict(repository=self.repository, name=self.name, path=str(self.path))
 
 
 class IgnoreItem(object):
+    """Ignored items found in the .gitignore file.
+
+    Attributes:
+        repository (str): name of the containing Repository
+        name (str): name of this file.
+    """
+
     def __init__(self, repository, name):
         self.repository = repository
         self.name = name
 
     def create(self):
+        """Add this item to the .gitignore."""
         ignores_ = Repository(self.repository).ignored
         ignores_.append(self)
 
@@ -266,6 +361,12 @@ class IgnoreItem(object):
 
     @classmethod
     def delete(cls, repository, id):
+        """Delete an Ignore item.
+
+        Args:
+            repository (str): name of the Repository that contains this Ignore item.
+            id (int): index, or location, of the Ignore item in the list.
+        """
         ignores_ = Repository(repository).ignored
         del ignores_[id]
 
@@ -274,4 +375,5 @@ class IgnoreItem(object):
                 f.write(f"{i.name}\n")
 
     def to_dict(self):
+        """Get a dict representation of this object (for API use)."""
         return dict(repository=self.repository, name=self.name)
