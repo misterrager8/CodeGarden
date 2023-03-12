@@ -10,6 +10,7 @@ function App() {
     const [deleting, setDeleting] = React.useState(false);
     const [saved, setSaved] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
+    const [showIgnored, setShowIgnored] = React.useState(false);
 
     const [config, setConfig] = React.useState([]);
 
@@ -310,6 +311,7 @@ function App() {
         <div className="p-4">
             <nav className="py-2 sticky-top">
                 <a onClick={() => exitAll()} className="btn btn-sm text-secondary">{loading ? <span className="spinner-border spinner-border-sm"></span> : <i className="bi bi-flower2"></i>}</a>
+                {currentRepository.length !== 0 && <a onClick={() => getRepository(currentRepository.name)} className="btn btn-sm text-secondary"><i className="bi bi-arrow-clockwise"></i></a>}
                 <a className={'btn btn-sm text-secondary dropdown-toggle ' + (currentRepository.length !== 0 && 'active')} data-bs-toggle="dropdown" data-bs-target="#repositories"><i className="bi bi-git me-1"></i> {currentRepository.length === 0 ? 'Select Repository' : currentRepository.name}</a>
                 <div className="dropdown-menu" id="repositories">
                     <a onClick={() => setPage('new')} className="dropdown-item small text-success"><i className="bi bi-plus-circle"></i> New Repository</a>
@@ -357,6 +359,7 @@ function App() {
                         <div className="dropdown-menu text-center" id="open-in">
                             <form className="m-1" onSubmit={(e) => runCommand(e)} ><input placeholder="Run" id="cmd" autoComplete="off" className="form-control form-control-sm"></input></form>
                         </div>
+                        {currentRepository.remote_url && <a target="_blank" href={currentRepository.remote_url} className={'btn btn-outline-secondary'}><i className="bi bi-github"></i> View GitHub</a>}
                         <a onClick={() => setDeleting(!deleting)} className={'btn btn-outline-danger'}>Delete</a>
                         {deleting && <a onClick={() => deleteRepository()} className={'btn btn-outline-danger'}>Delete?</a>}
                     </div>
@@ -410,7 +413,9 @@ function App() {
                                 </div>
                             </div>
 
-                            <div className="mb-3">
+                            <a className="btn btn-sm btn-outline-secondary my-2" onClick={() => setShowIgnored(!showIgnored)}><i className={'bi bi-' + (showIgnored ? 'eye-slash' : 'eye')}></i> {showIgnored ? 'Hide' : 'Show'} Ignored</a>
+                            {showIgnored &&
+                            <div>
                                 <form onSubmit={(e) => createIgnore(e)} className="input-group input-group-sm mb-2">
                                     <input id="new-ignore" autoComplete="off" className="form-control" placeholder="New Ignore Item"/>
                                     <button type="submit" className="btn btn-outline-secondary">Ignore Item</button>
@@ -421,7 +426,7 @@ function App() {
                                         <span className="col"><a onClick={() => deleteIgnore(id)} className="float-end btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a></span>
                                     </div>
                                 ) )}
-                            </div>
+                            </div>}
 
                         </div>
 

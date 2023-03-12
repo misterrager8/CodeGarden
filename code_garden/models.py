@@ -114,6 +114,14 @@ class Repository(object):
             if i.strip()
         ]
 
+    @property
+    def remote_url(self):
+        return (
+            self.run_command(["git", "remote", "-v"]).split("\n")[0].split()[1]
+            if self.run_command(["git", "remote", "-v"])
+            else None
+        )
+
     @classmethod
     def all(cls):
         """Get all Repositories in the home directory."""
@@ -181,6 +189,7 @@ class Repository(object):
             path=str(self.path),
             branches=[i.to_dict() for i in self.branches],
             current_branch=self.current_branch,
+            remote_url=self.remote_url,
             log=[i.to_dict() for i in self.log],
             todos=[i.to_dict() for i in self.todos],
             diffs=[i.to_dict() for i in self.diffs],
@@ -226,7 +235,6 @@ class Branch(object):
         return dict(
             repository=self.repository,
             name=self.name,
-            comparison=[i.to_dict() for i in self.compare()],
         )
 
 
