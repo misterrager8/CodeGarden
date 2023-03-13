@@ -182,6 +182,15 @@ class Repository(object):
         self.run_command(["git", "checkout", "."])
         self.run_command(["git", "clean", "-fd"])
 
+    def push(self):
+        """Push to remote branch."""
+        self.run_command(["git", "push", "origin"])
+
+    def export(self):
+        """Export all Repository info, such as todos, to single JSON file."""
+        with open(config.HOME_DIR / f"{self.name}.json", "w") as f:
+            json.dump(self.to_dict(), f, indent=4)
+
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
         return dict(

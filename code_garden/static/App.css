@@ -47,6 +47,10 @@ a, a:hover {
 	color: var(--primary-txt) !important;
 }
 
+.text-warning {
+	color: darkorange !important;
+}
+
 .btn-outline-secondary {
 	border-color: var(--primary-txt);
 	color: var(--primary-txt);

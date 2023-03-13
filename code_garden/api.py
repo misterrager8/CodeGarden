@@ -47,6 +47,13 @@ def delete_repository():
     return ""
 
 
+@current_app.get("/export_repository")
+def export_repository():
+    repository_ = Repository(request.args.get("name"))
+    repository_.export()
+    return ""
+
+
 @current_app.post("/clone_repository")
 def clone_repository():
     Repository.clone(request.form.get("url"))
@@ -146,6 +153,14 @@ def reset_file():
 def reset_all():
     repo_ = Repository(request.args.get("name"))
     repo_.reset_all()
+
+    return ""
+
+
+@current_app.get("/push")
+def push():
+    repo_ = Repository(request.args.get("name"))
+    repo_.push()
 
     return ""
 

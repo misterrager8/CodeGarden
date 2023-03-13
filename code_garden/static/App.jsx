@@ -78,6 +78,15 @@ function App() {
         });
     }
 
+    const exportRepository = () => {
+        setLoading(true);
+        $.get('/export_repository', {
+            name: currentRepository.name
+        }, function(data) {
+            setLoading(false);
+        });
+    }
+
     const editReadme = () => {
         setLoading(true);
         $.post('/edit_readme', {
@@ -243,7 +252,7 @@ function App() {
             getRepository(currentRepository.name);
             setLoading(false);
         });
-    }    
+    }
 
     const resetAll = () => {
         setLoading(true);
@@ -253,7 +262,17 @@ function App() {
             getRepository(currentRepository.name);
             setLoading(false);
         });
-    }    
+    }
+
+    const push = () => {
+        setLoading(true);
+        $.get('/push', {
+            name: currentRepository.name
+        }, function (data) {
+            getRepository(currentRepository.name);
+            setLoading(false);
+        });
+    }
 
     const resetFile = (name) => {
         setLoading(true);
@@ -316,23 +335,50 @@ function App() {
                 <div className="dropdown-menu" id="repositories">
                     <a onClick={() => setPage('new')} className="dropdown-item small text-success"><i className="bi bi-plus-circle"></i> New Repository</a>
                     {repositories.map((x, id) => (
-                        <a key={id} onClick={() => getRepository(x.name)} className={'dropdown-item small ' + (x.name === currentRepository.name && 'active')}>{x.diffs.length > 0 && <i className="bi bi-circle-fill text-primary"></i>} {x.name}</a>
+                        <a key={id} onClick={() => getRepository(x.name)} className={'dropdown-item small ' + (x.name === currentRepository.name && 'active')}>
+                            {x.diffs.length > 0 && <i title="There are uncommitted changes here." className="bi bi-circle-fill text-primary me-1"></i>}
+                            {x.current_branch !== 'master' && <i title="Non-master branch checked-out." className="bi bi-sign-intersection-y-fill text-warning me-1"></i>}
+                            <span>{x.name}</span>
+                        </a>
                     ))}
                 </div>
                 {currentRepository.length !== 0 && 
                     <span>
                         <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#branches"><i className="bi bi-signpost-split me-1"></i> {currentRepository.current_branch}</a>
                         <div className="dropdown-menu" id="branches">
-                            <form onSubmit={(e) => createBranch(e)} className="input-group input-group-sm p-1">
+                            <div className="text-center pb-2">
+                                <div className="small text-muted">Current Branch</div>
+                                <div className="fst-italic">{currentRepository.current_branch}</div>
+                            </div>
+                            <div className="btn-group btn-group-sm p-2 w-100">
+                                <a onClick={() => push()} className="btn btn-outline-secondary"><i className="bi bi-arrow-right"></i> Push</a>
+                            </div>
+                            <form onSubmit={(e) => createBranch(e)} className="input-group input-group-sm p-2">
                                 <input id="new-branch" autoComplete="off" className="form-control" placeholder="New Branch"/>
                             </form>
                             {branches.map((x, id) => (
-                                <div key={id} className={'dropdown-item small ' + (x.name === ('* ' + currentRepository.current_branch) && ' active')}>
-                                    <a className="" onClick={() => checkoutBranch(x.name)}>{x.name}</a>
-                                    {x.name !== ('* ' + currentRepository.current_branch) && <a className="float-end" onClick={() => mergeBranch(x.name)}><i className="bi bi-sign-merge-left"></i></a>}
-                                </div>
+                                <>
+                                    {x.name !== ('* ' + currentRepository.current_branch) &&
+                                    <div key={id} className="dropdown-item small">
+                                        <a className="" onClick={() => checkoutBranch(x.name)}>{x.name}</a>
+                                        <span className="float-end">
+                                            <a onClick={() => mergeBranch(x.name)}><i className="bi bi-sign-merge-left"></i></a>
+                                            <a className="text-danger ps-2" onClick={() => deleteBranch(x.name)}><i className="bi bi-trash2"></i></a>
+                                        </span>
+                                    </div>}
+                                </>
                             ))}
                         </div>
+                        <a className="btn btn-sm text-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#options"><i className="bi bi-three-dots"></i> Options</a>
+                        <div className="dropdown-menu" id="options">
+                            <form className="m-2" onSubmit={(e) => runCommand(e)}><input placeholder="Run Command" id="cmd" autoComplete="off" className="form-control form-control-sm"></input></form>
+                            <a onClick={() => copyPath()} className="dropdown-item small"><i className="bi bi-clipboard"></i> Copy Path</a>
+                            {currentRepository.remote_url && <a target="_blank" href={currentRepository.remote_url} className="dropdown-item small"><i className="bi bi-github"></i> View GitHub</a>}
+                            <a onClick={() => exportRepository()} className="dropdown-item small"><i className="bi bi-filetype-json"></i> Export To JSON</a>
+                            <a onClick={() => setDeleting(!deleting)} className="dropdown-item small text-danger"><i className="bi bi-trash2"></i> Delete Repository</a>
+                        </div>
+                        {copied && <span className="small heading"><i className="bi bi-check-lg"></i> Copied.</span>}
+                        {deleting && <a className="btn btn-sm text-danger" onClick={() => deleteRepository()}>Delete?</a>}
                     </span>
                 }
                 <span className="float-end">
@@ -353,17 +399,7 @@ function App() {
             <div>
                 {currentRepository.length !== 0 &&
                 <div>
-                    <div className="btn-group btn-group-sm my-3">
-                        <a onClick={() => copyPath()} className={'btn btn-outline-secondary'}><i className={'bi bi-' + (copied ? 'check-lg' : 'clipboard')}></i> {copied ? 'Copied.' : 'Copy Path'}</a>
-                        <a data-bs-toggle="dropdown" data-bs-target="#open-in" className="btn btn-outline-secondary dropdown-toggle"><i className="bi bi-three dots"></i> Run Command</a>
-                        <div className="dropdown-menu text-center" id="open-in">
-                            <form className="m-1" onSubmit={(e) => runCommand(e)} ><input placeholder="Run" id="cmd" autoComplete="off" className="form-control form-control-sm"></input></form>
-                        </div>
-                        {currentRepository.remote_url && <a target="_blank" href={currentRepository.remote_url} className={'btn btn-outline-secondary'}><i className="bi bi-github"></i> View GitHub</a>}
-                        <a onClick={() => setDeleting(!deleting)} className={'btn btn-outline-danger'}>Delete</a>
-                        {deleting && <a onClick={() => deleteRepository()} className={'btn btn-outline-danger'}>Delete?</a>}
-                    </div>
-                    <div className="row">
+                    <div className="row mt-3">
 
                         <div className="col-3">
                             <div className="btn-group btn-group-sm mb-2 w-100">
