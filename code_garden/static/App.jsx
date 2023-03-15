@@ -386,10 +386,11 @@ function App() {
                     <div className="dropdown-menu text-center" id="themes">
                         {theme !== 'dark' && <a onClick={() => changeTheme('dark')} className="dropdown-item small text-capitalize">Dark</a>}
                         {theme !== 'light' && <a onClick={() => changeTheme('light')} className="dropdown-item small text-capitalize">Light</a>}
-                        {theme !== 'periwinkle' && <a onClick={() => changeTheme('periwinkle')} className="dropdown-item small text-capitalize">periwinkle</a>}
                         {theme !== 'vanilla' && <a onClick={() => changeTheme('vanilla')} className="dropdown-item small text-capitalize">vanilla</a>}
-                        {theme !== 'lavender' && <a onClick={() => changeTheme('lavender')} className="dropdown-item small text-capitalize">lavender</a>}
-                        {theme !== 'coral' && <a onClick={() => changeTheme('coral')} className="dropdown-item small text-capitalize">coral</a>}
+                        {theme !== 'ruby' && <a onClick={() => changeTheme('ruby')} className="dropdown-item small text-capitalize">ruby</a>}
+                        {theme !== 'silver-lime' && <a onClick={() => changeTheme('silver-lime')} className="dropdown-item small text-capitalize">silver-lime</a>}
+                        {theme !== 'navy' && <a onClick={() => changeTheme('navy')} className="dropdown-item small text-capitalize">navy</a>}
+                        {theme !== 'vault-boy' && <a onClick={() => changeTheme('vault-boy')} className="dropdown-item small text-capitalize">vault-boy</a>}
                     </div>
                     <a onClick={() => setPage('settings')} className={'btn btn-sm text-secondary ' + (page === 'settings' && 'active')}><i className="bi bi-gear"></i> Settings</a>
                     <a target="_blank" href="http://github.com/misterrager8/CodeGarden" className="btn btn-sm text-secondary"><i className="bi bi-info-circle"></i> About</a>
@@ -413,9 +414,10 @@ function App() {
                                         <input id="new-commit" autoComplete="off" className="form-control" placeholder="Commit"/>
                                         <button type="submit" className="btn btn-outline-secondary">Commit</button>
                                     </form>
-                                    <a title="This cannot be undone." className="btn btn-sm text-danger hover" onClick={() => resetAll()}>Reset All</a>
+                                    <div className="text-center"><a title="This cannot be undone." className="small text-danger hover" onClick={() => resetAll()}>Reset All</a></div>
                                 </div>}
                                 <div>
+                                    {currentRepository.diffs.length === 0 && <div className="text-center small text-muted py-2">No Changes.</div>}
                                     {currentRepository.diffs.map((x, id) => (
                                         <div key={id} className="row hover">
                                             <div className="col">{x.name}</div>

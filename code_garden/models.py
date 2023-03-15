@@ -145,7 +145,7 @@ class Repository(object):
         open(self.path / ".gitignore", "w").write("todos.txt\n")
         (self.path / "todos.txt").touch()
         self.run_command(["git", "init"])
-        self.commit("Initial commit", True)
+        self.commit("Initial commit")
 
     @classmethod
     def clone(cls, url: str):

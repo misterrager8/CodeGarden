@@ -8,24 +8,29 @@ html[data-theme='dark'] {
 	--primary-txt: #cccccc;
 }
 
-html[data-theme='periwinkle'] {
-	--primary-bg: #6fa2d3;
-	--primary-txt: #001370;
-}
-
 html[data-theme='vanilla'] {
-	--primary-bg: #ffd86b;
-	--primary-txt: #634003;
+	--primary-bg: #d3b35a;
+	--primary-txt: #472c00;
 }
 
-html[data-theme='lavender'] {
-	--primary-bg: #b392ce;
-	--primary-txt: #400057;
+html[data-theme='ruby'] {
+	--primary-bg: #471a1a;
+	--primary-txt: #e6a7a7;
 }
 
-html[data-theme='coral'] {
-	--primary-bg: #c18686;
-	--primary-txt: #520500;
+html[data-theme='silver-lime'] {
+	--primary-bg: #454545;
+	--primary-txt: #d2dd7e;
+}
+
+html[data-theme='navy'] {
+	--primary-bg: #212b5f;
+	--primary-txt: #b4d3d9;
+}
+
+html[data-theme='vault-boy'] {
+	--primary-bg: #13395d;
+	--primary-txt: #efbf6b;
 }
 
 body, .modal-content, nav, .form-control, .form-control:focus, .dropdown-item, .dropdown-menu {
@@ -56,10 +61,10 @@ a, a:hover {
 	color: var(--primary-txt);
 }
 
-.btn-outline-secondary:hover, .btn.active, .dropdown-item.active {
+.btn-outline-secondary:hover, .btn.active, .dropdown-item.active, .dropdown-item:hover {
 	border-color: var(--primary-txt);
 	color: var(--primary-bg) !important;
-	background-color: var(--primary-txt);
+	background-color: var(--primary-txt) !important;
 }
 
 .form-control, .dropdown-menu {
