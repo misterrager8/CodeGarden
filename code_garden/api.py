@@ -126,6 +126,13 @@ def delete_todo():
     return ""
 
 
+@current_app.get("/toggle_todo")
+def toggle_todo():
+    Todo.toggle(request.args.get("repository"), int(request.args.get("id")))
+
+    return ""
+
+
 @current_app.post("/create_ignore")
 def create_ignore():
     ignore_ = IgnoreItem(request.form.get("repository"), request.form.get("name"))

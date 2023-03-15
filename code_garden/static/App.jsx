@@ -138,6 +138,7 @@ function App() {
             name: currentRepository.name,
             msg: $('#todo-name' + id).val()
         }, function(data) {
+            toggleTodo(id);
             getRepositories();
             getRepository(currentRepository.name);
             setTab('log');
@@ -222,6 +223,17 @@ function App() {
     const deleteTodo = (id) => {
         setLoading(true);
         $.get('/delete_todo', {
+            repository: currentRepository.name,
+            id: id
+        }, function(data) {
+            getRepository(currentRepository.name);
+            setLoading(false);
+        });
+    }
+
+    const toggleTodo = (id) => {
+        setLoading(true);
+        $.get('/toggle_todo', {
             repository: currentRepository.name,
             id: id
         }, function(data) {
@@ -442,7 +454,8 @@ function App() {
                                 </form>
                                 <div>
                                     {currentRepository.todos.map((x, id) => (
-                                        <form onSubmit={(e) => editTodo(e, id)} key={id} className="input-group input-group-sm hover">
+                                        <form onSubmit={(e) => editTodo(e, id)} key={id} className={'input-group input-group-sm ' + (x.done ? 'opacity-50' : 'hover')}>
+                                            <a onClick={() => toggleTodo(id)} className={'btn btn-sm text-' + (x.done ? 'success' : 'secondary')}><i className="bi bi-check-lg"></i></a>
                                             <a onClick={() => commitTodo(id)} className="btn btn-sm text-secondary"><i className="bi bi-file-diff"></i></a>
                                             <input id={'todo-name' + id} key={id} defaultValue={x.name} autoComplete="off" className="form-control form-control-sm border-0"/>
                                             <a onClick={() => deleteTodo(id)} className="btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a>

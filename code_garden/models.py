@@ -281,7 +281,8 @@ class Todo(object):
 
     def __init__(self, repository, name):
         self.repository = repository
-        self.name = name
+        self.name = name.replace("[x] ", "")
+        self.done = name.startswith("[x] ")
 
     def create(self):
         """Create a new Todo."""
@@ -290,7 +291,7 @@ class Todo(object):
 
         with open((Repository(self.repository).path / "todos.txt"), "w") as f:
             for i in todos_:
-                f.write(f"{i.name}\n")
+                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
 
     @classmethod
     def edit(cls, repository, id, new_name):
@@ -306,7 +307,7 @@ class Todo(object):
 
         with open((Repository(repository).path / "todos.txt"), "w") as f:
             for i in todos_:
-                f.write(f"{i.name}\n")
+                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
 
     @classmethod
     def delete(cls, repository, id):
@@ -321,11 +322,26 @@ class Todo(object):
 
         with open((Repository(repository).path / "todos.txt"), "w") as f:
             for i in todos_:
-                f.write(f"{i.name}\n")
+                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
+
+    @classmethod
+    def toggle(cls, repository, id):
+        """Delete a Todo item.
+
+        Args:
+            repository (str): name of the Repository that contains this Todo.
+            id (int): index, or location, of the Todo in the list.
+        """
+        todos_ = Repository(repository).todos
+        todos_[id].done = not todos_[id].done
+
+        with open((Repository(repository).path / "todos.txt"), "w") as f:
+            for i in todos_:
+                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
 
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""
-        return dict(repository=self.repository, name=self.name)
+        return dict(repository=self.repository, name=self.name, done=self.done)
 
 
 class DiffItem(object):
