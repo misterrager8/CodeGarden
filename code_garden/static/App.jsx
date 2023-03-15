@@ -429,7 +429,7 @@ function App() {
                                     <div className="text-center"><a title="This cannot be undone." className="small text-danger hover" onClick={() => resetAll()}>Reset All</a></div>
                                 </div>}
                                 <div>
-                                    {currentRepository.diffs.length === 0 && <div className="text-center small text-muted py-2">No Changes.</div>}
+                                    {currentRepository.diffs.length === 0 && <div className="text-center small opacity-50 py-2">No Changes.</div>}
                                     {currentRepository.diffs.map((x, id) => (
                                         <div key={id} className="row hover">
                                             <div className="col">{x.name}</div>
@@ -455,8 +455,8 @@ function App() {
                                 <div>
                                     {currentRepository.todos.map((x, id) => (
                                         <form onSubmit={(e) => editTodo(e, id)} key={id} className={'input-group input-group-sm ' + (x.done ? 'opacity-50' : 'hover')}>
-                                            <a onClick={() => toggleTodo(id)} className={'btn btn-sm text-' + (x.done ? 'success' : 'secondary')}><i className="bi bi-check-lg"></i></a>
-                                            <a onClick={() => commitTodo(id)} className="btn btn-sm text-secondary"><i className="bi bi-file-diff"></i></a>
+                                            <a onClick={() => toggleTodo(id)} className={'px-1 btn btn-sm text-' + (x.done ? 'success' : 'secondary')}><i className="bi bi-check-lg"></i></a>
+                                            <a onClick={() => commitTodo(id)} className="px-1 btn btn-sm text-secondary"><i className="bi bi-file-diff"></i></a>
                                             <input id={'todo-name' + id} key={id} defaultValue={x.name} autoComplete="off" className="form-control form-control-sm border-0"/>
                                             <a onClick={() => deleteTodo(id)} className="btn btn-sm text-danger"><i className="bi bi-x-lg"></i></a>
                                         </form>
