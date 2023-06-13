@@ -433,7 +433,18 @@ function App() {
     currentRepository.length !== 0 && setPage("repo");
   }, [currentRepository]);
 
-  const themes = ["light", "dark", "royal"];
+  const themes = [
+    "light",
+    "dark",
+    "silver",
+    "sienna",
+    "mint",
+    "salmon",
+    "looseleaf",
+    "ruby",
+    "watermelon",
+    "laker",
+  ];
 
   return (
     <div className="p-4">
