@@ -462,11 +462,10 @@ function App() {
     setReadme(e.target.value);
   };
 
-  const changeTheme = (theme_) => {
-    localStorage.setItem("CodeGarden", theme_);
-    document.documentElement.setAttribute("data-theme", theme_);
-    setTheme(theme_);
-  };
+  React.useEffect(() => {
+    localStorage.setItem("CodeGarden", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const exitAll = () => {
     setCurrentRepository([]);
@@ -665,7 +664,6 @@ function App() {
   };
 
   React.useEffect(() => {
-    changeTheme(theme);
     getRepositories();
     localStorage.getItem("last-repo-opened") &&
       getRepository(localStorage.getItem("last-repo-opened"));
@@ -863,7 +861,7 @@ function App() {
                     <>
                       {theme !== x && (
                         <a
-                          onClick={() => changeTheme(x)}
+                          onClick={() => setTheme(x)}
                           className="dropdown-item text-capitalize">
                           {x}
                         </a>

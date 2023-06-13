@@ -106,7 +106,7 @@ a:hover {
 }
 
 ::placeholder {
-  color: var(--primary-txt);
-  opacity: 50%;
+  color: var(--primary-txt) !important;
+  opacity: 50% !important;
   letter-spacing: 1px;
 }
