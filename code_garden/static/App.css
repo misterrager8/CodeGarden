@@ -30,6 +30,8 @@ body {
 
 .dropdown-item {
   color: var(--primary-txt);
+  font-size: small;
+  letter-spacing: 1px;
 }
 
 a,
@@ -44,6 +46,7 @@ a:hover {
   background-color: transparent;
   color: var(--btn-color);
   font-size: small;
+  letter-spacing: 1px;
 }
 
 .btn:hover,
@@ -58,4 +61,10 @@ a:hover {
   color: var(--primary-txt);
   border-color: var(--primary-txt);
   font-size: small;
+}
+
+::placeholder {
+  color: var(--primary-txt);
+  opacity: 50%;
+  letter-spacing: 1px;
 }

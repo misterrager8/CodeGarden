@@ -1,5 +1,7 @@
 function App() {
-  const [theme, setTheme] = React.useState(localStorage.getItem("CodeGarden"));
+  const [theme, setTheme] = React.useState(
+    localStorage.getItem("CodeGarden") || "light"
+  );
 
   const [tab, setTab] = React.useState("diffs");
   const [page, setPage] = React.useState("repo");
@@ -447,7 +449,8 @@ function App() {
           {currentRepository.length !== 0 && (
             <a
               onClick={() => getRepository(currentRepository.name)}
-              className="btn border-0">
+              className="btn border-0"
+            >
               <i className="bi bi-arrow-clockwise"></i>
             </a>
           )}
@@ -458,7 +461,8 @@ function App() {
                 (currentRepository.length !== 0 && "active")
               }
               data-bs-toggle="dropdown"
-              data-bs-target="#repositories">
+              data-bs-target="#repositories"
+            >
               <i className="bi bi-git me-2"></i>
               {currentRepository.length === 0
                 ? "Select Repository"
@@ -467,7 +471,8 @@ function App() {
             <div className="dropdown-menu" id="repositories">
               <a
                 onClick={() => setPage("new")}
-                className="dropdown-item small text-success">
+                className="dropdown-item text-success"
+              >
                 <i className="bi bi-plus-circle"></i> New Repository
               </a>
               {repositories.map((x, id) => (
@@ -475,18 +480,21 @@ function App() {
                   key={id}
                   onClick={() => getRepository(x.name)}
                   className={
-                    "dropdown-item small " +
+                    "dropdown-item " +
                     (x.name === currentRepository.name && "active")
-                  }>
+                  }
+                >
                   {x.diffs.length > 0 && (
                     <i
                       title="There are uncommitted changes here."
-                      className="bi bi-circle-fill text-primary me-1"></i>
+                      className="bi bi-circle-fill text-primary me-1"
+                    ></i>
                   )}
                   {x.current_branch !== "master" && (
                     <i
                       title="Non-master branch checked-out."
-                      className="bi bi-sign-intersection-y-fill text-warning me-1"></i>
+                      className="bi bi-sign-intersection-y-fill text-warning me-1"
+                    ></i>
                   )}
                   <span>{x.name}</span>
                 </a>
@@ -499,7 +507,8 @@ function App() {
                 <a
                   className="btn dropdown-toggle"
                   data-bs-toggle="dropdown"
-                  data-bs-target="#branches">
+                  data-bs-target="#branches"
+                >
                   <i className="bi bi-signpost-split me-2"></i>
                   {currentRepository.current_branch}
                 </a>
@@ -517,7 +526,8 @@ function App() {
                   </div>
                   <form
                     onSubmit={(e) => createBranch(e)}
-                    className="input-group p-2">
+                    className="input-group p-2"
+                  >
                     <input
                       id="new-branch"
                       autoComplete="off"
@@ -528,10 +538,11 @@ function App() {
                   {branches.map((x, id) => (
                     <>
                       {x.name !== "* " + currentRepository.current_branch && (
-                        <div key={id} className="dropdown-item small">
+                        <div key={id} className="dropdown-item">
                           <a
                             className=""
-                            onClick={() => checkoutBranch(x.name)}>
+                            onClick={() => checkoutBranch(x.name)}
+                          >
                             {x.name}
                           </a>
                           <span className="float-end">
@@ -540,7 +551,8 @@ function App() {
                             </a>
                             <a
                               className="text-danger ps-2"
-                              onClick={() => deleteBranch(x.name)}>
+                              onClick={() => deleteBranch(x.name)}
+                            >
                               <i className="bi bi-trash2"></i>
                             </a>
                           </span>
@@ -553,7 +565,8 @@ function App() {
               <a
                 className="btn dropdown-toggle"
                 data-bs-toggle="dropdown"
-                data-bs-target="#options">
+                data-bs-target="#options"
+              >
                 <i className="bi bi-three-dots"></i> Options
               </a>
               <div className="dropdown-menu" id="options">
@@ -562,39 +575,41 @@ function App() {
                     placeholder="Run Command"
                     id="cmd"
                     autoComplete="off"
-                    className="form-control"></input>
+                    className="form-control"
+                  ></input>
                 </form>
-                <a onClick={() => copyPath()} className="dropdown-item small">
+                <a onClick={() => copyPath()} className="dropdown-item">
                   <i className="bi bi-clipboard"></i> Copy Path
                 </a>
                 {currentRepository.remote_url && (
                   <a
                     target="_blank"
                     href={currentRepository.remote_url}
-                    className="dropdown-item small">
+                    className="dropdown-item"
+                  >
                     <i className="bi bi-github"></i> View GitHub
                   </a>
                 )}
-                <a
-                  onClick={() => exportRepository()}
-                  className="dropdown-item small">
+                <a onClick={() => exportRepository()} className="dropdown-item">
                   <i className="bi bi-filetype-json"></i> Export To JSON
                 </a>
                 <a
                   onClick={() => setDeleting(!deleting)}
-                  className="dropdown-item small text-danger">
+                  className="dropdown-item text-danger"
+                >
                   <i className="bi bi-trash2"></i> Delete Repository
                 </a>
               </div>
               {copied && (
-                <span className="small heading">
+                <span className="heading">
                   <i className="bi bi-check-lg"></i> Copied.
                 </span>
               )}
               {deleting && (
                 <a
                   className="btn border-0 text-danger"
-                  onClick={() => deleteRepository()}>
+                  onClick={() => deleteRepository()}
+                >
                   Delete?
                 </a>
               )}
@@ -606,7 +621,8 @@ function App() {
             <a
               className="btn dropdown-toggle text-capitalize"
               data-bs-toggle="dropdown"
-              data-bs-target="#themes">
+              data-bs-target="#themes"
+            >
               <i className="bi bi-paint-bucket me-1"></i> {theme}
             </a>
             <div className="dropdown-menu text-center" id="themes">
@@ -615,7 +631,8 @@ function App() {
                   {theme !== x && (
                     <a
                       onClick={() => changeTheme(x)}
-                      className="dropdown-item small text-capitalize">
+                      className="dropdown-item text-capitalize"
+                    >
                       {x}
                     </a>
                   )}
@@ -625,13 +642,15 @@ function App() {
           </div>
           <a
             onClick={() => setPage("settings")}
-            className={"btn " + (page === "settings" && "active")}>
+            className={"btn " + (page === "settings" && "active")}
+          >
             <i className="bi bi-gear"></i> Settings
           </a>
           <a
             target="_blank"
             href="http://github.com/misterrager8/CodeGarden"
-            className="btn">
+            className="btn"
+          >
             <i className="bi bi-info-circle"></i> About
           </a>
         </span>
@@ -645,12 +664,14 @@ function App() {
                   <div className="btn-group mb-2 w-100">
                     <a
                       onClick={() => setTab("diffs")}
-                      className={"btn  " + (tab === "diffs" && " active")}>
+                      className={"btn  " + (tab === "diffs" && " active")}
+                    >
                       Changes
                     </a>
                     <a
                       onClick={() => setTab("log")}
-                      className={"btn  " + (tab === "log" && " active")}>
+                      className={"btn  " + (tab === "log" && " active")}
+                    >
                       Log
                     </a>
                   </div>
@@ -660,7 +681,8 @@ function App() {
                         <div>
                           <form
                             onSubmit={(e) => commit(e)}
-                            className="input-group mb-2">
+                            className="input-group mb-2"
+                          >
                             <input
                               id="new-commit"
                               autoComplete="off"
@@ -674,8 +696,9 @@ function App() {
                           <div className="text-center">
                             <a
                               title="This cannot be undone."
-                              className="small text-danger hover"
-                              onClick={() => resetAll()}>
+                              className="text-danger hover"
+                              onClick={() => resetAll()}
+                            >
                               Reset All
                             </a>
                           </div>
@@ -693,7 +716,8 @@ function App() {
                             <span className="col">
                               <a
                                 onClick={() => resetFile(x.name)}
-                                className="float-end btn border-0 text-danger">
+                                className="float-end btn border-0 text-danger"
+                              >
                                 <i className="bi bi-x-lg"></i>
                               </a>
                             </span>
@@ -715,7 +739,8 @@ function App() {
                   <div className="mb-3">
                     <form
                       onSubmit={(e) => createTodo(e)}
-                      className="input-group mb-2">
+                      className="input-group mb-2"
+                    >
                       <input
                         id="new-todo"
                         autoComplete="off"
@@ -733,18 +758,21 @@ function App() {
                           key={id}
                           className={
                             "input-group " + (x.done ? "opacity-50" : "hover")
-                          }>
+                          }
+                        >
                           <a
                             onClick={() => toggleTodo(id)}
                             className={
                               "px-1 btn border-0 text-" +
                               (x.done ? "success" : "secondary")
-                            }>
+                            }
+                          >
                             <i className="bi bi-check-lg"></i>
                           </a>
                           <a
                             onClick={() => commitTodo(id)}
-                            className="px-1 btn border-0">
+                            className="px-1 btn border-0"
+                          >
                             <i className="bi bi-file-diff"></i>
                           </a>
                           <input
@@ -756,7 +784,8 @@ function App() {
                           />
                           <a
                             onClick={() => deleteTodo(id)}
-                            className="btn border-0 text-danger">
+                            className="btn border-0 text-danger"
+                          >
                             <i className="bi bi-x-lg"></i>
                           </a>
                         </form>
@@ -766,18 +795,21 @@ function App() {
 
                   <a
                     className="btn my-2"
-                    onClick={() => setShowIgnored(!showIgnored)}>
+                    onClick={() => setShowIgnored(!showIgnored)}
+                  >
                     <i
                       className={
                         "me-2 bi bi-" + (showIgnored ? "eye-slash" : "eye")
-                      }></i>
+                      }
+                    ></i>
                     {showIgnored ? "Hide" : "Show"} Ignored
                   </a>
                   {showIgnored && (
                     <div>
                       <form
                         onSubmit={(e) => createIgnore(e)}
-                        className="input-group mb-2">
+                        className="input-group mb-2"
+                      >
                         <input
                           id="new-ignore"
                           autoComplete="off"
@@ -794,7 +826,8 @@ function App() {
                           <span className="col">
                             <a
                               onClick={() => deleteIgnore(id)}
-                              className="float-end btn border-0 text-danger">
+                              className="float-end btn border-0 text-danger"
+                            >
                               <i className="bi bi-x-lg"></i>
                             </a>
                           </span>
@@ -808,12 +841,14 @@ function App() {
                   <div className="btn-group mb-3">
                     <a
                       onClick={() => setMode("view")}
-                      className={"btn  " + (mode === "view" && " active")}>
+                      className={"btn  " + (mode === "view" && " active")}
+                    >
                       <i className="bi bi-eye"></i> View
                     </a>
                     <a
                       onClick={() => setMode("edit")}
-                      className={"btn  " + (mode === "edit" && " active")}>
+                      className={"btn  " + (mode === "edit" && " active")}
+                    >
                       <i className="bi bi-pen"></i> Edit
                     </a>
                     {mode === "edit" && (
@@ -821,7 +856,8 @@ function App() {
                         <i
                           className={
                             "me-2 bi bi-" + (saved ? "check-lg" : "save2")
-                          }></i>
+                          }
+                        ></i>
                         {saved ? "Saved." : "Save README"}
                       </a>
                     )}
@@ -830,14 +866,16 @@ function App() {
                     <div
                       dangerouslySetInnerHTML={{
                         __html: currentRepository.readme.md,
-                      }}></div>
+                      }}
+                    ></div>
                   ) : (
                     <textarea
                       rows="23"
                       id="content"
                       className="form-control"
                       defaultValue={currentRepository.readme.txt}
-                      key={currentRepository.name}></textarea>
+                      key={currentRepository.name}
+                    ></textarea>
                   )}
                 </div>
               </div>
@@ -878,12 +916,14 @@ function App() {
           <div className="btn-group mb-3">
             <a
               className={"btn  " + (createMode === "init" && "active")}
-              onClick={() => setCreateMode("init")}>
+              onClick={() => setCreateMode("init")}
+            >
               Init
             </a>
             <a
               className={"btn  " + (createMode === "clone" && "active")}
-              onClick={() => setCreateMode("clone")}>
+              onClick={() => setCreateMode("clone")}
+            >
               Clone
             </a>
           </div>
@@ -906,7 +946,8 @@ function App() {
                 className="form-control mb-2"
                 placeholder="Description"
                 id="new-repo-desc"
-                required></textarea>
+                required
+              ></textarea>
               <button type="submit" className="btn w-100">
                 Initialize Repository
               </button>
