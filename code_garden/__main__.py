@@ -12,7 +12,8 @@ def cli():
 
 @cli.command()
 @click.option("--debug", "-d", is_flag=True)
-def web(debug: bool):
+@click.option("--port", "-p", default="5000")
+def web(debug: bool, port):
     """Launch web interface for CodeGarden.
 
     Args:
@@ -20,6 +21,6 @@ def web(debug: bool):
     """
     app = create_app(config)
     if not debug:
-        webbrowser.open(f"http://localhost:{config.PORT}/")
+        webbrowser.open(f"http://localhost:{port}/")
     app.config["ENV"] = "development" if debug else "production"
-    app.run(port=config.PORT, debug=debug)
+    app.run(port=port, debug=debug)

@@ -11,7 +11,7 @@ def index():
 
 @current_app.get("/settings")
 def settings():
-    return dict(port=config.PORT, home_dir=str(config.HOME_DIR))
+    return dict(home_dir=str(config.HOME_DIR))
 
 
 @current_app.get("/repositories")
