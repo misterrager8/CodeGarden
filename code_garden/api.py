@@ -9,173 +9,173 @@ def index():
     return render_template("index.html", env=current_app.config["ENV"])
 
 
-@current_app.get("/settings")
+@current_app.post("/settings")
 def settings():
     return dict(home_dir=str(config.HOME_DIR))
 
 
-@current_app.get("/repositories")
+@current_app.post("/repositories")
 def repositories():
     return dict(repositories_=[i.to_dict() for i in Repository.all()])
 
 
 @current_app.post("/commit")
 def commit():
-    repository_ = Repository(request.form.get("name"))
-    repository_.commit(request.form.get("msg"))
+    repository_ = Repository(request.json.get("name"))
+    repository_.commit(request.json.get("msg"))
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/create_repository")
 def create_repository():
-    repository_ = Repository(request.form.get("name"))
-    repository_.init(request.form.get("brief_descrip"))
+    repository_ = Repository(request.json.get("name"))
+    repository_.init(request.json.get("brief_descrip"))
     return repository_.to_dict()
 
 
-@current_app.get("/repository")
+@current_app.post("/repository")
 def repository():
-    repository_ = Repository(request.args.get("name"))
+    repository_ = Repository(request.json.get("name"))
     return repository_.to_dict()
 
 
-@current_app.get("/delete_repository")
+@current_app.post("/delete_repository")
 def delete_repository():
-    repository_ = Repository(request.args.get("name"))
+    repository_ = Repository(request.json.get("name"))
     repository_.delete()
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/export_repository")
+@current_app.post("/export_repository")
 def export_repository():
-    repository_ = Repository(request.args.get("name"))
+    repository_ = Repository(request.json.get("name"))
     repository_.export()
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/clone_repository")
 def clone_repository():
-    Repository.clone(request.form.get("url"))
+    Repository.clone(request.json.get("url"))
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/edit_readme")
 def edit_readme():
-    repository_ = Repository(request.form.get("name"))
-    repository_.edit_readme(request.form.get("content"))
-    return ""
+    repository_ = Repository(request.json.get("name"))
+    repository_.edit_readme(request.json.get("content"))
+    return {"status": "done"}
 
 
 @current_app.post("/create_branch")
 def create_branch():
-    branch_ = Branch(request.form.get("repository"), request.form.get("name"))
+    branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.create()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/delete_branch")
+@current_app.post("/delete_branch")
 def delete_branch():
-    branch_ = Branch(request.args.get("repository"), request.args.get("name"))
+    branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.delete()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/checkout_branch")
+@current_app.post("/checkout_branch")
 def checkout_branch():
-    branch_ = Branch(request.args.get("repository"), request.args.get("name"))
+    branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.checkout()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/merge_branch")
+@current_app.post("/merge_branch")
 def merge_branch():
-    branch_ = Branch(request.args.get("repository"), request.args.get("name"))
-    branch_.merge(request.args.get("other_branch"))
+    branch_ = Branch(request.json.get("repository"), request.json.get("name"))
+    branch_.merge(request.json.get("other_branch"))
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/create_todo")
 def create_todo():
-    todo_ = Todo(request.form.get("repository"), request.form.get("name"))
+    todo_ = Todo(request.json.get("repository"), request.json.get("name"))
     todo_.create()
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/edit_todo")
 def edit_todo():
     Todo.edit(
-        request.form.get("repository"),
-        int(request.form.get("id")),
-        request.form.get("new_name"),
+        request.json.get("repository"),
+        int(request.json.get("id")),
+        request.json.get("new_name"),
     )
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/delete_todo")
+@current_app.post("/delete_todo")
 def delete_todo():
-    Todo.delete(request.args.get("repository"), int(request.args.get("id")))
+    Todo.delete(request.json.get("repository"), int(request.json.get("id")))
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/toggle_todo")
+@current_app.post("/toggle_todo")
 def toggle_todo():
-    Todo.toggle(request.args.get("repository"), int(request.args.get("id")))
+    Todo.toggle(request.json.get("repository"), int(request.json.get("id")))
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/create_ignore")
 def create_ignore():
-    ignore_ = IgnoreItem(request.form.get("repository"), request.form.get("name"))
+    ignore_ = IgnoreItem(request.json.get("repository"), request.json.get("name"))
     ignore_.create()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/delete_ignore")
+@current_app.post("/delete_ignore")
 def delete_ignore():
-    IgnoreItem.delete(request.args.get("repository"), int(request.args.get("id")))
+    IgnoreItem.delete(request.json.get("repository"), int(request.json.get("id")))
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/reset_file")
+@current_app.post("/reset_file")
 def reset_file():
-    diff_ = DiffItem(request.args.get("repository"), request.args.get("name"))
+    diff_ = DiffItem(request.json.get("repository"), request.json.get("name"))
     diff_.reset()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/reset_all")
+@current_app.post("/reset_all")
 def reset_all():
-    repo_ = Repository(request.args.get("name"))
+    repo_ = Repository(request.json.get("name"))
     repo_.reset_all()
 
-    return ""
+    return {"status": "done"}
 
 
-@current_app.get("/push")
+@current_app.post("/push")
 def push():
-    repo_ = Repository(request.args.get("name"))
+    repo_ = Repository(request.json.get("name"))
     repo_.push()
 
-    return ""
+    return {"status": "done"}
 
 
 @current_app.post("/run_command")
 def run_command():
-    Repository(request.form.get("repository")).run_command(
-        request.form.get("cmd").split()
+    Repository(request.json.get("repository")).run_command(
+        request.json.get("cmd").split()
     )
 
-    return ""
+    return {"status": "done"}
