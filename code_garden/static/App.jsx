@@ -1008,18 +1008,20 @@ function App() {
                           </a>
                         )}
                       </div>
-                      {mode === "view" ? (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: currentRepository.readme.md,
-                          }}></div>
-                      ) : (
-                        <textarea
-                          rows="23"
-                          className="form-control"
-                          value={readme.txt}
-                          onChange={onChangeReadme}></textarea>
-                      )}
+                      <div className="scroll">
+                        {mode === "view" ? (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: currentRepository.readme.md,
+                            }}></div>
+                        ) : (
+                          <textarea
+                            rows="23"
+                            className="form-control h-100"
+                            value={readme.txt}
+                            onChange={onChangeReadme}></textarea>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
