@@ -618,6 +618,21 @@ function App() {
     );
   };
 
+  const revertCommit = () => {
+    setLoading(true);
+    apiCall(
+      "/run_command",
+      {
+        repository: currentRepository.name,
+        cmd: "git reset --soft HEAD~1",
+      },
+      function (data) {
+        getRepository(currentRepository.name);
+        setLoading(false);
+      }
+    );
+  };
+
   const push = () => {
     setLoading(true);
     apiCall(
@@ -944,6 +959,13 @@ function App() {
                               <div className="small fw-light">
                                 {x.timestamp}
                               </div>
+                              {id === 0 && (
+                                <a
+                                  onClick={() => revertCommit()}
+                                  className="small text-danger">
+                                  Revert Commit
+                                </a>
+                              )}
                             </div>
                           ))}
                         </div>
