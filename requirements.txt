@@ -4,4 +4,3 @@ Markdown==3.3.7
 pytest==7.1.2
 python-dotenv==1.0.0
 setuptools==63.1.0
-pre-commit
