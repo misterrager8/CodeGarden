@@ -4,6 +4,9 @@ import shutil
 import subprocess
 
 import markdown
+import requests
+
+from code_garden.readme import Readme
 
 from . import config
 
@@ -131,6 +134,16 @@ class Repository(object):
             if i.is_dir() and (i / ".git").exists()
         ]
 
+    @classmethod
+    def generate_name(cls):
+        adj = requests.get(
+            "https://random-word-form.herokuapp.com/random/adjective"
+        ).json()[0]
+        noun = requests.get(
+            "https://random-word-form.herokuapp.com/random/noun"
+        ).json()[0]
+        return f"{adj}-{noun}"
+
     def init(self, brief_descrip: str):
         """Create a new Repository.
 
@@ -138,9 +151,7 @@ class Repository(object):
             brief_descrip (str): Short description of what the Repository contains.
         """
         self.path.mkdir()
-        open(self.path / "README.md", "w").write(
-            f"# {self.name}\n---\n\n{brief_descrip}\n"
-        )
+        Readme(self.name, brief_descrip).write(self.path)
         (self.path / "LICENSE.md").touch()
         open(self.path / ".gitignore", "w").write("todos.txt\n")
         (self.path / "todos.txt").touch()
@@ -205,6 +216,9 @@ class Repository(object):
             readme=self.readme,
             ignored=[i.to_dict() for i in self.ignored],
         )
+
+    def __str__(self):
+        return f"{self.name.ljust(20)} (current branch: {self.current_branch}, last updated: {self.log[0].timestamp.strftime('%B %-d, %Y @ %-I:%M %p')})"
 
 
 class Branch(object):

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import click
 
-db = sqlite3.connect("kanban.db")
+db = sqlite3.connect("todos.db")
 cursor = db.cursor()
 cursor.execute(
     "CREATE TABLE IF NOT EXISTS tasks (title TEXT, description TEXT, tag TEXT, date_added DATETIME, status TEXT, id INTEGER PRIMARY KEY AUTOINCREMENT)"
@@ -69,35 +69,25 @@ class Task:
         cursor.execute("DELETE FROM tasks WHERE id=?", (str(self.id),))
         db.commit()
 
-    def to_string(self):
-        tag = f"({self.tag})" if self.tag else ""
-        return "#{} {:40.40} {}".format(str(self.id).ljust(2), self.title, tag)
-
-    def to_long_string(self):
-        return """#{id}{tag} {title}
-
-    {description}
-
-addd {date_created}""".format(
-            id=self.id,
-            title=self.title,
-            tag=f" [{self.tag}]" if self.tag else "",
-            date_created=self.date_added,
-            description=self.description or "(No Description)",
+    def __str__(self):
+        return "#{} {:40.40} ({})".format(
+            str(self.id).ljust(2),
+            self.title,
+            self.tag or datetime.date.today().strftime("%d/%m/%Y"),
         )
 
 
 @click.group()
-def kanban_cli():
+def todos_cli():
     pass
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("title")
 @click.option("--desc", "-d", help="More detailed description of task.")
 @click.option("--tag", "-t", help="One-word descriptor of task for sorting.")
 @click.option("--fixup", "-f", is_flag=True, help="Capitalize input (convenience).")
-def add(title: str, desc, tag, fixup):
+def add_todo(title: str, desc, tag, fixup):
     """Add a task."""
     task_ = Task(
         title.capitalize() if fixup else title,
@@ -106,18 +96,15 @@ def add(title: str, desc, tag, fixup):
         datetime.datetime.now(),
         "open",
     )
-    if click.confirm(f"Add {task_.to_long_string()}?", default=True):
-        task_.add()
-        click.secho(f"{task_.title} added.", fg="green")
-    else:
-        click.secho("Nevermind.", fg="red")
+    task_.add()
+    click.secho(f"{task_.title} added.", fg="green")
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.option(
     "-a", "--all", is_flag=True, default=False, help="Include completed tasks."
 )
-def see_list(all):
+def view_todos(all):
     """See list of all undone tasks."""
     _ = (
         Task.see_list()
@@ -125,18 +112,27 @@ def see_list(all):
         else [i for i in Task.see_list() if i.status != "completed"]
     )
     for i in _:
-        click.secho(i.to_string(), fg=Task.status_options.get(i.status))
+        click.secho(str(i), fg=Task.status_options.get(i.status))
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
-def get(id):
+def view_todo(id):
     """Get a task and see detailed info."""
     task_ = Task.get(int(id))
-    click.secho(task_.to_long_string(), fg=Task.status_options.get(task_.status))
+    display = "\n\n".join(
+        [
+            task_.title,
+            task_.status,
+            task_.tag or "(No Tag)",
+            task_.description or "(No Description)",
+            task_.date_added,
+        ]
+    )
+    click.secho(display, fg=Task.status_options.get(task_.status))
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
 @click.option("--name", "-n", help="Name of task.")
 @click.option("--desc", "-d", help="More detailed description of task.")
@@ -147,7 +143,7 @@ def get(id):
     type=click.Choice(["open", "active", "completed"], case_sensitive=False),
     help="Status of task.",
 )
-def edit(name, desc, tag, status, id):
+def edit_todo(name, desc, tag, status, id):
     """Edit a task."""
     task_ = Task.get(int(id))
     task_.title = name or task_.title
@@ -155,16 +151,13 @@ def edit(name, desc, tag, status, id):
     task_.tag = tag or task_.tag
     task_.status = status or task_.status
 
-    if click.confirm(f"Delete {task_.to_long_string()}?", default=True):
-        task_.edit()
-        click.secho(f"{task_.title} edited.", fg="green")
-    else:
-        click.secho("Nevermind.", fg="red")
+    task_.edit()
+    click.secho(f"{task_.title} edited.", fg="green")
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
-def delete(id):
+def delete_todo(id):
     """Delete a task."""
     task_ = Task.get(int(id))
     if click.confirm(f"Delete {task_.title}?", default=True):
@@ -174,9 +167,9 @@ def delete(id):
         click.secho("Nevermind.", fg="red")
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
-def complete(id):
+def todo_done(id):
     """Mark a task as complete."""
     task_ = Task.get(int(id))
     task_.status = "completed"
@@ -185,9 +178,9 @@ def complete(id):
     click.secho(f"{task_.title} completed.", fg="blue")
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
-def commit(id):
+def commit_todo(id):
     """Commit changes to git using task info as the commit message."""
     task_ = Task.get(int(id))
 
@@ -195,10 +188,14 @@ def commit(id):
         task_.status = "completed"
         task_.edit()
 
-        tag = f"({task_.tag}) " if task_.tag else ""
         click.secho(
             subprocess.run(
-                ["git", "commit", "-am", f"{tag}{task_.title}"],
+                [
+                    "git",
+                    "commit",
+                    "-am",
+                    f"({task_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {task_.title}",
+                ],
                 cwd=Path.cwd(),
                 text=True,
                 capture_output=True,
@@ -209,9 +206,9 @@ def commit(id):
         click.secho("Nevermind.", fg="red")
 
 
-@kanban_cli.command()
+@todos_cli.command()
 @click.argument("id")
-def activate(id):
+def pick_todo(id):
     """Mark a task as 'active' (currently being worked on)."""
     task_ = Task.get(int(id))
     task_.status = "active"

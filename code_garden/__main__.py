@@ -2,9 +2,12 @@ import webbrowser
 
 import click
 
-from code_garden.kanban import kanban_cli
+from code_garden.readme import readme_cli
+from code_garden.repos import repo_cli
+from code_garden.todos import todos_cli
 
-from . import config, create_app
+from . import config
+from .web import create_app
 
 
 @click.group()
@@ -28,7 +31,7 @@ def web(debug: bool, port):
     app.run(port=port, debug=debug)
 
 
-cli = click.CommandCollection(sources=[main_cli, kanban_cli])
+cli = click.CommandCollection(sources=[main_cli, todos_cli, readme_cli, repo_cli])
 
 
 def main():

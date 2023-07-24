@@ -359,9 +359,15 @@ function CreateRepoForm() {
     setDescription(e.target.value);
   };
 
+  const generateName = () => {
+    apiCall("/generate_name", {}, (data) => {
+      setName(data.name);
+    });
+  };
+
   return (
     <form onSubmit={(e) => createRepo(e)}>
-      <div className="input-group mb-2">
+      <div className="input-group mb-3">
         <input
           onChange={onChangeName}
           value={name}
@@ -370,7 +376,7 @@ function CreateRepoForm() {
           placeholder="Name"
           required
         />
-        <a className="btn">
+        <a onClick={() => generateName()} className="btn">
           <i className="bi bi-shuffle"></i> Generate Name
         </a>
       </div>
@@ -378,7 +384,7 @@ function CreateRepoForm() {
         onChange={onChangeDescription}
         value={description}
         rows="20"
-        className="form-control mb-2"
+        className="form-control mb-3"
         placeholder="Description"
         required></textarea>
       <button type="submit" className="btn w-100">
@@ -422,7 +428,7 @@ function CloneRepoForm() {
           onChange={onChangeUrl}
           required
         />
-        <button type="submit" className="btn w-100">
+        <button type="submit" className="btn">
           Clone Repository
         </button>
       </form>
@@ -696,14 +702,11 @@ function App() {
   const themes = [
     "light",
     "dark",
-    "silver",
-    "sienna",
-    "mint",
-    "salmon",
-    "looseleaf",
-    "ruby",
-    "watermelon",
-    "laker",
+    "lavender",
+    "bumblebee",
+    "sprite",
+    "caramel",
+    "raspberry",
   ];
 
   return (
@@ -1080,19 +1083,25 @@ function App() {
           )}
           {page === "new" && (
             <div>
-              <div className="btn-group mb-3">
-                <a
-                  className={"btn  " + (createMode === "init" && "active")}
-                  onClick={() => setCreateMode("init")}>
-                  Init
-                </a>
-                <a
-                  className={"btn  " + (createMode === "clone" && "active")}
-                  onClick={() => setCreateMode("clone")}>
-                  Clone
-                </a>
+              <div className="d-flex">
+                <div
+                  className="btn-group mb-3"
+                  style={{ margin: "auto", display: "block" }}>
+                  <a
+                    className={"btn  " + (createMode === "init" && "active")}
+                    onClick={() => setCreateMode("init")}>
+                    Create New
+                  </a>
+                  <a
+                    className={"btn  " + (createMode === "clone" && "active")}
+                    onClick={() => setCreateMode("clone")}>
+                    Clone Existing
+                  </a>
+                </div>
               </div>
-              {createMode === "init" ? <CreateRepoForm /> : <CloneRepoForm />}
+              <div className="px-5">
+                {createMode === "init" ? <CreateRepoForm /> : <CloneRepoForm />}
+              </div>
             </div>
           )}
         </div>

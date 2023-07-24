@@ -1,7 +1,7 @@
 from flask import current_app, render_template, request
 
-from . import config
-from .models import Branch, DiffItem, IgnoreItem, Repository, Todo
+from .. import config
+from ..models import Branch, DiffItem, IgnoreItem, Repository, Todo
 
 
 @current_app.get("/")
@@ -32,6 +32,11 @@ def create_repository():
     repository_ = Repository(request.json.get("name"))
     repository_.init(request.json.get("brief_descrip"))
     return repository_.to_dict()
+
+
+@current_app.post("/generate_name")
+def generate_name():
+    return {"name": Repository.generate_name()}
 
 
 @current_app.post("/repository")
