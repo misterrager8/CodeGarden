@@ -150,11 +150,14 @@ class Repository(object):
         Args:
             brief_descrip (str): Short description of what the Repository contains.
         """
+        files = ["LICENSE.md", ".gitignore", "todos.txt"]
         self.path.mkdir()
         Readme(self.name, brief_descrip).write(self.path)
-        (self.path / "LICENSE.md").touch()
-        open(self.path / ".gitignore", "w").write("todos.txt\n")
-        (self.path / "todos.txt").touch()
+        for i in files:
+            (self.path / i).touch()
+            if i == ".gitignore":
+                open(self.path / i, "w").write("todos.txt\n")
+
         self.run_command(["git", "init"])
         self.commit("Initial commit")
 

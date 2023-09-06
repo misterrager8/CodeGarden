@@ -11,7 +11,7 @@ def index():
 
 @current_app.post("/settings")
 def settings():
-    return dict(home_dir=str(config.HOME_DIR))
+    return config.get()
 
 
 @current_app.post("/repositories")

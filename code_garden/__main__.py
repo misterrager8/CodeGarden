@@ -1,3 +1,4 @@
+import pprint
 import webbrowser
 
 import click
@@ -17,8 +18,7 @@ def main_cli():
 
 @main_cli.command()
 @click.option("--debug", "-d", is_flag=True)
-@click.option("--port", "-p", default="5000")
-def web(debug: bool, port):
+def web(debug: bool):
     """Launch web interface for CodeGarden.
 
     Args:
@@ -26,9 +26,25 @@ def web(debug: bool, port):
     """
     app = create_app(config)
     if not debug:
-        webbrowser.open(f"http://localhost:{port}/")
-    app.config["ENV"] = "development" if debug else "production"
-    app.run(port=port, debug=debug)
+        webbrowser.open(f"http://localhost:{config.PORT}/")
+    app.config.update({"ENV": "development" if debug else "production"})
+    app.run(port=config.PORT, debug=debug)
+
+
+@main_cli.command()
+def get_config():
+    """View current settings for web and command-line interfaces."""
+    click.secho(pprint.pformat(config.get()), fg="green")
+
+
+@main_cli.command()
+@click.argument("key")
+@click.argument("value")
+def set_config(key, value):
+    """Set config for web and command-line interfaces."""
+    config.set(key, value)
+
+    click.secho(f"{key} set to {value}", fg="green")
 
 
 cli = click.CommandCollection(sources=[main_cli, todos_cli, readme_cli, repo_cli])

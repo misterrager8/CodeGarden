@@ -362,6 +362,7 @@ function CreateRepoForm() {
   const generateName = () => {
     apiCall("/generate_name", {}, (data) => {
       setName(data.name);
+      setDescription(`Created on ${new Date().toDateString()}`);
     });
   };
 
@@ -754,20 +755,22 @@ function App() {
                       key={id}
                       onClick={() => getRepository(x.name)}
                       className={
-                        "dropdown-item " +
+                        "dropdown-item d-flex justify-content-between " +
                         (x.name === currentRepository.name && "active")
                       }>
-                      {x.diffs.length > 0 && (
-                        <i
-                          title="There are uncommitted changes here."
-                          className="bi bi-circle-fill text-primary me-1"></i>
-                      )}
-                      {x.current_branch !== "master" && (
-                        <i
-                          title="Non-master branch checked-out."
-                          className="bi bi-sign-intersection-y-fill text-warning me-1"></i>
-                      )}
                       <span>{x.name}</span>
+                      <div>
+                        {x.diffs.length > 0 && (
+                          <i
+                            title="There are uncommitted changes here."
+                            className="bi bi-circle-fill text-primary me-1"></i>
+                        )}
+                        {x.current_branch !== "master" && (
+                          <i
+                            title="Non-master branch checked-out."
+                            className="bi bi-sign-intersection-y-fill text-warning me-1"></i>
+                        )}
+                      </div>
                     </a>
                   ))}
                 </div>
@@ -1060,8 +1063,8 @@ function App() {
                   autoComplete="off"
                   className="form-control border-0"
                   id="port"
-                  defaultValue={config.port}
-                  key={config.port}
+                  defaultValue={config.PORT}
+                  key={config.PORT}
                 />
                 <label for="port" className="small heading">
                   Port
@@ -1072,8 +1075,8 @@ function App() {
                   autoComplete="off"
                   className="form-control border-0"
                   id="home-dir"
-                  defaultValue={config.home_dir}
-                  key={config.home_dir}
+                  defaultValue={config.HOME_DIR}
+                  key={config.HOME_DIR}
                 />
                 <label for="home-dir" className="small heading">
                   Home Directory
