@@ -5,14 +5,16 @@ from pathlib import Path
 
 import click
 
-db = sqlite3.connect("todos.db")
+from code_garden import config
+
+db = sqlite3.connect(config.HOME_DIR / "todos.db", check_same_thread=False)
 cursor = db.cursor()
 cursor.execute(
-    "CREATE TABLE IF NOT EXISTS tasks (title TEXT, description TEXT, tag TEXT, date_added DATETIME, status TEXT, id INTEGER PRIMARY KEY AUTOINCREMENT)"
+    "CREATE TABLE IF NOT EXISTS todos (title TEXT, description TEXT, tag TEXT, date_added DATETIME, status TEXT, repo TEXT, id INTEGER PRIMARY KEY AUTOINCREMENT)"
 )
 
 
-class Task:
+class Todo:
     status_options = {"open": "cyan", "active": "yellow", "completed": "blue"}
 
     def __init__(
@@ -22,6 +24,7 @@ class Task:
         tag: str,
         date_added: datetime.datetime,
         status: str,
+        repo: str,
         id: int = None,
     ):
         self.title = title
@@ -29,44 +32,55 @@ class Task:
         self.tag = tag
         self.date_added = date_added
         self.status = status
+        self.repo = repo
         self.id = id
 
     def add(self):
         cursor.execute(
-            "INSERT INTO tasks (title, description, tag, date_added, status) VALUES (?,?,?,?,?)",
-            (self.title, self.description, self.tag, self.date_added, self.status),
+            "INSERT INTO todos (title, description, tag, date_added, status, repo) VALUES (?,?,?,?,?,?)",
+            (
+                self.title,
+                self.description,
+                self.tag,
+                self.date_added,
+                self.status,
+                self.repo,
+            ),
         )
         db.commit()
 
     @classmethod
     def get(cls, id):
         cursor.execute(
-            "SELECT title, description, tag, date_added, status, id FROM tasks WHERE id=?",
+            "SELECT title, description, tag, date_added, status, repo, id FROM todos WHERE id=?",
             (str(id),),
         )
         result = cursor.fetchone()
-        return Task(result[0], result[1], result[2], result[3], result[4], result[5])
+        return Todo(
+            result[0], result[1], result[2], result[3], result[4], result[5], result[6]
+        )
 
     @classmethod
-    def see_list(cls):
+    def see_list(cls, repo):
         cursor.execute(
-            "SELECT title, description, tag, date_added, status, id FROM tasks"
+            "SELECT title, description, tag, date_added, status, repo, id FROM todos WHERE repo=?",
+            (repo,),
         )
         results = cursor.fetchall()
         return sorted(
-            [Task(i[0], i[1], i[2], i[3], i[4], i[5]) for i in results],
+            [Todo(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) for i in results],
             key=lambda x: (x.status == "completed", x.status != "active", x.id),
         )
 
     def edit(self):
         cursor.execute(
-            "UPDATE tasks SET title=?, description=?, tag=?, status=? WHERE id=?",
+            "UPDATE todos SET title=?, description=?, tag=?, status=? WHERE id=?",
             (self.title, self.description, self.tag, self.status, str(self.id)),
         )
         db.commit()
 
     def delete(self):
-        cursor.execute("DELETE FROM tasks WHERE id=?", (str(self.id),))
+        cursor.execute("DELETE FROM todos WHERE id=?", (str(self.id),))
         db.commit()
 
     def __str__(self):
@@ -75,6 +89,15 @@ class Task:
             self.title,
             self.tag or datetime.date.today().strftime("%d/%m/%Y"),
         )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.title,
+            "tag": self.tag,
+            "repository": self.repo,
+            "done": self.status == "completed",
+        }
 
 
 @click.group()
@@ -89,47 +112,48 @@ def todos_cli():
 @click.option("--fixup", "-f", is_flag=True, help="Capitalize input (convenience).")
 def add_todo(title: str, desc, tag, fixup):
     """Add a task."""
-    task_ = Task(
+    todo_ = Todo(
         title.capitalize() if fixup else title,
         desc,
         tag,
         datetime.datetime.now(),
         "open",
+        Path.cwd().name,
     )
-    task_.add()
-    click.secho(f"{task_.title} added.", fg="green")
+    todo_.add()
+    click.secho(f"{todo_.title} added.", fg="green")
 
 
 @todos_cli.command()
 @click.option(
-    "-a", "--all", is_flag=True, default=False, help="Include completed tasks."
+    "-a", "--all", is_flag=True, default=False, help="Include completed todos."
 )
 def view_todos(all):
-    """See list of all undone tasks."""
+    """See list of all undone todos."""
     _ = (
-        Task.see_list()
+        Todo.see_list(Path.cwd().name)
         if all
-        else [i for i in Task.see_list() if i.status != "completed"]
+        else [i for i in Todo.see_list(Path.cwd().name) if i.status != "completed"]
     )
     for i in _:
-        click.secho(str(i), fg=Task.status_options.get(i.status))
+        click.secho(str(i), fg=Todo.status_options.get(i.status))
 
 
 @todos_cli.command()
 @click.argument("id")
 def view_todo(id):
     """Get a task and see detailed info."""
-    task_ = Task.get(int(id))
+    todo_ = Todo.get(int(id))
     display = "\n\n".join(
         [
-            task_.title,
-            task_.status,
-            task_.tag or "(No Tag)",
-            task_.description or "(No Description)",
-            task_.date_added,
+            todo_.title,
+            todo_.status,
+            todo_.tag or "(No Tag)",
+            todo_.description or "(No Description)",
+            todo_.date_added,
         ]
     )
-    click.secho(display, fg=Task.status_options.get(task_.status))
+    click.secho(display, fg=Todo.status_options.get(todo_.status))
 
 
 @todos_cli.command()
@@ -145,24 +169,24 @@ def view_todo(id):
 )
 def edit_todo(name, desc, tag, status, id):
     """Edit a task."""
-    task_ = Task.get(int(id))
-    task_.title = name or task_.title
-    task_.description = desc or task_.description
-    task_.tag = tag or task_.tag
-    task_.status = status or task_.status
+    todo_ = Todo.get(int(id))
+    todo_.title = name or todo_.title
+    todo_.description = desc or todo_.description
+    todo_.tag = tag or todo_.tag
+    todo_.status = status or todo_.status
 
-    task_.edit()
-    click.secho(f"{task_.title} edited.", fg="green")
+    todo_.edit()
+    click.secho(f"{todo_.title} edited.", fg="green")
 
 
 @todos_cli.command()
 @click.argument("id")
 def delete_todo(id):
     """Delete a task."""
-    task_ = Task.get(int(id))
-    if click.confirm(f"Delete {task_.title}?", default=True):
-        task_.delete()
-        click.secho(f"{task_.title} deleted.", fg="green")
+    todo_ = Todo.get(int(id))
+    if click.confirm(f"Delete {todo_.title}?", default=True):
+        todo_.delete()
+        click.secho(f"{todo_.title} deleted.", fg="green")
     else:
         click.secho("Nevermind.", fg="red")
 
@@ -171,22 +195,22 @@ def delete_todo(id):
 @click.argument("id")
 def todo_done(id):
     """Mark a task as complete."""
-    task_ = Task.get(int(id))
-    task_.status = "completed"
-    task_.edit()
+    todo_ = Todo.get(int(id))
+    todo_.status = "completed"
+    todo_.edit()
 
-    click.secho(f"{task_.title} completed.", fg="blue")
+    click.secho(f"{todo_.title} completed.", fg="blue")
 
 
 @todos_cli.command()
 @click.argument("id")
 def commit_todo(id):
     """Commit changes to git using task info as the commit message."""
-    task_ = Task.get(int(id))
+    todo_ = Todo.get(int(id))
 
-    if click.confirm(f"Commit {task_.title}?", default=True):
-        task_.status = "completed"
-        task_.edit()
+    if click.confirm(f"Commit {todo_.title}?", default=True):
+        todo_.status = "completed"
+        todo_.edit()
 
         click.secho(
             subprocess.run(
@@ -194,7 +218,7 @@ def commit_todo(id):
                     "git",
                     "commit",
                     "-am",
-                    f"({task_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {task_.title}",
+                    f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}",
                 ],
                 cwd=Path.cwd(),
                 text=True,
@@ -210,8 +234,8 @@ def commit_todo(id):
 @click.argument("id")
 def pick_todo(id):
     """Mark a task as 'active' (currently being worked on)."""
-    task_ = Task.get(int(id))
-    task_.status = "active"
-    task_.edit()
+    todo_ = Todo.get(int(id))
+    todo_.status = "active"
+    todo_.edit()
 
-    click.secho(f"{task_.title} active.", fg="yellow")
+    click.secho(f"{todo_.title} active.", fg="yellow")

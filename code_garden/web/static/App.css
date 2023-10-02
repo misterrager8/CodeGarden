@@ -1,3 +1,7 @@
+* {
+  font-family: "Play";
+}
+
 :root,
 html[data-theme="light"] {
   --primary-bg: #cccccc;
@@ -76,7 +80,7 @@ a:hover {
   border-color: var(--btn-color);
   background-color: transparent;
   color: var(--btn-color);
-  font-size: small;
+  /* font-size: small; */
   letter-spacing: 1px;
 }
 
@@ -91,7 +95,7 @@ a:hover {
   background-color: transparent;
   color: var(--primary-txt);
   border-color: var(--primary-txt);
-  font-size: small;
+  /* font-size: small; */
 }
 
 ::placeholder {
@@ -103,4 +107,11 @@ a:hover {
 .scroll {
   overflow-y: scroll;
   height: 700px;
+}
+
+.badge {
+  border: 0;
+  border-left: 1px dotted var(--btn-color);
+  background-color: var(--primary-bg);
+  color: var(--btn-color);
 }

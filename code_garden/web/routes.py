@@ -1,7 +1,11 @@
+import datetime
+
 from flask import current_app, render_template, request
 
+from code_garden.todos import Todo
+
 from .. import config
-from ..models import Branch, DiffItem, IgnoreItem, Repository, Todo
+from ..models import Branch, DiffItem, IgnoreItem, Repository
 
 
 @current_app.get("/")
@@ -11,7 +15,10 @@ def index():
 
 @current_app.post("/settings")
 def settings():
-    return config.get()
+    config_ = config.get()
+    config_.update({"debug": current_app.config.get("ENV") == "development"})
+
+    return config_
 
 
 @current_app.post("/repositories")
@@ -107,33 +114,67 @@ def merge_branch():
 
 @current_app.post("/create_todo")
 def create_todo():
-    todo_ = Todo(request.json.get("repository"), request.json.get("name"))
-    todo_.create()
+    todo_ = Todo(
+        request.json.get("name"),
+        "",
+        request.json.get("tag"),
+        datetime.datetime.now(),
+        "open",
+        request.json.get("repository"),
+    )
+    todo_.add()
 
     return {"status": "done"}
 
 
 @current_app.post("/edit_todo")
 def edit_todo():
-    Todo.edit(
-        request.json.get("repository"),
-        int(request.json.get("id")),
-        request.json.get("new_name"),
-    )
+    todo_ = Todo.get(request.json.get("id"))
+
+    todo_.title = request.json.get("new_name")
+    todo_.tag = request.json.get("new_tag")
+    todo_.edit()
 
     return {"status": "done"}
 
 
 @current_app.post("/delete_todo")
 def delete_todo():
-    Todo.delete(request.json.get("repository"), int(request.json.get("id")))
+    todo_ = Todo.get(request.json.get("id"))
+    todo_.delete()
+
+    return {"status": "done"}
+
+
+@current_app.post("/clear_completed")
+def clear_completed():
+    repo_ = Repository(request.json.get("repo"))
+    for i in repo_.todos:
+        if i.status == "completed":
+            i.delete()
 
     return {"status": "done"}
 
 
 @current_app.post("/toggle_todo")
 def toggle_todo():
-    Todo.toggle(request.json.get("repository"), int(request.json.get("id")))
+    todo_ = Todo.get(request.json.get("id"))
+
+    todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
+    todo_.edit()
+
+    return {"status": "done"}
+
+
+@current_app.post("/commit_todo")
+def commit_todo():
+    todo_ = Todo.get(request.json.get("id"))
+
+    todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
+    todo_.edit()
+    Repository(todo_.repo).commit(
+        f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}"
+    )
 
     return {"status": "done"}
 

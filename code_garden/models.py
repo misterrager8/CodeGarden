@@ -7,6 +7,7 @@ import markdown
 import requests
 
 from code_garden.readme import Readme
+from code_garden.todos import Todo
 
 from . import config
 
@@ -21,7 +22,7 @@ class Repository(object):
         branches: All local branches of the Repository.
         current_branch: The currently checked-out branch.
         log: List of (5 default) commits, sorted by most recent.
-        todos: List of tasks found in the todos.txt file.
+        todos: List of tasks found in the database file.
         diffs: List of all changed file in the current Repository.
         readme: Dict object of text in the README.md file 'txt' is the plaintext content, 'md' is the Markdown-formatted text.
         ignored: List of items in the .gitignore file.
@@ -60,41 +61,36 @@ class Repository(object):
     @property
     def log(self):
         _ = []
-        for i in self.run_command(
-            ["git", "log", "--oneline", "-5", "--pretty=format:%s\t%at\t%h"]
-        ).split("\n"):
-            if len(i.strip().split("\t")) == 2:
-                _.append(
-                    LogItem(
-                        self.name,
-                        "[No Commit Message]",
-                        datetime.datetime.min,
-                        i.strip().split("\t")[0],
+        try:
+            for i in self.run_command(
+                ["git", "log", "--oneline", "-5", "--pretty=format:%s\t%at\t%h"]
+            ).split("\n"):
+                if len(i.strip().split("\t")) == 2:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            "[No Commit Message]",
+                            datetime.datetime.min,
+                            i.strip().split("\t")[0],
+                        )
                     )
-                )
-            else:
-                _.append(
-                    LogItem(
-                        self.name,
-                        i.strip().split("\t")[0],
-                        datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
-                        i.strip().split("\t")[2],
+                else:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            i.strip().split("\t")[0],
+                            datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+                            i.strip().split("\t")[2],
+                        )
                     )
-                )
 
-        return _
+            return _
+        except:
+            return []
 
     @property
     def todos(self):
-        return (
-            [
-                Todo(self.name, i.strip())
-                for i in open(self.path / "todos.txt").readlines()
-                if i.strip()
-            ]
-            if (self.path / "todos.txt").exists()
-            else []
-        )
+        return Todo.see_list(self.name)
 
     @property
     def diffs(self):
@@ -106,16 +102,22 @@ class Repository(object):
 
     @property
     def readme(self):
-        raw = open(self.path / "README.md").read()
-        return dict(txt=raw, md=markdown.markdown(raw))
+        try:
+            raw = open(self.path / "README.md").read()
+            return dict(txt=raw, md=markdown.markdown(raw))
+        except:
+            return {}
 
     @property
     def ignored(self):
-        return [
-            IgnoreItem(self.name, i.strip())
-            for i in open(self.path / ".gitignore").readlines()
-            if i.strip()
-        ]
+        try:
+            return [
+                IgnoreItem(self.name, i.strip())
+                for i in open(self.path / ".gitignore").readlines()
+                if i.strip()
+            ]
+        except:
+            return []
 
     @property
     def remote_url(self):
@@ -150,13 +152,11 @@ class Repository(object):
         Args:
             brief_descrip (str): Short description of what the Repository contains.
         """
-        files = ["LICENSE.md", ".gitignore", "todos.txt"]
+        files = ["LICENSE.md", ".gitignore"]
         self.path.mkdir()
         Readme(self.name, brief_descrip).write(self.path)
         for i in files:
             (self.path / i).touch()
-            if i == ".gitignore":
-                open(self.path / i, "w").write("todos.txt\n")
 
         self.run_command(["git", "init"])
         self.commit("Initial commit")
@@ -286,79 +286,6 @@ class LogItem(object):
             timestamp=self.timestamp.strftime("%B %-d, %Y @ %-I:%M %p"),
             abbrev_hash=self.abbrev_hash,
         )
-
-
-class Todo(object):
-    """Todo item found in todos.txt.
-
-    Attributes:
-        repository (str): name of the containing Repository
-        name (str): description of this Todo item.
-    """
-
-    def __init__(self, repository, name):
-        self.repository = repository
-        self.name = name.replace("[x] ", "")
-        self.done = name.startswith("[x] ")
-
-    def create(self):
-        """Create a new Todo."""
-        todos_ = Repository(self.repository).todos
-        todos_.append(self)
-
-        with open((Repository(self.repository).path / "todos.txt"), "w") as f:
-            for i in todos_:
-                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
-
-    @classmethod
-    def edit(cls, repository, id, new_name):
-        """Edit a Todo item.
-
-        Args:
-            repository (str): name of the Repository that contains this Todo.
-            id (int): index, or location, of the Todo in the list.
-            new_name (str): new description of the Todo item.
-        """
-        todos_ = Repository(repository).todos
-        todos_[id].name = new_name
-
-        with open((Repository(repository).path / "todos.txt"), "w") as f:
-            for i in todos_:
-                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
-
-    @classmethod
-    def delete(cls, repository, id):
-        """Delete a Todo item.
-
-        Args:
-            repository (str): name of the Repository that contains this Todo.
-            id (int): index, or location, of the Todo in the list.
-        """
-        todos_ = Repository(repository).todos
-        del todos_[id]
-
-        with open((Repository(repository).path / "todos.txt"), "w") as f:
-            for i in todos_:
-                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
-
-    @classmethod
-    def toggle(cls, repository, id):
-        """Delete a Todo item.
-
-        Args:
-            repository (str): name of the Repository that contains this Todo.
-            id (int): index, or location, of the Todo in the list.
-        """
-        todos_ = Repository(repository).todos
-        todos_[id].done = not todos_[id].done
-
-        with open((Repository(repository).path / "todos.txt"), "w") as f:
-            for i in todos_:
-                f.write(f"{'[x] ' if i.done else ''} {i.name}\n")
-
-    def to_dict(self):
-        """Get a dict representation of this object (for API use)."""
-        return dict(repository=self.repository, name=self.name, done=self.done)
 
 
 class DiffItem(object):

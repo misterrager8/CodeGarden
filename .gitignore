@@ -2,7 +2,6 @@ CodeGarden.egg-info/
 *.env
 *.pyc
 .DS_Store
-todos.txt
 .coverage
 htmlcov/
 *.db

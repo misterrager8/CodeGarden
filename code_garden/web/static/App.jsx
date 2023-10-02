@@ -1,6 +1,16 @@
 const LoadingContext = React.createContext();
 const CurrentRepoContext = React.createContext();
 
+const tags = [
+  "misc",
+  "bugfix",
+  "refactor",
+  "documentation",
+  "feature",
+  "tweak",
+  "ui",
+];
+
 const apiCall = (url, args, callback) => {
   fetch(url, {
     method: "POST",
@@ -142,6 +152,7 @@ function CreateTodoForm() {
   const [currentRepository, , getRepository] =
     React.useContext(CurrentRepoContext);
   const [name, setName] = React.useState("");
+  const [tag, setTag] = React.useState("");
 
   const createTodo = (e) => {
     e.preventDefault();
@@ -151,18 +162,18 @@ function CreateTodoForm() {
       {
         repository: currentRepository.name,
         name: name,
+        tag: tag,
       },
       function (data) {
         getRepository(currentRepository.name);
         setLoading(false);
         setName("");
+        setTag("");
       }
     );
   };
 
-  const onChangeName = (e) => {
-    setName(e.target.value);
-  };
+  const onChangeName = (e) => setName(e.target.value);
 
   return (
     <form className="input-group mb-2" onSubmit={(e) => createTodo(e)}>
@@ -174,22 +185,45 @@ function CreateTodoForm() {
         onChange={onChangeName}
         placeholder="New TODO"
       />
+      <button
+        type="button"
+        className="btn dropdown-toggle"
+        data-bs-target="#tags"
+        data-bs-toggle="dropdown">
+        <i className="me-2 bi bi-tag-fill"></i>
+        {tag}
+      </button>
+      <div id="tags" className="dropdown-menu text-center">
+        {tags.map((x) => (
+          <>
+            {x !== tag && (
+              <button
+                type="button"
+                onClick={() => setTag(x)}
+                className="dropdown-item">
+                {x}
+              </button>
+            )}
+          </>
+        ))}
+      </div>
       <button type="submit" className="btn ">
-        Create TODO
+        Add
       </button>
     </form>
   );
 }
 
-function TodoItem({ item, id }) {
+function TodoItem({ item }) {
   const [, setLoading] = React.useContext(LoadingContext);
   const [currentRepository, , getRepository] =
     React.useContext(CurrentRepoContext);
   const [name, setName] = React.useState(item.name);
+  const [tag, setTag] = React.useState(item.tag);
+  const [deleting, setDeleting] = React.useState(false);
 
-  const onChangeName = (e) => {
-    setName(e.target.value);
-  };
+  const onChangeName = (e) => setName(e.target.value);
+  const onChangeTag = (e) => setTag(e.target.value);
 
   const editTodo = (e) => {
     e.preventDefault();
@@ -197,9 +231,9 @@ function TodoItem({ item, id }) {
     apiCall(
       "/edit_todo",
       {
-        repository: currentRepository.name,
-        id: id,
+        id: item.id,
         new_name: name,
+        new_tag: tag,
       },
       function (data) {
         getRepository(currentRepository.name);
@@ -213,8 +247,7 @@ function TodoItem({ item, id }) {
     apiCall(
       "/delete_todo",
       {
-        repository: currentRepository.name,
-        id: id,
+        id: item.id,
       },
       function (data) {
         getRepository(currentRepository.name);
@@ -228,8 +261,7 @@ function TodoItem({ item, id }) {
     apiCall(
       "/toggle_todo",
       {
-        repository: currentRepository.name,
-        id: id,
+        id: item.id,
       },
       function (data) {
         getRepository(currentRepository.name);
@@ -241,13 +273,11 @@ function TodoItem({ item, id }) {
   const commitTodo = () => {
     setLoading(true);
     apiCall(
-      "/commit",
+      "/commit_todo",
       {
-        name: currentRepository.name,
-        msg: item.name,
+        id: item.id,
       },
       function (data) {
-        toggleTodo(id);
         getRepository(currentRepository.name);
         setLoading(false);
       }
@@ -258,7 +288,7 @@ function TodoItem({ item, id }) {
     <>
       <form
         onSubmit={(e) => editTodo(e)}
-        className={"input-group " + (item.done ? "opacity-50" : "hover")}>
+        className={"input-group mb-1 " + (item.done ? "opacity-50" : "hover")}>
         <a
           onClick={() => toggleTodo()}
           className={
@@ -275,9 +305,24 @@ function TodoItem({ item, id }) {
           autoComplete="off"
           className="form-control border-0"
         />
-        <a onClick={() => deleteTodo()} className="btn border-0 text-danger">
+        <select className="badge w-25" onChange={onChangeTag}>
+          {tags.map((x) => (
+            <option value={x} selected={x == tag}>
+              {x}
+            </option>
+          ))}
+        </select>
+        {deleting && (
+          <a onClick={() => deleteTodo()} className="btn border-0 text-danger">
+            <i className="bi bi-question-lg"></i>
+          </a>
+        )}
+        <a
+          onClick={() => setDeleting(!deleting)}
+          className="btn border-0 text-danger">
           <i className="bi bi-x-lg"></i>
         </a>
+        <button type="submit" className="d-none"></button>
       </form>
     </>
   );
@@ -700,6 +745,20 @@ function App() {
     currentRepository.length !== 0 && setPage("repo");
   }, [currentRepository]);
 
+  const clearCompleted = () => {
+    setLoading(true);
+    apiCall(
+      "/clear_completed",
+      {
+        repo: currentRepository.name,
+      },
+      function (data) {
+        getRepository(currentRepository.name);
+        setLoading(false);
+      }
+    );
+  };
+
   const themes = [
     "light",
     "dark",
@@ -981,9 +1040,17 @@ function App() {
                         <CreateTodoForm />
                         <div>
                           {currentRepository.todos.map((x, id) => (
-                            <TodoItem key={id} id={id} item={x} />
+                            <TodoItem key={x.id} item={x} />
                           ))}
                         </div>
+                        {currentRepository.todos.filter((x) => x.done)
+                          .length !== 0 && (
+                          <button
+                            onClick={() => clearCompleted()}
+                            className="btn border-0">
+                            Clear Completed
+                          </button>
+                        )}
                       </div>
 
                       <a
