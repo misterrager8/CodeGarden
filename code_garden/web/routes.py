@@ -48,8 +48,11 @@ def generate_name():
 
 @current_app.post("/repository")
 def repository():
-    repository_ = Repository(request.json.get("name"))
-    return repository_.to_dict()
+    try:
+        repository_ = Repository(request.json.get("name"))
+        return repository_.to_dict()
+    except:
+        return "none"
 
 
 @current_app.post("/delete_repository")

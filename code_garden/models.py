@@ -56,7 +56,7 @@ class Repository(object):
     def current_branch(self):
         for i in self.run_command(["git", "branch"]).split("\n"):
             if i.startswith("* "):
-                return i.replace("* ", "")
+                return Branch(self.name, i.replace("* ", ""))
 
     @property
     def log(self):
@@ -95,7 +95,9 @@ class Repository(object):
     @property
     def diffs(self):
         return [
-            DiffItem(self.name, (self.path / i.strip().split()[1]).name)
+            DiffItem(
+                self.name, (self.path / i.strip().split()[1]).name, i.strip().split()[0]
+            )
             for i in self.run_command(["git", "status", "--short"]).split("\n")
             if i.strip()
         ]
@@ -211,7 +213,7 @@ class Repository(object):
             name=self.name,
             path=str(self.path),
             branches=[i.to_dict() for i in self.branches],
-            current_branch=self.current_branch,
+            current_branch=self.current_branch.to_dict(),
             remote_url=self.remote_url,
             log=[i.to_dict() for i in self.log],
             todos=[i.to_dict() for i in self.todos],
@@ -221,7 +223,7 @@ class Repository(object):
         )
 
     def __str__(self):
-        return f"{self.name.ljust(20)} (current branch: {self.current_branch}, last updated: {self.log[0].timestamp.strftime('%B %-d, %Y @ %-I:%M %p')})"
+        return f"{self.name.ljust(20)} (current branch: {self.current_branch.name} (+{self.current_branch.compare_with_master}), last updated: {self.log[0].timestamp.strftime('%B %-d, %Y @ %-I:%M %p')})"
 
 
 class Branch(object):
@@ -248,6 +250,19 @@ class Branch(object):
         """Checkout this branch."""
         Repository(self.repository).run_command(["git", "checkout", self.name])
 
+    @property
+    def compare_with_master(self):
+        """Compare this branch to master."""
+        comparison = Repository(self.repository).run_command(
+            [
+                "git",
+                "log",
+                f"{'master' if self.name != 'master' else 'origin/master'}...{self.name}",
+                "--oneline",
+            ]
+        )
+        return len([i.strip() for i in comparison.split("\n") if i])
+
     def merge(self, other_branch):
         """Merge this branch with another.
 
@@ -261,6 +276,7 @@ class Branch(object):
         return dict(
             repository=self.repository,
             name=self.name,
+            compare_with_master=self.compare_with_master,
         )
 
 
@@ -296,13 +312,19 @@ class DiffItem(object):
         name (str): name of this file.
     """
 
-    def __init__(self, repository, name):
+    def __init__(self, repository, name, type_):
         self.repository = repository
         self.name = name
+        self.type_ = type_
 
     @property
     def path(self):
         return Repository(self.repository).path / self.name
+
+    @property
+    def color(self):
+        choices = {"M": "orange", "A": "green", "D": "red", "R": "yellow", "?": "green"}
+        return choices.get(self.type_)
 
     def reset(self):
         """Reset this file to its original state in the most recent commit."""
@@ -312,7 +334,13 @@ class DiffItem(object):
 
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""
-        return dict(repository=self.repository, name=self.name, path=str(self.path))
+        return dict(
+            repository=self.repository,
+            name=self.name,
+            path=str(self.path),
+            type_=str(self.type_),
+            color=self.color,
+        )
 
 
 class IgnoreItem(object):

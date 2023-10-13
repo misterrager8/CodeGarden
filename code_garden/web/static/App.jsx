@@ -133,6 +133,7 @@ function CommitForm() {
     <>
       <form onSubmit={(e) => commit(e)} className="input-group mb-2">
         <input
+          required
           value={msg}
           onChange={onChangeMsg}
           autoComplete="off"
@@ -195,7 +196,7 @@ function CreateTodoForm() {
       </button>
       <div id="tags" className="dropdown-menu text-center">
         {tags.map((x) => (
-          <>
+          <React.Fragment key={x}>
             {x !== tag && (
               <button
                 type="button"
@@ -204,7 +205,7 @@ function CreateTodoForm() {
                 {x}
               </button>
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
       <button type="submit" className="btn ">
@@ -305,9 +306,12 @@ function TodoItem({ item }) {
           autoComplete="off"
           className="form-control border-0"
         />
-        <select className="badge w-25" onChange={onChangeTag}>
+        <select
+          defaultValue={tag}
+          className="badge w-25"
+          onChange={onChangeTag}>
           {tags.map((x) => (
-            <option value={x} selected={x == tag}>
+            <option value={x} key={`${x}-2`}>
               {x}
             </option>
           ))}
@@ -583,15 +587,17 @@ function App() {
   const getRepository = (name) => {
     setLoading(true);
     apiCall("/repository", { name: name }, (data) => {
-      setCurrentRepository(data);
-      setBranches(data.branches);
-      setLog(data.log);
-      setTodos(data.todos);
-      setDiffs(data.diffs);
-      setReadme(data.readme);
-      setIgnored(data.ignored);
-      setLoading(false);
-      localStorage.setItem("last-repo-opened", data.name);
+      if (data !== "none") {
+        setCurrentRepository(data);
+        setBranches(data.branches);
+        setLog(data.log);
+        setTodos(data.todos);
+        setDiffs(data.diffs);
+        setReadme(data.readme);
+        setIgnored(data.ignored);
+        setLoading(false);
+        localStorage.setItem("last-repo-opened", data.name);
+      }
     });
   };
 
@@ -631,7 +637,7 @@ function App() {
       "/merge_branch",
       {
         repository: currentRepository.name,
-        name: currentRepository.current_branch,
+        name: currentRepository.current_branch.name,
         other_branch: otherBranch,
       },
       function (data) {
@@ -809,9 +815,9 @@ function App() {
                     className="dropdown-item text-success">
                     <i className="bi bi-plus-circle"></i> New Repository
                   </a>
-                  {repositories.map((x, id) => (
+                  {repositories.map((x) => (
                     <a
-                      key={id}
+                      key={x.name}
                       onClick={() => getRepository(x.name)}
                       className={
                         "dropdown-item d-flex justify-content-between " +
@@ -824,7 +830,7 @@ function App() {
                             title="There are uncommitted changes here."
                             className="bi bi-circle-fill text-primary me-1"></i>
                         )}
-                        {x.current_branch !== "master" && (
+                        {x.current_branch.name !== "master" && (
                           <i
                             title="Non-master branch checked-out."
                             className="bi bi-sign-intersection-y-fill text-warning me-1"></i>
@@ -842,13 +848,31 @@ function App() {
                       data-bs-toggle="dropdown"
                       data-bs-target="#branches">
                       <i className="bi bi-signpost-split me-2"></i>
-                      {currentRepository.current_branch}
+                      {currentRepository.current_branch.name}
+                      {currentRepository.current_branch.compare_with_master >
+                        0 && (
+                        <span className="small text-success ps-2">
+                          <i className="bi bi-caret-up-fill"></i>
+                          {currentRepository.current_branch.compare_with_master}
+                        </span>
+                      )}
                     </a>
                     <div className="dropdown-menu" id="branches">
                       <div className="text-center pb-2">
                         <div className="small text-muted">Current Branch</div>
                         <div className="fst-italic">
-                          {currentRepository.current_branch}
+                          {currentRepository.current_branch.name}
+                          {currentRepository.current_branch
+                            .compare_with_master > 0 && (
+                            <span className="d-block small text-success ps-2">
+                              (
+                              {
+                                currentRepository.current_branch
+                                  .compare_with_master
+                              }{" "}
+                              commits ahead of origin/master)
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="btn-group p-2 w-100">
@@ -857,11 +881,11 @@ function App() {
                         </a>
                       </div>
                       <CreateBranchForm />
-                      {branches.map((x, id) => (
-                        <>
+                      {branches.map((x) => (
+                        <React.Fragment key={x.name}>
                           {x.name !==
-                            "* " + currentRepository.current_branch && (
-                            <div key={id} className="dropdown-item">
+                            "* " + currentRepository.current_branch.name && (
+                            <div className="dropdown-item">
                               <a
                                 className=""
                                 onClick={() => checkoutBranch(x.name)}>
@@ -879,7 +903,7 @@ function App() {
                               </span>
                             </div>
                           )}
-                        </>
+                        </React.Fragment>
                       ))}
                     </div>
                   </div>
@@ -938,7 +962,7 @@ function App() {
                 </a>
                 <div className="dropdown-menu text-center" id="themes">
                   {themes.map((x) => (
-                    <>
+                    <React.Fragment key={x}>
                       {theme !== x && (
                         <a
                           onClick={() => setTheme(x)}
@@ -946,7 +970,7 @@ function App() {
                           {x}
                         </a>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
@@ -1003,8 +1027,17 @@ function App() {
                               </div>
                             )}
                             {currentRepository.diffs.map((x, id) => (
-                              <div key={id} className="row hover">
-                                <div className="col">{x.name}</div>
+                              <div
+                                key={`${x.name}-${id}`}
+                                className="row hover">
+                                <div className="col">
+                                  <span>
+                                    <i
+                                      style={{ color: x.color }}
+                                      className="me-2 bi bi-record"></i>
+                                    {x.name}
+                                  </span>
+                                </div>
                                 <span className="col">
                                   <a
                                     onClick={() => resetFile(x.name)}
@@ -1019,7 +1052,9 @@ function App() {
                       ) : (
                         <div className="mb-3">
                           {currentRepository.log.map((x, id) => (
-                            <div key={id} className="text-truncate mb-2">
+                            <div
+                              key={x.timestamp}
+                              className="text-truncate mb-2">
                               <div className="fst-italic">{x.name}</div>
                               <div className="small fw-light">
                                 {x.timestamp}
@@ -1039,7 +1074,7 @@ function App() {
                       <div className="mb-3">
                         <CreateTodoForm />
                         <div>
-                          {currentRepository.todos.map((x, id) => (
+                          {currentRepository.todos.map((x) => (
                             <TodoItem key={x.id} item={x} />
                           ))}
                         </div>
@@ -1066,7 +1101,9 @@ function App() {
                         <div>
                           <CreateIgnoreForm />
                           {currentRepository.ignored.map((x, id) => (
-                            <div key={id} className="row hover text-truncate">
+                            <div
+                              key={x.name}
+                              className="row hover text-truncate">
                               <div className="col">{x.name}</div>
                               <span className="col">
                                 <a
