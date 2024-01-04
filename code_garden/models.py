@@ -63,7 +63,7 @@ class Repository(object):
         _ = []
         try:
             for i in self.run_command(
-                ["git", "log", "--oneline", "-5", "--pretty=format:%s\t%at\t%h"]
+                ["git", "log", "--oneline", "-20", "--pretty=format:%s\t%at\t%h"]
             ).split("\n"):
                 if len(i.strip().split("\t")) == 2:
                     _.append(
@@ -201,6 +201,10 @@ class Repository(object):
     def push(self):
         """Push to remote branch."""
         self.run_command(["git", "push", "origin"])
+
+    def pull(self):
+        """Pull from remote."""
+        self.run_command(["git", "pull", "--all"])
 
     def export(self):
         """Export all Repository info, such as todos, to single JSON file."""

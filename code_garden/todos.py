@@ -95,8 +95,10 @@ class Todo:
             "id": self.id,
             "name": self.title,
             "tag": self.tag,
+            "description": self.description,
             "repository": self.repo,
             "done": self.status == "completed",
+            "status": self.status,
         }
 
 

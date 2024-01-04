@@ -136,6 +136,8 @@ def edit_todo():
 
     todo_.title = request.json.get("new_name")
     todo_.tag = request.json.get("new_tag")
+    todo_.status = request.json.get("new_status")
+    todo_.description = request.json.get("new_desc")
     todo_.edit()
 
     return {"status": "done"}
@@ -199,7 +201,7 @@ def delete_ignore():
 
 @current_app.post("/reset_file")
 def reset_file():
-    diff_ = DiffItem(request.json.get("repository"), request.json.get("name"))
+    diff_ = DiffItem(request.json.get("repository"), request.json.get("name"), "")
     diff_.reset()
 
     return {"status": "done"}
@@ -217,6 +219,14 @@ def reset_all():
 def push():
     repo_ = Repository(request.json.get("name"))
     repo_.push()
+
+    return {"status": "done"}
+
+
+@current_app.post("/pull")
+def pull():
+    repo_ = Repository(request.json.get("name"))
+    repo_.pull()
 
     return {"status": "done"}
 

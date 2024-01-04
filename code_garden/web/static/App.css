@@ -10,6 +10,34 @@ html[data-theme="light"] {
   --btn-hover: #cccccc;
 }
 
+html[data-theme="scarlet"] {
+  --primary-bg: #cccccc;
+  --primary-txt: #380808;
+  --btn-color: #910000;
+  --btn-hover: #cccccc;
+}
+
+html[data-theme="gold"] {
+  --primary-bg: #cccccc;
+  --primary-txt: #584c18;
+  --btn-color: #a96e00;
+  --btn-hover: #cccccc;
+}
+
+html[data-theme="forest"] {
+  --primary-bg: #cccccc;
+  --primary-txt: #183508;
+  --btn-color: #135313;
+  --btn-hover: #cccccc;
+}
+
+html[data-theme="navy"] {
+  --primary-bg: #cccccc;
+  --primary-txt: #080a21;
+  --btn-color: #29297c;
+  --btn-hover: #cccccc;
+}
+
 html[data-theme="dark"] {
   --primary-bg: #1a1a1a;
   --primary-txt: #cccccc;
@@ -17,39 +45,32 @@ html[data-theme="dark"] {
   --btn-hover: #292929;
 }
 
-html[data-theme="lavender"] {
-  --primary-bg: #2b2d42;
-  --primary-txt: #adaebd;
-  --btn-color: #efaac4;
-  --btn-hover: #532d3c;
+html[data-theme="neon"] {
+  --primary-bg: #1a1a1a;
+  --primary-txt: #cccccc;
+  --btn-color: #ff5e5e;
+  --btn-hover: #cccccc;
 }
 
-html[data-theme="bumblebee"] {
-  --primary-bg: #272727;
-  --primary-txt: #aaaaaa;
-  --btn-color: #fed766;
-  --btn-hover: #5e4b12;
+html[data-theme="hornet"] {
+  --primary-bg: #1a1a1a;
+  --primary-txt: #cccccc;
+  --btn-color: #cf911f;
+  --btn-hover: #1a1a1a;
 }
 
-html[data-theme="sprite"] {
-  --primary-bg: #0f5257;
-  --primary-txt: #a2eaef;
-  --btn-color: #ffc857;
-  --btn-hover: #493100;
+html[data-theme="xbox"] {
+  --primary-bg: #1a1a1a;
+  --primary-txt: #cccccc;
+  --btn-color: #68bf68;
+  --btn-hover: #1a1a1a;
 }
 
-html[data-theme="caramel"] {
-  --primary-bg: #3a3042;
-  --primary-txt: #b1a9b8;
-  --btn-color: #db9d47;
-  --btn-hover: #2d2111;
-}
-
-html[data-theme="raspberry"] {
-  --primary-bg: #160f29;
-  --primary-txt: #a39db4;
-  --btn-color: #307b85;
-  --btn-hover: #b8e7ed;
+html[data-theme="ocean"] {
+  --primary-bg: #1a1a1a;
+  --primary-txt: #cccccc;
+  --btn-color: #6682d7;
+  --btn-hover: #cccccc;
 }
 
 body {
@@ -114,4 +135,41 @@ a:hover {
   border-left: 1px dotted var(--btn-color);
   background-color: var(--primary-bg);
   color: var(--btn-color);
+}
+
+.row {
+  height: 700px;
+}
+
+.col-2 {
+  border-right: 1px dotted;
+  overflow: hidden;
+}
+
+.col-10 {
+  overflow: auto;
+}
+
+.text-warning {
+  color: darkorange !important;
+}
+
+.border {
+  border-color: var(--primary-txt) !important;
+}
+
+.desc {
+  resize: none;
+  font-weight: lighter !important;
+  font-style: italic;
+  border: 0;
+  /* font-size: small; */
+  border-left: 1px dotted;
+  margin-left: 20px;
+  width: 90%;
+  border-radius: 0;
+}
+
+.desc:focus {
+  outline: none !important;
 }
