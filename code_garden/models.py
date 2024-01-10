@@ -154,7 +154,7 @@ class Repository(object):
         Args:
             brief_descrip (str): Short description of what the Repository contains.
         """
-        files = ["LICENSE.md", ".gitignore"]
+        files = ["LICENSE.md", ".gitignore", "todos.json"]
         self.path.mkdir()
         Readme(self.name, brief_descrip).write(self.path)
         for i in files:
@@ -210,6 +210,25 @@ class Repository(object):
         """Export all Repository info, such as todos, to single JSON file."""
         with open(config.HOME_DIR / f"{self.name}.json", "w") as f:
             json.dump(self.to_dict(), f, indent=4)
+
+    def export_todos(self):
+        """Export all todos to single JSON file."""
+        results = {"todos": [i.to_dict() for i in self.todos]}
+        json.dump(results, open(self.path / "todos.json", "w"), indent=4)
+
+    def import_todos(self):
+        """Import todos from a JSON file."""
+        results = json.load(open(self.path / "todos.json")).get("todos")
+        for i in results:
+            todo_ = Todo(
+                i.get("name"),
+                i.get("description"),
+                i.get("tag"),
+                datetime.datetime.now(),
+                i.get("status"),
+                self.name,
+            )
+            todo_.add()
 
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
@@ -298,6 +317,16 @@ class LogItem(object):
         self.timestamp = timestamp
         self.abbrev_hash = abbrev_hash
 
+    @classmethod
+    def get(cls, repository, abbrev_hash):
+        """Get more details about a specified commit."""
+        info = (
+            Repository(repository)
+            .run_command(["git", "show", "--stat", abbrev_hash])
+            .splitlines()[4:]
+        )
+        return "\n".join(info)
+
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""
         return dict(
@@ -327,8 +356,14 @@ class DiffItem(object):
 
     @property
     def color(self):
-        choices = {"M": "orange", "A": "green", "D": "red", "R": "yellow", "?": "green"}
-        return choices.get(self.type_)
+        choices = {
+            "M": "#bf5408",
+            "A": "green",
+            "D": "red",
+            "R": "yellow",
+            "?": "green",
+        }
+        return choices.get(self.type_) or "green"
 
     def reset(self):
         """Reset this file to its original state in the most recent commit."""

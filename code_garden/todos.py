@@ -5,11 +5,10 @@ from pathlib import Path
 
 import click
 
-from code_garden import config
+from code_garden.database import Connector
 
-db = sqlite3.connect(config.HOME_DIR / "todos.db", check_same_thread=False)
-cursor = db.cursor()
-cursor.execute(
+conn = Connector()
+conn.write(
     "CREATE TABLE IF NOT EXISTS todos (title TEXT, description TEXT, tag TEXT, date_added DATETIME, status TEXT, repo TEXT, id INTEGER PRIMARY KEY AUTOINCREMENT)"
 )
 
@@ -36,7 +35,7 @@ class Todo:
         self.id = id
 
     def add(self):
-        cursor.execute(
+        conn.write(
             "INSERT INTO todos (title, description, tag, date_added, status, repo) VALUES (?,?,?,?,?,?)",
             (
                 self.title,
@@ -47,41 +46,36 @@ class Todo:
                 self.repo,
             ),
         )
-        db.commit()
 
     @classmethod
     def get(cls, id):
-        cursor.execute(
+        result = conn.read(
             "SELECT title, description, tag, date_added, status, repo, id FROM todos WHERE id=?",
             (str(id),),
-        )
-        result = cursor.fetchone()
+        )[0]
         return Todo(
             result[0], result[1], result[2], result[3], result[4], result[5], result[6]
         )
 
     @classmethod
     def see_list(cls, repo):
-        cursor.execute(
+        results = conn.read(
             "SELECT title, description, tag, date_added, status, repo, id FROM todos WHERE repo=?",
             (repo,),
         )
-        results = cursor.fetchall()
         return sorted(
             [Todo(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) for i in results],
             key=lambda x: (x.status == "completed", x.status != "active", x.id),
         )
 
     def edit(self):
-        cursor.execute(
+        conn.write(
             "UPDATE todos SET title=?, description=?, tag=?, status=? WHERE id=?",
             (self.title, self.description, self.tag, self.status, str(self.id)),
         )
-        db.commit()
 
     def delete(self):
-        cursor.execute("DELETE FROM todos WHERE id=?", (str(self.id),))
-        db.commit()
+        conn.write("DELETE FROM todos WHERE id=?", (str(self.id),))
 
     def __str__(self):
         return "#{} {:40.40} ({})".format(

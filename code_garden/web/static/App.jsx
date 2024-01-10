@@ -30,6 +30,7 @@ const ReposContext = React.createContext();
 const CurrentRepoContext = React.createContext();
 const LoadingContext = React.createContext();
 const TabContext = React.createContext();
+const PageContext = React.createContext();
 
 const tags = [
   "misc",
@@ -92,6 +93,78 @@ function BranchForm() {
   );
 }
 
+function CreateRepoForm() {
+  const [, setLoading] = React.useContext(LoadingContext);
+  const [, , getRepo] = React.useContext(CurrentRepoContext);
+  const [, , getRepos] = React.useContext(ReposContext);
+  const [name, setName] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [page, setPage] = React.useContext(PageContext);
+
+  const createRepo = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    apiCall(
+      "/create_repository",
+      {
+        name: name,
+        brief_descrip: description,
+      },
+      (data) => {
+        getRepo(data.name);
+        setLoading(false);
+        setName("");
+        setDescription("");
+        setPage("repos");
+        getRepos();
+      }
+    );
+  };
+
+  const onChangeName = (e) => {
+    setName(e.target.value);
+  };
+
+  const onChangeDescription = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const generateName = () => {
+    apiCall("/generate_name", {}, (data) => {
+      setName(data.name);
+      setDescription(`Created on ${new Date().toDateString()}`);
+    });
+  };
+
+  return (
+    <form onSubmit={(e) => createRepo(e)}>
+      <div className="input-group mb-3">
+        <input
+          onChange={onChangeName}
+          value={name}
+          autoComplete="off"
+          className="form-control"
+          placeholder="Name"
+          required
+        />
+        <a onClick={() => generateName()} className="btn">
+          <i className="bi bi-shuffle"></i> Generate Name
+        </a>
+      </div>
+      <textarea
+        onChange={onChangeDescription}
+        value={description}
+        rows="20"
+        className="form-control mb-3"
+        placeholder="Description"
+        required></textarea>
+      <button type="submit" className="btn w-100">
+        Initialize Repository
+      </button>
+    </form>
+  );
+}
+
 function BranchItem({ item }) {
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
@@ -148,22 +221,34 @@ function BranchItem({ item }) {
     <div className="d-flex justify-content-between">
       <span>{item.name}</span>
       <div className="btn-group btn-group-sm">
-        <button onClick={() => checkout(item.name)} className="btn border-0">
+        <button
+          title="Checkout branch."
+          onClick={() => checkout(item.name)}
+          className="btn border-0">
           <i className="bi bi-cart-check"></i>
         </button>
-        <button onClick={() => mergeBranch(item.name)} className="btn border-0">
+        <button
+          title="Merge branch."
+          onClick={() => mergeBranch(item.name)}
+          className="btn border-0">
           <i className="bi bi-arrow-repeat"></i>
         </button>
-        {deleting && (
-          <button
-            onClick={() => deleteBranch(item.name)}
-            className="btn border-0">
-            <i className="bi bi-question-lg"></i>
-          </button>
+        {!["master", "main"].includes(item.name) && (
+          <>
+            {deleting && (
+              <button
+                onClick={() => deleteBranch(item.name)}
+                className="btn border-0">
+                <i className="bi bi-question-lg"></i>
+              </button>
+            )}
+            <button
+              onClick={() => setDeleting(!deleting)}
+              className="btn border-0">
+              <i className="bi bi-x-circle"></i>
+            </button>
+          </>
         )}
-        <button onClick={() => setDeleting(!deleting)} className="btn border-0">
-          <i className="bi bi-trash2"></i>
-        </button>
       </div>
     </div>
   );
@@ -209,7 +294,7 @@ function Branches() {
       <button
         onClick={() => setShowAll(!showAll)}
         className="btn dropdown-toggle border-0 w-100">
-        <i className="me-2 bi bi-signpost-split"></i>
+        <i className="me-2 bi bi-signpost-split-fill"></i>
         {currentRepo.current_branch.name}
       </button>
       {showAll && (
@@ -228,10 +313,10 @@ function Branches() {
       )}
       <div className="btn-group btn-group-sm w-100 mt-3">
         <button className="btn border-0" onClick={() => push()}>
-          <i className="bi bi-arrow-bar-up me-2"></i>Push
+          <i className="bi bi-chevron-double-up me-2"></i>Push
         </button>
         <button className="btn border-0" onClick={() => pull()}>
-          <i className="bi bi-arrow-bar-down me-2"></i>Pull
+          <i className="bi bi-chevron-double-down me-2"></i>Pull
         </button>
       </div>
       <hr />
@@ -272,6 +357,7 @@ function TodoForm() {
       onSubmit={(e) => createTodo(e)}>
       <input
         value={name}
+        maxLength={50}
         onChange={onChangeName}
         autoComplete="off"
         className="form-control"
@@ -284,7 +370,7 @@ function TodoForm() {
           className="btn border-0 dropdown-toggle"
           data-bs-target="#tags"
           data-bs-toggle="dropdown">
-          <i className="me-2 bi bi-tag"></i>
+          <i className="me-2 bi bi-tag-fill"></i>
           {tag}
         </a>
         <div className="dropdown-menu" id="tags">
@@ -308,7 +394,7 @@ function TodoForm() {
 
 function CommandForm() {
   const [, setLoading] = React.useContext(LoadingContext);
-  const [currentRepo, ,] = React.useContext(CurrentRepoContext);
+  const [currentRepo, , getRepo] = React.useContext(CurrentRepoContext);
   const [cmd, setCmd] = React.useState("");
 
   const onChangeCmd = (e) => setCmd(e.target.value);
@@ -324,6 +410,7 @@ function CommandForm() {
       },
       function (data) {
         setCmd("");
+        getRepo(currentRepo.name);
         setLoading(false);
       }
     );
@@ -408,8 +495,11 @@ function DiffItem({ item }) {
   };
 
   return (
-    <div className="d-flex justify-content-between">
-      <div>{item.name}</div>
+    <div className="d-flex justify-content-between p-1 diff-item">
+      <span>
+        <i className="bi bi-record-fill me-2" style={{ color: item.color }}></i>
+        {item.name}
+      </span>
       <div className="btn-group btn-group-sm">
         {deleting && (
           <button className="btn border-0" onClick={() => resetFile()}>
@@ -429,7 +519,6 @@ function TodoItem({ item }) {
   const [deleting, setDeleting] = React.useState(false);
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
-  const [tab, setTab] = React.useContext(TabContext);
 
   const [name, setName] = React.useState("");
   const [tag, setTag] = React.useState("");
@@ -470,7 +559,6 @@ function TodoItem({ item }) {
       function (data) {
         getRepo(currentRepo.name);
         setLoading(false);
-        setTab("log");
       }
     );
   };
@@ -544,12 +632,15 @@ function TodoItem({ item }) {
       </div>
       <div className="input-group mt-2">
         <input
+          required
           autoComplete="off"
+          maxLength={50}
           className="form-control border-0 fw-bold"
           value={name}
           onChange={onChangeName}
         />
         <a
+          title="See detailed description of this TODO."
           className={"btn" + (showDescription ? "" : " border-0")}
           onClick={() => setShowDescription(!showDescription)}>
           <i
@@ -559,7 +650,7 @@ function TodoItem({ item }) {
             }></i>
         </a>
       </div>
-      {showDescription && (
+      {(showDescription || item.status === "active") && (
         <textarea
           rows={description.split("\n")?.length + 1}
           value={description}
@@ -573,6 +664,7 @@ function TodoItem({ item }) {
         </a>
         {item.status !== "completed" && (
           <a
+            title="Toggle whether this TODO is actively being worked on."
             onClick={() => {
               setLoading(true);
               apiCall(
@@ -593,12 +685,16 @@ function TodoItem({ item }) {
             className="btn border-0">
             <i
               className={
-                "bi bi-arrow" + (item.status === "open" ? "-right" : "-left")
+                "bi bi-chevron-double" +
+                (item.status === "open" ? "-right" : "-left")
               }></i>
           </a>
         )}
         {currentRepo.diffs.length > 0 && (
-          <a onClick={() => commitTodo()} className="btn border-0">
+          <a
+            title="Commit changes using this TODO as commit message."
+            onClick={() => commitTodo()}
+            className="btn border-0">
             <i className="bi bi-file-earmark-diff"></i>
           </a>
         )}
@@ -620,46 +716,128 @@ function LogItem({ item, id }) {
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
   const [loading, setLoading] = React.useContext(LoadingContext);
+  const [showDetails, setShowDetails] = React.useState(false);
+  const [details, setDetails] = React.useState("");
 
-  const revertCommit = () => {
+  const getCommit = () => {
     setLoading(true);
     apiCall(
-      "/run_command",
+      "/get_commit",
+      {
+        name: currentRepo.name,
+        abbrev_hash: item.abbrev_hash,
+      },
+      function (data) {
+        setLoading(false);
+        setDetails(data.details);
+      }
+    );
+  };
+
+  React.useEffect(() => {
+    showDetails ? getCommit() : setDetails("");
+  }, [showDetails]);
+
+  return (
+    <>
+      <a
+        onClick={() => setShowDetails(!showDetails)}
+        className={
+          "d-flex justify-content-between p-1" +
+          (showDetails ? "" : " log-item")
+        }>
+        <div className="d-flex justify-content-between w-50">
+          <span>
+            <i className="bi bi-code-slash me-2"></i>
+            {item.name}
+          </span>
+          <span>{item.abbrev_hash}</span>
+        </div>
+
+        <span>{item.timestamp}</span>
+      </a>
+      {showDetails && (
+        <>
+          <hr />
+          <div
+            className="m-4 font-monospace p-4"
+            style={{ whiteSpace: "pre-wrap" }}>
+            {details}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+function IgnoreForm() {
+  const [, setLoading] = React.useContext(LoadingContext);
+  const [currentRepo, , getRepo] = React.useContext(CurrentRepoContext);
+  const [name, setName] = React.useState("");
+
+  const createIgnore = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    apiCall(
+      "/create_ignore",
       {
         repository: currentRepo.name,
-        cmd: "git reset --soft HEAD~1",
+        name: name,
       },
       function (data) {
         getRepo(currentRepo.name);
         setLoading(false);
+        setName("");
+      }
+    );
+  };
+
+  const onChangeName = (e) => setName(e.target.value);
+
+  return (
+    <form className="input-group mb-3" onSubmit={(e) => createIgnore(e)}>
+      <input
+        required
+        autoComplete="off"
+        className="form-control"
+        value={name}
+        onChange={onChangeName}
+        placeholder="New Ignore Item"
+      />
+      <button type="submit" className="btn ">
+        Ignore Item
+      </button>
+    </form>
+  );
+}
+
+function IgnoreItem({ id, item }) {
+  const [deleting, setDeleting] = React.useState(false);
+  const [currentRepo, setCurrentRepo, getRepo] =
+    React.useContext(CurrentRepoContext);
+  const [loading, setLoading] = React.useContext(LoadingContext);
+
+  const deleteIgnore = () => {
+    setLoading(true);
+    apiCall(
+      "/delete_ignore",
+      {
+        repository: currentRepo.name,
+        id: id,
+      },
+      function (data) {
+        setLoading(false);
+        getRepo(currentRepo.name);
       }
     );
   };
 
   return (
     <div className="d-flex justify-content-between">
-      <div>
-        <span>{item.name}</span>
-        {id === 0 && (
-          <a onClick={() => revertCommit()} className="ms-4 small text-danger">
-            Revert Commit
-          </a>
-        )}
-      </div>
-      <span>{item.timestamp}</span>
-    </div>
-  );
-}
-
-function IgnoreItem({ item }) {
-  const [deleting, setDeleting] = React.useState(false);
-
-  return (
-    <div className="d-flex justify-content-between">
       <div>{item.name}</div>
       <div className="btn-group btn-group-sm">
         {deleting && (
-          <button className="btn border-0">
+          <button onClick={() => deleteIgnore()} className="btn border-0">
             <i className="bi bi-question-lg"></i>
           </button>
         )}
@@ -708,16 +886,20 @@ function Readme() {
     <>
       <div className="btn-group btn-group-sm">
         {mode === "view" ? (
-          <button onClick={() => setMode("edit")} className="btn">
-            <i className="bi bi-pen"></i>
+          <button onClick={() => setMode("edit")} className="btn border-0">
+            <i className="bi bi-pen me-2"></i>Edit
           </button>
         ) : (
           <>
-            <button onClick={() => setMode("view")} className="btn">
-              <i className="bi bi-eye"></i>
+            <button onClick={() => setMode("view")} className="btn border-0">
+              <i className="bi bi-eye me-2"></i>View
             </button>
-            <button onClick={() => editReadme()} className="btn">
-              <i className={"bi bi-" + (saved ? "check-lg" : "floppy2")}></i>
+            <button onClick={() => editReadme()} className="btn border-0">
+              <i
+                className={
+                  "me-2 bi bi-" + (saved ? "check-lg" : "floppy2")
+                }></i>
+              Save
             </button>
           </>
         )}
@@ -732,7 +914,7 @@ function Readme() {
           <textarea
             onChange={onChangeReadme}
             value={readme}
-            className="form-control h-100"></textarea>
+            className="form-control h-100 border-0"></textarea>
         )}
       </div>
     </>
@@ -811,9 +993,33 @@ function Changes() {
 function Log() {
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
+  const [loading, setLoading] = React.useContext(LoadingContext);
+
+  const revertCommit = () => {
+    setLoading(true);
+    apiCall(
+      "/run_command",
+      {
+        repository: currentRepo.name,
+        cmd: "git reset --soft HEAD~1",
+      },
+      function (data) {
+        getRepo(currentRepo.name);
+        setLoading(false);
+      }
+    );
+  };
 
   return (
     <div className="w-100">
+      {currentRepo.log.length > 0 && (
+        <button
+          onClick={() => revertCommit()}
+          className="btn btn-sm border-0 mb-3">
+          <i className="bi bi-dash-circle me-2"></i>
+          Revert Previous Commit
+        </button>
+      )}
       {currentRepo.log.map((x, id) => (
         <LogItem key={x.timestamp} item={x} id={id} />
       ))}
@@ -840,8 +1046,46 @@ function Todos() {
     );
   };
 
+  const exportTodos = () => {
+    setLoading(true);
+    apiCall(
+      "/export_todos",
+      {
+        name: currentRepo.name,
+      },
+      function (data) {
+        getRepo(currentRepo.name);
+        setLoading(false);
+      }
+    );
+  };
+
+  const importTodos = () => {
+    setLoading(true);
+    apiCall(
+      "/import_todos",
+      {
+        name: currentRepo.name,
+      },
+      function (data) {
+        getRepo(currentRepo.name);
+        setLoading(false);
+      }
+    );
+  };
+
   return (
     <div className="w-100">
+      <div className="btn-group btn-group-sm mb-3">
+        <button onClick={() => exportTodos()} className="btn border-0">
+          <i className="bi bi-save2 me-2"></i>
+          Export Todos
+        </button>
+        <button onClick={() => importTodos()} className="btn border-0">
+          <i className="bi bi-save me-2"></i>
+          Import Todos
+        </button>
+      </div>
       <div className="mb-3">
         <TodoForm />
       </div>
@@ -871,8 +1115,10 @@ function Todos() {
             ))}
           {currentRepo.todos.filter((x) => x.done).length !== 0 && (
             <div>
-              <button onClick={() => clearCompleted()} className="btn border-0">
-                Clear Completed
+              <button
+                onClick={() => clearCompleted()}
+                className="btn btn-sm border-0">
+                <i className="bi bi-x-circle me-2"></i>Clear Completed
               </button>
             </div>
           )}
@@ -888,8 +1134,9 @@ function Ignored() {
 
   return (
     <div className="w-50">
+      <IgnoreForm />
       {currentRepo.ignored.map((x, id) => (
-        <IgnoreItem key={x.name} item={x} />
+        <IgnoreItem key={x.name} id={id} item={x} />
       ))}
     </div>
   );
@@ -934,46 +1181,57 @@ function SideNav() {
       {currentRepo.length !== 0 && (
         <div className="col-2">
           <Branches />
-          <div className="btn-group-vertical w-100">
+          <div className="w-100">
             <button
               onClick={() => setTab("readme")}
               className={
-                "btn border-0 d-flex px-5" + (tab === "readme" ? " active" : "")
+                "w-100 my-1 btn border-0 d-flex px-4" +
+                (tab === "readme" ? " active" : "")
               }>
               <i className="me-2 bi bi-book"></i>README
             </button>
             <button
               onClick={() => setTab("changes")}
               className={
-                "btn border-0 d-flex px-5" +
+                "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
                 (tab === "changes" ? " active" : "")
               }>
-              <i className="me-2 bi bi-file-earmark-diff"></i>Changes (
-              {currentRepo.diffs.length})
+              <span>
+                <i className="me-2 bi bi-file-earmark-diff"></i>Changes
+              </span>
+              <span className="small">{currentRepo.diffs.length}</span>
             </button>
             <button
               onClick={() => setTab("log")}
               className={
-                "btn border-0 d-flex px-5" + (tab === "log" ? " active" : "")
+                "w-100 my-1 btn border-0 d-flex px-4" +
+                (tab === "log" ? " active" : "")
               }>
               <i className="me-2 bi bi-clock-history"></i>Log
             </button>
             <button
               onClick={() => setTab("todos")}
               className={
-                "btn border-0 d-flex px-5" + (tab === "todos" ? " active" : "")
+                "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
+                (tab === "todos" ? " active" : "")
               }>
-              <i className="me-2 bi bi-check2-all"></i>TODOs (
-              {currentRepo.todos.filter((x) => !x.done).length})
+              <span>
+                <i className="me-2 bi bi-check2-all"></i>TODOs
+              </span>
+              <span className="small">
+                {currentRepo.todos.filter((x) => !x.done).length}
+              </span>
             </button>
             <button
               onClick={() => setTab("ignored")}
               className={
-                "btn border-0 d-flex px-5" +
+                "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
                 (tab === "ignored" ? " active" : "")
               }>
-              <i className="me-2 bi bi-slash-circle"></i>Ignored (
-              {currentRepo.ignored.length})
+              <span>
+                <i className="me-2 bi bi-eye-slash"></i>Ignored
+              </span>
+              <span className="small">{currentRepo.ignored.length}</span>
             </button>
           </div>
         </div>
@@ -992,6 +1250,7 @@ function TopNav() {
     React.useContext(CurrentRepoContext);
   const [deleting, setDeleting] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const [page, setPage] = React.useContext(PageContext);
 
   React.useEffect(() => {
     localStorage.setItem("CodeGarden", theme);
@@ -1067,23 +1326,33 @@ function TopNav() {
             <i className="me-2 bi bi-git"></i>
             {currentRepo.name || "Select Repo"}
           </button>
-          <div id="repos" className="dropdown-menu">
+          <div id="repos" className="dropdown-menu" style={{ width: "250px" }}>
+            <button
+              onClick={() => setPage("new")}
+              className={"dropdown-item d-flex justify-content-between"}>
+              <span>
+                <i className="me-2 bi bi-plus-circle"></i>New Repo
+              </span>
+            </button>
             {repos.map((x) => (
               <button
-                onClick={() => setCurrentRepo(x)}
+                onClick={() => {
+                  setPage("repos");
+                  setCurrentRepo(x);
+                }}
                 key={x.name}
-                className={"dropdown-item d-flex"}>
+                className={"dropdown-item d-flex justify-content-between"}>
                 <span>{x.name}</span>
                 <div>
                   {x.diffs.length > 0 && (
                     <i
                       title="There are uncommitted changes here."
-                      className="bi bi-circle-fill text-primary me-1"></i>
+                      className="bi bi-circle-fill text-primary me-2"></i>
                   )}
                   {x.current_branch.name !== "master" && (
                     <i
                       title="Non-master branch checked-out."
-                      className="bi bi-sign-intersection-y-fill text-warning me-1"></i>
+                      className="bi bi-signpost-split-fill text-warning"></i>
                   )}
                 </div>
               </button>
@@ -1094,30 +1363,41 @@ function TopNav() {
           <div className="btn-group">
             <div className="vr"></div>
             <button
+              title="Refresh"
               className="btn border-0 ms-2"
-              onClick={() => getRepo(currentRepo.name)}>
+              onClick={() => {
+                getRepo(currentRepo.name);
+                getRepos();
+              }}>
               <i className="bi bi-arrow-clockwise"></i>
             </button>
-            <a className="btn border-0" onClick={() => copyPath()}>
+            <a
+              title="Copy path"
+              className="btn border-0"
+              onClick={() => copyPath()}>
               <i className={"bi bi-clipboard" + (copied ? "-check" : "")}></i>
             </a>
             {currentRepo.remote_url && (
               <a
+                title="See GitHub page for this repo."
                 target="_blank"
                 href={currentRepo.remote_url}
                 className="btn border-0">
                 <i className="bi bi-github"></i>
               </a>
             )}
-            <a className="btn border-0" onClick={() => exportRepository()}>
+            <a
+              title="Export all info for this repo to a JSON file."
+              className="btn border-0"
+              onClick={() => exportRepository()}>
               <i className="bi bi-filetype-json"></i>
             </a>
             <a className="btn border-0" onClick={() => setDeleting(!deleting)}>
-              <i className="bi bi-trash2"></i>
+              <i className="bi bi-x-circle"></i>
             </a>
             {deleting && (
               <a className="btn border-0" onClick={() => deleteRepository()}>
-                <i className="bi bi-question-lg"></i>
+                Delete Repo<i className="bi bi-question-lg"></i>
               </a>
             )}
             <CommandForm />
@@ -1147,7 +1427,7 @@ function TopNav() {
             ))}
           </div>
         </div>
-        <button className="btn">
+        <button className="btn" onClick={() => setPage("settings")}>
           <i className="me-2 bi bi-gear"></i>Settings
         </button>
         <a
@@ -1161,11 +1441,14 @@ function TopNav() {
   );
 }
 
-function MultiContext(props) {
+function App() {
   const [repos, setRepos] = React.useState([]);
   const [currentRepo, setCurrentRepo] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [tab, setTab] = React.useState("readme");
+  const [page, setPage] = React.useState("repos");
+  const [config, setConfig] = React.useState([]);
+  const [copied, setCopied] = React.useState(false);
 
   const getRepos = () => {
     setLoading(true);
@@ -1183,6 +1466,22 @@ function MultiContext(props) {
     });
   };
 
+  const getConfig = () => {
+    setLoading(true);
+    apiCall("/settings", {}, (data) => {
+      setConfig(data);
+      setLoading(false);
+    });
+  };
+
+  const copyConfig = () => {
+    navigator.clipboard.writeText(JSON.stringify(config, null, 4));
+    setCopied(true);
+    setTimeout(function () {
+      setCopied(false);
+    }, 1500);
+  };
+
   React.useEffect(() => {
     getRepos();
     localStorage.getItem("last-repo-opened") &&
@@ -1190,37 +1489,61 @@ function MultiContext(props) {
   }, []);
 
   React.useEffect(() => {
-    currentRepo.length !== 0 &&
-      localStorage.setItem("last-repo-opened", currentRepo.name);
+    currentRepo.length !== 0
+      ? localStorage.setItem("last-repo-opened", currentRepo.name)
+      : localStorage.removeItem("last-repo-opened");
   }, [currentRepo]);
+
+  React.useEffect(() => {
+    if (page !== "repos") {
+      setCurrentRepo([]);
+      page === "settings" ? getConfig() : setConfig([]);
+    }
+  }, [page]);
 
   return (
     <>
       <LoadingContext.Provider value={[loading, setLoading]}>
-        <ReposContext.Provider value={[repos, setRepos, getRepos]}>
-          <CurrentRepoContext.Provider
-            value={[currentRepo, setCurrentRepo, getRepo]}>
-            <TabContext.Provider value={[tab, setTab]}>
-              {props.children}
-            </TabContext.Provider>
-          </CurrentRepoContext.Provider>
-        </ReposContext.Provider>
+        <PageContext.Provider value={[page, setPage]}>
+          <ReposContext.Provider value={[repos, setRepos, getRepos]}>
+            <CurrentRepoContext.Provider
+              value={[currentRepo, setCurrentRepo, getRepo]}>
+              <TabContext.Provider value={[tab, setTab]}>
+                <div className="p-4">
+                  <TopNav />
+                  {page === "repos" ? (
+                    <>
+                      <div className="row mt-4 ">
+                        <SideNav />
+                        <DisplayPanel />
+                      </div>
+                    </>
+                  ) : page === "settings" ? (
+                    <div className="mt-4">
+                      <div style={{ whiteSpace: "pre-wrap" }}>
+                        {JSON.stringify(config, null, 4)}
+                      </div>
+                      <button
+                        className="btn border-0"
+                        onClick={() => copyConfig()}>
+                        <i
+                          className={
+                            "bi bi-clipboard" + (copied ? "-check" : "")
+                          }></i>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mt-4">
+                      <CreateRepoForm />
+                    </div>
+                  )}
+                </div>
+              </TabContext.Provider>
+            </CurrentRepoContext.Provider>
+          </ReposContext.Provider>
+        </PageContext.Provider>
       </LoadingContext.Provider>
     </>
-  );
-}
-
-function App() {
-  return (
-    <MultiContext>
-      <div className="p-4">
-        <TopNav />
-        <div className="row mt-4">
-          <SideNav />
-          <DisplayPanel />
-        </div>
-      </div>
-    </MultiContext>
   );
 }
 

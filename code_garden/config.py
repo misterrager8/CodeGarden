@@ -13,10 +13,7 @@ if not HOME_DIR.exists():
 
 
 def get():
-    return {
-        "HOME_DIR": str(HOME_DIR),
-        "PORT": PORT,
-    }
+    return dotenv.dotenv_values()
 
 
 def set(key, value):

@@ -6,3 +6,4 @@ CodeGarden.egg-info/
 htmlcov/
 *.db
 garden-repos/
+todos.json

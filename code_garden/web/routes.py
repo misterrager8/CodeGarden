@@ -5,7 +5,7 @@ from flask import current_app, render_template, request
 from code_garden.todos import Todo
 
 from .. import config
-from ..models import Branch, DiffItem, IgnoreItem, Repository
+from ..models import Branch, DiffItem, IgnoreItem, LogItem, Repository
 
 
 @current_app.get("/")
@@ -15,10 +15,7 @@ def index():
 
 @current_app.post("/settings")
 def settings():
-    config_ = config.get()
-    config_.update({"debug": current_app.config.get("ENV") == "development"})
-
-    return config_
+    return config.get()
 
 
 @current_app.post("/repositories")
@@ -32,6 +29,15 @@ def commit():
     repository_.commit(request.json.get("msg"))
 
     return {"status": "done"}
+
+
+@current_app.post("/get_commit")
+def get_commit():
+    return {
+        "details": LogItem.get(
+            request.json.get("name"), request.json.get("abbrev_hash")
+        )
+    }
 
 
 @current_app.post("/create_repository")
@@ -167,6 +173,20 @@ def toggle_todo():
 
     todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
     todo_.edit()
+
+    return {"status": "done"}
+
+
+@current_app.post("/export_todos")
+def export_todos():
+    Repository(request.json.get("name")).export_todos()
+
+    return {"status": "done"}
+
+
+@current_app.post("/import_todos")
+def import_todos():
+    Repository(request.json.get("name")).import_todos()
 
     return {"status": "done"}
 

@@ -81,13 +81,18 @@ body {
 .dropdown-menu {
   background-color: var(--primary-bg);
   color: var(--primary-txt);
-  border: 1px solid var(--primary-txt);
+  border: 1px solid var(--btn-color);
 }
 
 .dropdown-item {
   color: var(--primary-txt);
   font-size: small;
   letter-spacing: 1px;
+}
+
+.dropdown-item:hover {
+  background-color: var(--btn-color);
+  color: var(--btn-hover);
 }
 
 a,
@@ -172,4 +177,9 @@ a:hover {
 
 .desc:focus {
   outline: none !important;
+}
+
+.diff-item:hover,
+.log-item:hover {
+  border-bottom: 1px dotted;
 }
