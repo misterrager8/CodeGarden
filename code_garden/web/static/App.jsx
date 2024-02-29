@@ -1,36 +1,9 @@
-/*
-## code-garden UI v2 (tabbed layout)
----
-The first layout was heavily modeled after the UI for GitHub desktop, but now I want to try something new so it's easier from a dev standpoint to add new features and expand on them whenever necessary, rather than bunching everything up in an arbitrary arrangement.
-
-#### Top Navbar (horizontal, full width)
-
-- Logo / Home button
-- Repos dropdown
-    - Refresh button (if repo selected)
-- Themes dropdown
-- Settings
-- About link
-
-#### Side Navbar (vertical, 25-30% width, appears only if repo selected)
-
-- Branches (as dropdown w/ create form)
-- Changes
-- Log
-- TODOs
-- README
-- Docs (*)
-- Ignored
-- Options / Misc. fns.
-
-#### Display Panel (taking up remainder of horizontal space)
-*/
-
 const ReposContext = React.createContext();
 const CurrentRepoContext = React.createContext();
 const LoadingContext = React.createContext();
 const TabContext = React.createContext();
 const PageContext = React.createContext();
+const SettingsContext = React.createContext();
 
 const tags = [
   "misc",
@@ -41,6 +14,12 @@ const tags = [
   "tweak",
   "ui",
 ];
+
+const defaultSettings = {
+  theme: "light",
+  tab: "readme",
+  lastOpened: "",
+};
 
 const apiCall = (url, args, callback) => {
   fetch(url, {
@@ -434,7 +413,7 @@ function CommitForm() {
   const [loading, setLoading] = React.useContext(LoadingContext);
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
-  const [tab, setTab] = React.useContext(TabContext);
+  const [settings, setSettings] = React.useContext(SettingsContext);
 
   const onChangeMsg = (e) => setMsg(e.target.value);
 
@@ -1145,20 +1124,20 @@ function Ignored() {
 function DisplayPanel() {
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
-  const [tab, setTab] = React.useContext(TabContext);
+  const [settings, setSettings] = React.useContext(SettingsContext);
 
   return (
     <>
       {currentRepo.length !== 0 && (
         <div className="col-10">
           <div className="p-2 h-100">
-            {tab === "readme" ? (
+            {settings.tab === "readme" ? (
               <Readme />
-            ) : tab === "changes" ? (
+            ) : settings.tab === "changes" ? (
               <Changes />
-            ) : tab === "log" ? (
+            ) : settings.tab === "log" ? (
               <Log />
-            ) : tab === "todos" ? (
+            ) : settings.tab === "todos" ? (
               <Todos />
             ) : (
               <Ignored />
@@ -1173,8 +1152,7 @@ function DisplayPanel() {
 function SideNav() {
   const [currentRepo, setCurrentRepo, getRepo] =
     React.useContext(CurrentRepoContext);
-  const [loading, setLoading] = React.useContext(LoadingContext);
-  const [tab, setTab] = React.useContext(TabContext);
+  const [settings, setSettings] = React.useContext(SettingsContext);
 
   return (
     <>
@@ -1183,18 +1161,18 @@ function SideNav() {
           <Branches />
           <div className="w-100">
             <button
-              onClick={() => setTab("readme")}
+              onClick={() => setSettings({ ...settings, tab: "readme" })}
               className={
                 "w-100 my-1 btn border-0 d-flex px-4" +
-                (tab === "readme" ? " active" : "")
+                (settings.tab === "readme" ? " active" : "")
               }>
               <i className="me-2 bi bi-book"></i>README
             </button>
             <button
-              onClick={() => setTab("changes")}
+              onClick={() => setSettings({ ...settings, tab: "changes" })}
               className={
                 "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
-                (tab === "changes" ? " active" : "")
+                (settings.tab === "changes" ? " active" : "")
               }>
               <span>
                 <i className="me-2 bi bi-file-earmark-diff"></i>Changes
@@ -1202,18 +1180,18 @@ function SideNav() {
               <span className="small">{currentRepo.diffs.length}</span>
             </button>
             <button
-              onClick={() => setTab("log")}
+              onClick={() => setSettings({ ...settings, tab: "log" })}
               className={
                 "w-100 my-1 btn border-0 d-flex px-4" +
-                (tab === "log" ? " active" : "")
+                (settings.tab === "log" ? " active" : "")
               }>
               <i className="me-2 bi bi-clock-history"></i>Log
             </button>
             <button
-              onClick={() => setTab("todos")}
+              onClick={() => setSettings({ ...settings, tab: "todos" })}
               className={
                 "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
-                (tab === "todos" ? " active" : "")
+                (settings.tab === "todos" ? " active" : "")
               }>
               <span>
                 <i className="me-2 bi bi-check2-all"></i>TODOs
@@ -1223,10 +1201,10 @@ function SideNav() {
               </span>
             </button>
             <button
-              onClick={() => setTab("ignored")}
+              onClick={() => setSettings({ ...settings, tab: "ignored" })}
               className={
                 "w-100 my-1 btn border-0 d-flex justify-content-between px-4" +
-                (tab === "ignored" ? " active" : "")
+                (settings.tab === "ignored" ? " active" : "")
               }>
               <span>
                 <i className="me-2 bi bi-eye-slash"></i>Ignored
@@ -1241,9 +1219,6 @@ function SideNav() {
 }
 
 function TopNav() {
-  const [theme, setTheme] = React.useState(
-    localStorage.getItem("CodeGarden") || "light"
-  );
   const [loading, setLoading] = React.useContext(LoadingContext);
   const [repos, setRepos, getRepos] = React.useContext(ReposContext);
   const [currentRepo, setCurrentRepo, getRepo] =
@@ -1251,11 +1226,7 @@ function TopNav() {
   const [deleting, setDeleting] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
   const [page, setPage] = React.useContext(PageContext);
-
-  React.useEffect(() => {
-    localStorage.setItem("CodeGarden", theme);
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
+  const [settings, setSettings] = React.useContext(SettingsContext);
 
   const themes = [
     "light",
@@ -1411,14 +1382,14 @@ function TopNav() {
             data-bs-target="#themes"
             className="btn dropdown-toggle text-capitalize">
             <i className="me-2 bi bi-paint-bucket"></i>
-            {theme}
+            {settings.theme}
           </button>
           <div id="themes" className="dropdown-menu text-center">
             {themes.map((x) => (
               <React.Fragment key={x}>
-                {theme !== x && (
+                {settings.theme !== x && (
                   <a
-                    onClick={() => setTheme(x)}
+                    onClick={() => setSettings({ ...settings, theme: x })}
                     className="dropdown-item text-capitalize">
                     {x}
                   </a>
@@ -1445,10 +1416,12 @@ function App() {
   const [repos, setRepos] = React.useState([]);
   const [currentRepo, setCurrentRepo] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [tab, setTab] = React.useState("readme");
   const [page, setPage] = React.useState("repos");
   const [config, setConfig] = React.useState([]);
   const [copied, setCopied] = React.useState(false);
+  const [settings, setSettings] = React.useState(
+    JSON.parse(localStorage.getItem("CodeGarden")) || defaultSettings
+  );
 
   const getRepos = () => {
     setLoading(true);
@@ -1483,15 +1456,21 @@ function App() {
   };
 
   React.useEffect(() => {
+    localStorage.setItem("CodeGarden", JSON.stringify(settings));
+
+    document.documentElement.setAttribute("data-theme", settings.theme);
+  }, [settings]);
+
+  React.useEffect(() => {
     getRepos();
-    localStorage.getItem("last-repo-opened") &&
-      getRepo(localStorage.getItem("last-repo-opened"));
+    settings.lastOpened !== "" && getRepo(settings.lastOpened);
   }, []);
 
   React.useEffect(() => {
-    currentRepo.length !== 0
-      ? localStorage.setItem("last-repo-opened", currentRepo.name)
-      : localStorage.removeItem("last-repo-opened");
+    setSettings({
+      ...settings,
+      lastOpened: currentRepo.length !== 0 ? currentRepo.name : "",
+    });
   }, [currentRepo]);
 
   React.useEffect(() => {
@@ -1503,12 +1482,12 @@ function App() {
 
   return (
     <>
-      <LoadingContext.Provider value={[loading, setLoading]}>
-        <PageContext.Provider value={[page, setPage]}>
-          <ReposContext.Provider value={[repos, setRepos, getRepos]}>
-            <CurrentRepoContext.Provider
-              value={[currentRepo, setCurrentRepo, getRepo]}>
-              <TabContext.Provider value={[tab, setTab]}>
+      <SettingsContext.Provider value={[settings, setSettings]}>
+        <LoadingContext.Provider value={[loading, setLoading]}>
+          <PageContext.Provider value={[page, setPage]}>
+            <ReposContext.Provider value={[repos, setRepos, getRepos]}>
+              <CurrentRepoContext.Provider
+                value={[currentRepo, setCurrentRepo, getRepo]}>
                 <div className="p-4">
                   <TopNav />
                   {page === "repos" ? (
@@ -1521,7 +1500,7 @@ function App() {
                   ) : page === "settings" ? (
                     <div className="mt-4">
                       <div style={{ whiteSpace: "pre-wrap" }}>
-                        {JSON.stringify(config, null, 4)}
+                        {JSON.stringify({ ...config, ...settings }, null, 4)}
                       </div>
                       <button
                         className="btn border-0"
@@ -1538,11 +1517,11 @@ function App() {
                     </div>
                   )}
                 </div>
-              </TabContext.Provider>
-            </CurrentRepoContext.Provider>
-          </ReposContext.Provider>
-        </PageContext.Provider>
-      </LoadingContext.Provider>
+              </CurrentRepoContext.Provider>
+            </ReposContext.Provider>
+          </PageContext.Provider>
+        </LoadingContext.Provider>
+      </SettingsContext.Provider>
     </>
   );
 }
