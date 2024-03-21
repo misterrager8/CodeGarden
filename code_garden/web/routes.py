@@ -1,4 +1,5 @@
 import datetime
+from pathlib import Path
 
 from flask import current_app, render_template, request
 
@@ -10,7 +11,28 @@ from ..models import Branch, DiffItem, IgnoreItem, LogItem, Repository
 
 @current_app.get("/")
 def index():
-    return render_template("index.html", env=current_app.config["ENV"])
+    return render_template(
+        "index.html", debug=current_app.config.get("ENV") == "development"
+    )
+
+
+@current_app.post("/about")
+def about():
+    success = True
+    msg = ""
+    readme_ = ""
+
+    try:
+        readme_ = open(Path(__file__).parent.parent.parent / "README.md").read()
+    except Exception as e:
+        success = False
+        msg = str(e)
+
+    return {
+        "success": success,
+        "msg": msg,
+        "readme": readme_,
+    }
 
 
 @current_app.post("/settings")

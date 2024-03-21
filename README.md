@@ -25,7 +25,7 @@ CodeGarden can make it easier to perform common Git operations such as cloning, 
   2. (Optional) run command: `garden set-config port [PORT]`
   3. Run `--help` command for all options
 
-<pre>
+```
   add-repo       Create a new repo.
   add-todo       Add a task.
   commit         Commit changes to git using task info as the commit...
@@ -44,7 +44,7 @@ CodeGarden can make it easier to perform common Git operations such as cloning, 
   view-todo      Get a task and see detailed info.
   view-todos     See list of all undone todos.
   web            Launch web interface for CodeGarden.
-</pre>
+```
 
 ### Contributing
 

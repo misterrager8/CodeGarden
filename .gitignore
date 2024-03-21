@@ -7,3 +7,5 @@ htmlcov/
 *.db
 garden-repos/
 todos.json
+App2.jsx
+App2.css

@@ -63,7 +63,7 @@ class Repository(object):
         _ = []
         try:
             for i in self.run_command(
-                ["git", "log", "--oneline", "-20", "--pretty=format:%s\t%at\t%h"]
+                ["git", "log", "--oneline", "-20", "--pretty=format:%s\t%at\t%h\t%an"]
             ).split("\n"):
                 if len(i.strip().split("\t")) == 2:
                     _.append(
@@ -72,6 +72,7 @@ class Repository(object):
                             "[No Commit Message]",
                             datetime.datetime.min,
                             i.strip().split("\t")[0],
+                            i.strip().split("\t")[1],
                         )
                     )
                 else:
@@ -81,6 +82,7 @@ class Repository(object):
                             i.strip().split("\t")[0],
                             datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
                             i.strip().split("\t")[2],
+                            i.strip().split("\t")[3],
                         )
                     )
 
@@ -132,11 +134,15 @@ class Repository(object):
     @classmethod
     def all(cls):
         """Get all Repositories in the home directory."""
-        return [
-            Repository(i.name)
-            for i in config.HOME_DIR.iterdir()
-            if i.is_dir() and (i / ".git").exists()
-        ]
+        return sorted(
+            [
+                Repository(i.name)
+                for i in config.HOME_DIR.iterdir()
+                if i.is_dir() and (i / ".git").exists()
+            ],
+            key=lambda x: x.log[0].timestamp,
+            reverse=True,
+        )
 
     @classmethod
     def generate_name(cls):
@@ -311,11 +317,12 @@ class LogItem(object):
         name (str): subject line of this commit.
     """
 
-    def __init__(self, repository, name, timestamp, abbrev_hash):
+    def __init__(self, repository, name, timestamp, abbrev_hash, author):
         self.repository = repository
         self.name = name
         self.timestamp = timestamp
         self.abbrev_hash = abbrev_hash
+        self.author = author
 
     @classmethod
     def get(cls, repository, abbrev_hash):
@@ -334,6 +341,7 @@ class LogItem(object):
             name=self.name,
             timestamp=self.timestamp.strftime("%B %-d, %Y @ %-I:%M %p"),
             abbrev_hash=self.abbrev_hash,
+            author=self.author,
         )
 
 
