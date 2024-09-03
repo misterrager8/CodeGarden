@@ -63,10 +63,12 @@ class Todo:
             "SELECT title, description, tag, date_added, status, repo, id FROM todos WHERE repo=?",
             (repo,),
         )
-        return sorted(
+        n = sorted(
             [Todo(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) for i in results],
-            key=lambda x: (x.status == "completed", x.status != "active", x.id),
+            key=lambda x: x.id,
+            reverse=True,
         )
+        return sorted(n, key=lambda x: (x.status == "completed", x.status != "active"))
 
     def edit(self):
         conn.write(

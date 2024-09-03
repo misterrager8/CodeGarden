@@ -37,6 +37,7 @@ def commit(title: str, desc, tag, fixup):
         tag,
         datetime.datetime.now(),
         "open",
+        Path.cwd().name,
     )
 
     if click.confirm(f"Commit {todo_.title}?", default=True):

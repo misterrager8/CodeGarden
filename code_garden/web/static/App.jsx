@@ -30,9 +30,18 @@ function Icon({ className, name }) {
   return <i className={className + " bi bi-" + name}></i>;
 }
 
-function Button({ className, type_ = "button", onClick, icon, text, size }) {
+function Button({
+  className,
+  type_ = "button",
+  onClick,
+  icon,
+  text,
+  size,
+  tooltip,
+}) {
   return (
     <button
+      title={tooltip}
       type={type_}
       className={className + " btn" + (size === "sm" ? " btn-sm" : "")}
       onClick={onClick}>
@@ -266,24 +275,20 @@ function Nav({ className }) {
   const themes = [
     "light",
     "dark",
-    "sitter-red",
-    "mustard-gold",
-    "praline",
-    "sleet",
-    "purple-cabbage",
-    "goddess-of-dawn",
-    "mincemeat",
-    "hole-in-one",
-    "thallium-flame",
-    "tanzine",
-    "bright-nori",
-    "granite-green",
-    "catawba",
-    "crushed-pineapple",
-    "broccoli",
-    "xoxo",
-    "brescian-blue",
-    "tropical-hibiscus",
+    "brownish-red-light",
+    "berry-light",
+    "vineyard-dark",
+    "orange-gluttony-dark",
+    "amazonian-dark",
+    "guilliman-blue-dark",
+    "violethargic-light",
+    "douro-light",
+    "tarpon-green-dark",
+    "kiwi-pulp-dark",
+    "rackley-dark",
+    "waiporoporo-purple-light",
+    "mexican-chile-dark",
+    "cardinal-pink-light",
   ];
 
   React.useEffect(() => {
@@ -470,7 +475,7 @@ function Nav({ className }) {
             </a>
             <Button
               onClick={() => exportRepository()}
-              icon="filetype-json"
+              icon="save-fill"
               text="Export"
             />
             <Button
@@ -496,20 +501,21 @@ function Nav({ className }) {
           <Dropdown
             className="btn-group btn-group-sm"
             icon="paint-bucket"
-            text={multiCtx.settings.theme}
+            text={"..."}
             classNameMenu="text-center"
             classNameBtn="btn text-capitalize">
             {themes.map((x) => (
               <React.Fragment key={x}>
-                {multiCtx.settings.theme !== x && (
-                  <button
-                    className="dropdown-item text-capitalize small"
-                    onClick={() =>
-                      multiCtx.setSettings({ ...multiCtx.settings, theme: x })
-                    }>
-                    {x}
-                  </button>
-                )}
+                <button
+                  className={
+                    "dropdown-item text-capitalize small" +
+                    (multiCtx.settings.theme === x ? " active" : "")
+                  }
+                  onClick={() =>
+                    multiCtx.setSettings({ ...multiCtx.settings, theme: x })
+                  }>
+                  {x}
+                </button>
               </React.Fragment>
             ))}
           </Dropdown>
@@ -1011,7 +1017,12 @@ function ChangesAndHistory({ className }) {
         <Button
           className={tab === "changes" ? "active" : ""}
           onClick={() => setTab("changes")}
-          text="Changes"
+          text={
+            "Changes" +
+            (multiCtx.currentRepo.diffs.length > 0
+              ? ` (${multiCtx.currentRepo.diffs.length})`
+              : "")
+          }
         />
         <Button
           className={tab === "history" ? "active" : ""}
