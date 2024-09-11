@@ -135,6 +135,27 @@ def checkout_branch():
     return {"status": "done"}
 
 
+@current_app.post("/push_stash")
+def push_stash():
+    Repository(request.json.get("repository")).stash()
+
+    return {"status": "done"}
+
+
+@current_app.post("/unstash")
+def unstash():
+    Repository(request.json.get("repository")).unstash(int(request.json.get("id")))
+
+    return {"status": "done"}
+
+
+@current_app.post("/drop_stash")
+def drop_stash():
+    Repository(request.json.get("repository")).drop_stash(int(request.json.get("id")))
+
+    return {"status": "done"}
+
+
 @current_app.post("/merge_branch")
 def merge_branch():
     branch_ = Branch(request.json.get("repository"), request.json.get("name"))

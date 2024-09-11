@@ -160,11 +160,25 @@ function HomePage({ className }) {
               <ChangesAndHistory />
               <hr className="my-4" />
               <Todos />
+            </div>
+            <div className="col-7">
+              <Readme />
+            </div>
+            <div className="col-2">
+              <hr className="my-4" />
+              {multiCtx.currentRepo.stashes.length > 0 ? (
+                <>
+                  {multiCtx.currentRepo.stashes.map((x, idx) => (
+                    <StashItem id={idx} item={x} />
+                  ))}
+                </>
+              ) : (
+                <div className="small m-auto opacity-50 text-center ">
+                  No Stashes
+                </div>
+              )}
               <hr className="my-4" />
               <Ignored />
-            </div>
-            <div className="col-9">
-              <Readme />
             </div>
           </div>
         </div>
@@ -611,7 +625,7 @@ function LogItem({ item, id, className }) {
                 onClick={() => revertCommit()}
               />
             )}
-            <span>{item.name}</span>
+            <span title={item.name}>{item.name}</span>
           </div>
           <span className="small font-monospace">{item.abbrev_hash}</span>
         </div>
@@ -852,6 +866,68 @@ function IgnoreItem({ id, item, className }) {
           onClick={() => setDeleting(!deleting)}
         />
       </ButtonGroup>
+    </div>
+  );
+}
+
+function StashItem({ id, item, className }) {
+  const [deleting, setDeleting] = React.useState(false);
+  const multiCtx = React.useContext(MultiContext);
+
+  const unstash = () => {
+    multiCtx.setLoading(true);
+    api(
+      "unstash",
+      {
+        repository: multiCtx.currentRepo.name,
+        id: id,
+      },
+      function (data) {
+        multiCtx.getRepo(multiCtx.currentRepo.name);
+        multiCtx.setLoading(false);
+      }
+    );
+  };
+
+  const dropStash = () => {
+    multiCtx.setLoading(true);
+    api(
+      "drop_stash",
+      {
+        repository: multiCtx.currentRepo.name,
+        id: id,
+      },
+      function (data) {
+        multiCtx.getRepo(multiCtx.currentRepo.name);
+        multiCtx.setLoading(false);
+      }
+    );
+  };
+
+  return (
+    <div className="text-truncate">
+      <ButtonGroup size="sm" className="me-1">
+        <Button
+          onClick={() => unstash()}
+          className="border-0"
+          icon="chevron-double-up"
+        />
+        <Button
+          onClick={() => setDeleting(!deleting)}
+          className="border-0"
+          icon="x-lg"
+        />
+        {deleting && (
+          <Button
+            onClick={() => dropStash()}
+            className="border-0"
+            icon="question-lg"
+          />
+        )}
+      </ButtonGroup>
+      <span title={item} className="small">
+        {item}
+      </span>
     </div>
   );
 }
@@ -1235,6 +1311,20 @@ function CommitForm({ className }) {
     );
   };
 
+  const stash = () => {
+    multiCtx.setLoading(true);
+    api(
+      "push_stash",
+      {
+        repository: multiCtx.currentRepo.name,
+      },
+      function (data) {
+        multiCtx.getRepo(multiCtx.currentRepo.name);
+        multiCtx.setLoading(false);
+      }
+    );
+  };
+
   return (
     <form
       className={className + " input-group input-group-sm"}
@@ -1244,6 +1334,12 @@ function CommitForm({ className }) {
         onChange={onChangeMsg}
         required={true}
         placeholder="Commit"
+      />
+      <Button
+        text="Stash"
+        icon="archive"
+        onClick={() => stash()}
+        className="border-0"
       />
       <Button
         text="Amend"

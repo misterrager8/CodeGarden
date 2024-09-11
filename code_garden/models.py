@@ -53,6 +53,14 @@ class Repository(object):
         ]
 
     @property
+    def stashes(self):
+        return [
+            i.strip().split(":")[2]
+            for i in self.run_command(["git", "stash", "list"]).split("\n")
+            if i.strip()
+        ]
+
+    @property
     def current_branch(self):
         for i in self.run_command(["git", "branch"]).split("\n"):
             if i.startswith("* "):
@@ -208,6 +216,18 @@ class Repository(object):
         """Push to remote branch."""
         self.run_command(["git", "push", "origin"])
 
+    def stash(self):
+        """Stash changes."""
+        self.run_command(["git", "stash", "push", "-u"])
+
+    def unstash(self, id_):
+        """Unstash changes."""
+        self.run_command(["git", "stash", "pop", str(id_)])
+
+    def drop_stash(self, id_):
+        """Unstash changes."""
+        self.run_command(["git", "stash", "drop", str(id_)])
+
     def pull(self):
         """Pull from remote."""
         self.run_command(["git", "pull", "--all"])
@@ -249,6 +269,7 @@ class Repository(object):
             diffs=[i.to_dict() for i in self.diffs],
             readme=self.readme,
             ignored=[i.to_dict() for i in self.ignored],
+            stashes=self.stashes,
         )
 
     def __str__(self):
