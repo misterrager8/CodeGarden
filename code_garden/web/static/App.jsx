@@ -286,25 +286,6 @@ function Nav({ className }) {
   const [copied, setCopied] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
-  const themes = [
-    "light",
-    "dark",
-    "brownish-red-light",
-    "berry-light",
-    "vineyard-dark",
-    "orange-gluttony-dark",
-    "amazonian-dark",
-    "guilliman-blue-dark",
-    "violethargic-light",
-    "douro-light",
-    "tarpon-green-dark",
-    "kiwi-pulp-dark",
-    "rackley-dark",
-    "waiporoporo-purple-light",
-    "mexican-chile-dark",
-    "cardinal-pink-light",
-  ];
-
   React.useEffect(() => {
     multiCtx.getRepos();
   }, []);
@@ -512,27 +493,19 @@ function Nav({ className }) {
           </ButtonGroup>
         )}
         <ButtonGroup size="sm">
-          <Dropdown
-            className="btn-group btn-group-sm"
-            icon="paint-bucket"
-            text={"..."}
-            classNameMenu="text-center"
-            classNameBtn="btn text-capitalize">
-            {themes.map((x) => (
-              <React.Fragment key={x}>
-                <button
-                  className={
-                    "dropdown-item text-capitalize small" +
-                    (multiCtx.settings.theme === x ? " active" : "")
-                  }
-                  onClick={() =>
-                    multiCtx.setSettings({ ...multiCtx.settings, theme: x })
-                  }>
-                  {x}
-                </button>
-              </React.Fragment>
-            ))}
-          </Dropdown>
+          <Button
+            text={multiCtx.settings.theme}
+            icon={
+              multiCtx.settings.theme === "light" ? "sun-fill" : "moon-fill"
+            }
+            className="text-capitalize"
+            onClick={() =>
+              multiCtx.setSettings({
+                ...multiCtx.settings,
+                theme: multiCtx.settings.theme === "light" ? "dark" : "light",
+              })
+            }
+          />
           <Button
             text="Settings"
             icon="gear"
