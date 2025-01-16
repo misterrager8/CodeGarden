@@ -165,18 +165,22 @@ function HomePage({ className }) {
               <Readme />
             </div>
             <div className="col-2">
-              <hr className="my-4" />
-              {multiCtx.currentRepo.stashes.length > 0 ? (
-                <>
-                  {multiCtx.currentRepo.stashes.map((x, idx) => (
-                    <StashItem id={idx} item={x} />
-                  ))}
-                </>
-              ) : (
-                <div className="small m-auto opacity-50 text-center ">
-                  No Stashes
-                </div>
-              )}
+              <hr className="mb-4" />
+              <div style={{ height: "30%" }}>
+                {multiCtx.currentRepo.stashes.length > 0 ? (
+                  <>
+                    {multiCtx.currentRepo.stashes.map((x, idx) => (
+                      <StashItem id={idx} item={x} />
+                    ))}
+                  </>
+                ) : (
+                  <div className="d-flex h-100">
+                    <div className="small m-auto opacity-50 text-center">
+                      No Stashes
+                    </div>
+                  </div>
+                )}
+              </div>
               <hr className="my-4" />
               <Ignored />
             </div>
@@ -1061,7 +1065,7 @@ function ChangesAndHistory({ className }) {
   const [tab, setTab] = React.useState("changes");
 
   return (
-    <div className={className} style={{ height: "35%" }}>
+    <div className={className} style={{ height: "40%" }}>
       <ButtonGroup size="sm" className="w-100 mb-3">
         <Button
           className={tab === "changes" ? "active" : ""}
@@ -1343,7 +1347,7 @@ function Todos({ className }) {
   const multiCtx = React.useContext(MultiContext);
 
   return (
-    <div className={className} style={{ height: "30%" }}>
+    <div className={className} style={{ height: "60%" }}>
       <TodoForm className="mb-3" />
 
       <div style={{ height: "90%", overflow: "auto" }}>
@@ -1404,7 +1408,7 @@ function Ignored({ className }) {
   const multiCtx = React.useContext(MultiContext);
 
   return (
-    <div className={className} style={{ height: "20%" }}>
+    <div className={className} style={{ height: "50%" }}>
       <IgnoreForm />
       <div style={{ height: "90%", overflow: "auto" }}>
         {multiCtx.currentRepo.ignored.length !== 0 ? (
