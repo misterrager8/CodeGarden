@@ -1,0 +1,32 @@
+:root,
+html[data-theme="light"] {
+  --primary-bg: #cccccc;
+  --primary-txt: #1a1a1a;
+
+  --red: #ac4141;
+  --orange: #e28513;
+  --green: #4f7d4f;
+  --blue: #5151ff;
+  --purple: #6e346e;
+
+  --secondary-bg: #b9b9b9;
+
+  --btn-color: hsl(265, 45%, 40%);
+  --btn-hover-text: #cccccc;
+}
+
+html[data-theme="dark"] {
+  --primary-bg: #1a1a1a;
+  --primary-txt: #cccccc;
+
+  --red: #de5858;
+  --orange: #d68b00;
+  --green: #72a172;
+  --blue: #5f5fd6;
+  --purple: #b882b8;
+
+  --secondary-bg: #252525;
+
+  --btn-color: hsl(280, 30%, 60%);
+  --btn-hover-text: #1a1a1a;
+}

@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 
-from flask import current_app, render_template, request
+from flask import current_app, render_template, request, send_from_directory
 
 from code_garden.todos import Todo
 
@@ -11,9 +11,7 @@ from ..models import Branch, DiffItem, IgnoreItem, LogItem, Repository
 
 @current_app.get("/")
 def index():
-    return render_template(
-        "index.html", debug=current_app.config.get("ENV") == "development"
-    )
+    return send_from_directory(current_app.static_folder, "index.html")
 
 
 @current_app.post("/about")
@@ -50,7 +48,11 @@ def commit():
     repository_ = Repository(request.json.get("name"))
     repository_.commit(request.json.get("msg"))
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repository_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/get_commit")
@@ -65,7 +67,8 @@ def get_commit():
 @current_app.post("/create_repository")
 def create_repository():
     repository_ = Repository(request.json.get("name"))
-    repository_.init(request.json.get("brief_descrip"))
+    repository_.init("")
+
     return repository_.to_dict()
 
 
@@ -87,14 +90,18 @@ def repository():
 def delete_repository():
     repository_ = Repository(request.json.get("name"))
     repository_.delete()
-    return {"status": "done"}
+    return {"status": "done", "repos": [i.to_dict() for i in Repository.all()]}
 
 
 @current_app.post("/export_repository")
 def export_repository():
     repository_ = Repository(request.json.get("name"))
     repository_.export()
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repository_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/clone_repository")
@@ -108,7 +115,11 @@ def clone_repository():
 def edit_readme():
     repository_ = Repository(request.json.get("name"))
     repository_.edit_readme(request.json.get("content"))
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repository_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/create_branch")
@@ -116,7 +127,13 @@ def create_branch():
     branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.create()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/delete_branch")
@@ -124,7 +141,13 @@ def delete_branch():
     branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.delete()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/checkout_branch")
@@ -132,7 +155,13 @@ def checkout_branch():
     branch_ = Branch(request.json.get("repository"), request.json.get("name"))
     branch_.checkout()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/push_stash")
@@ -175,8 +204,13 @@ def create_todo():
         request.json.get("repository"),
     )
     todo_.add()
+    repo_ = Repository(request.json.get("repository"))
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/edit_todo")
@@ -189,15 +223,26 @@ def edit_todo():
     todo_.description = request.json.get("new_desc")
     todo_.edit()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/delete_todo")
 def delete_todo():
     todo_ = Todo.get(request.json.get("id"))
     todo_.delete()
+    repo_ = Repository(request.json.get("repository"))
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/clear_completed")
@@ -207,7 +252,11 @@ def clear_completed():
         if i.status == "completed":
             i.delete()
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/toggle_todo")
@@ -217,7 +266,13 @@ def toggle_todo():
     todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
     todo_.edit()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/export_todos")
@@ -237,14 +292,20 @@ def import_todos():
 @current_app.post("/commit_todo")
 def commit_todo():
     todo_ = Todo.get(request.json.get("id"))
+    repo_ = Repository(todo_.repo)
 
     todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
     todo_.edit()
-    Repository(todo_.repo).commit(
+    repo_.commit(
         f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}"
     )
+    repos = [i.to_dict() for i in Repository.all()]
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": repos,
+    }
 
 
 @current_app.post("/create_ignore")
@@ -252,14 +313,26 @@ def create_ignore():
     ignore_ = IgnoreItem(request.json.get("repository"), request.json.get("name"))
     ignore_.create()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/delete_ignore")
 def delete_ignore():
     IgnoreItem.delete(request.json.get("repository"), int(request.json.get("id")))
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/reset_file")
@@ -267,7 +340,13 @@ def reset_file():
     diff_ = DiffItem(request.json.get("repository"), request.json.get("name"), "")
     diff_.reset()
 
-    return {"status": "done"}
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/reset_all")
@@ -275,7 +354,11 @@ def reset_all():
     repo_ = Repository(request.json.get("name"))
     repo_.reset_all()
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
 
 
 @current_app.post("/push")
@@ -296,8 +379,11 @@ def pull():
 
 @current_app.post("/run_command")
 def run_command():
-    Repository(request.json.get("repository")).run_command(
-        request.json.get("cmd").split()
-    )
+    repo_ = Repository(request.json.get("repository"))
+    repo_.run_command(request.json.get("cmd").split())
 
-    return {"status": "done"}
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
