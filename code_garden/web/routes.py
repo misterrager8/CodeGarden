@@ -99,8 +99,8 @@ def export_repository():
     repository_.export()
     return {
         "status": "done",
-        "repo": repository_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
+        # "repo": repository_.to_dict(),
+        # "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -150,6 +150,16 @@ def delete_branch():
     }
 
 
+@current_app.post("/compare_branches")
+def compare_branches():
+    repo_ = Repository(request.json.get("repository"))
+    comparison = repo_.compare_branches(
+        request.json.get("baseBranch"), request.json.get("childBranch")
+    )
+
+    return {"status": "done", "comparison": comparison}
+
+
 @current_app.post("/checkout_branch")
 def checkout_branch():
     branch_ = Branch(request.json.get("repository"), request.json.get("name"))
@@ -187,10 +197,14 @@ def drop_stash():
 
 @current_app.post("/merge_branch")
 def merge_branch():
-    branch_ = Branch(request.json.get("repository"), request.json.get("name"))
-    branch_.merge(request.json.get("other_branch"))
+    repo_ = Repository(request.json.get("repository"))
+    repo_.merge(
+        request.json.get("parentBranch"),
+        request.json.get("childBranch"),
+        request.json.get("msg"),
+    )
 
-    return {"status": "done"}
+    return {"status": "done", "repo": repo_.to_dict()}
 
 
 @current_app.post("/create_todo")
@@ -204,6 +218,28 @@ def create_todo():
         request.json.get("repository"),
     )
     todo_.add()
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
+
+
+@current_app.post("/duplicate_todo")
+def duplicate_todo():
+    og_todo = Todo.get(request.json.get("id"))
+    todo_ = Todo(
+        og_todo.title,
+        og_todo.description,
+        og_todo.tag,
+        og_todo.date_added,
+        og_todo.status if og_todo.status != "completed" else "open",
+        og_todo.repo,
+    )
+    todo_.add()
+
     repo_ = Repository(request.json.get("repository"))
 
     return {

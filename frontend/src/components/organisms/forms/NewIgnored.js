@@ -1,10 +1,6 @@
 import { useContext, useState } from "react";
 import Input from "../../atoms/Input";
-import Dropdown from "../../molecules/Dropdown";
-import Button from "../../atoms/Button";
-import { tags } from "../../../util";
 import { MultiContext } from "../../../MultiContext";
-import { addIgnore } from "../../../hooks";
 
 export default function NewIgnored({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -16,13 +12,10 @@ export default function NewIgnored({ className = "" }) {
   return (
     <form
       className={className + " input-group input-group-sm mb-3"}
-      onSubmit={(e) =>
-        addIgnore(e, name, multiCtx.currentRepo.name, (data) => {
-          multiCtx.setCurrentRepo(data.repo);
-          multiCtx.setRepos(data.repos);
-          setName("");
-        })
-      }>
+      onSubmit={(e) => {
+        multiCtx.addIgnore(e, name);
+        setName("");
+      }}>
       <Input
         required={true}
         value={name}

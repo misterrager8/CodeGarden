@@ -1,19 +1,18 @@
-import { useState, useEffect, useContext, Fragment } from "react";
+import { useState, useEffect, useContext } from "react";
 import Button from "../atoms/Button";
 import ButtonGroup from "../molecules/ButtonGroup";
 import { MultiContext } from "../../MultiContext";
 import Dropdown from "../molecules/Dropdown";
 import Spinner from "../atoms/Spinner";
-import { checkout, deleteRepo, exportRepo, getRepo } from "../../hooks";
-import NewBranch from "./forms/NewBranch";
-import BranchItem from "./BranchItem";
 import Icon from "../atoms/Icon";
 import NewRepo from "./forms/NewRepo";
 
 import { v4 as uuidv4 } from "uuid";
+import { SectionContext } from "../templates/Display";
 
 export default function Nav({ className = "" }) {
   const multiCtx = useContext(MultiContext);
+  const sxnCtx = useContext(SectionContext);
   const [deleting, setDeleting] = useState(false);
 
   const [exported, setExported] = useState(false);
@@ -53,11 +52,7 @@ export default function Nav({ className = "" }) {
           </button>
         )}
         <Button
-          onClick={() =>
-            getRepo(multiCtx.currentRepo.name, (data) =>
-              multiCtx.setCurrentRepo(data)
-            )
-          }
+          onClick={() => multiCtx.getRepo(multiCtx.currentRepo?.name)}
           icon="arrow-clockwise"
           border={false}
         />
@@ -72,12 +67,10 @@ export default function Nav({ className = "" }) {
           {multiCtx.repos?.map((x) => (
             <a
               key={uuidv4()}
-              onClick={() =>
-                getRepo(x.name, (data) => multiCtx.setCurrentRepo(data))
-              }
+              onClick={() => multiCtx.getRepo(x.name)}
               className={
                 "dropdown-item between" +
-                (multiCtx.currentRepo.name === x.name ? " active" : "")
+                (multiCtx.currentRepo?.name === x.name ? " active" : "")
               }>
               <span>{x.name}</span>
 
@@ -88,10 +81,11 @@ export default function Nav({ className = "" }) {
                     {x.diffs.length}
                   </span>
                 )}
-                {x.todos.length !== 0 && (
+                {x.todos.filter((x) => x.status !== "completed").length !==
+                  0 && (
                   <span className="green mx-1">
                     <Icon name="check-all" className="" />
-                    {x.todos.length}
+                    {x.todos.filter((x) => x.status !== "completed").length}
                   </span>
                 )}
               </div>
@@ -99,20 +93,20 @@ export default function Nav({ className = "" }) {
           ))}
         </Dropdown>
         {multiCtx.currentRepo && (
-          <Dropdown
-            autoClose={false}
-            target="branches"
-            icon="signpost-split-fill"
-            text={multiCtx.currentRepo.current_branch.name}>
-            <NewBranch className="p-2" />
-            {multiCtx.currentRepo.branches.map((x) => (
-              <Fragment key={uuidv4()}>
-                {`* ${multiCtx.currentRepo.current_branch.name}` !== x.name && (
-                  <BranchItem item={x} />
-                )}
-              </Fragment>
-            ))}
-          </Dropdown>
+          <Button
+            active={sxnCtx.isCurrentSection("branches")}
+            border={false}
+            onClick={() =>
+              sxnCtx.setCurrentSection(
+                sxnCtx.isCurrentSection("branches") ? null : "branches"
+              )
+            }
+            icon="signpost-split-fill">
+            <span className="ms-2 small">Current Branch: </span>
+            <span className="fw-bold">
+              {multiCtx.currentRepo.current_branch.name}
+            </span>
+          </Button>
         )}
       </ButtonGroup>
       <div>
@@ -129,12 +123,11 @@ export default function Nav({ className = "" }) {
               </a>
             )}
             <Button
-              onClick={() =>
-                exportRepo(multiCtx.currentRepo.name, (data) => {
-                  setExported(true);
-                  setTimeout(() => setExported(false), 1500);
-                })
-              }
+              onClick={() => {
+                multiCtx.exportRepo();
+                setExported(true);
+                setTimeout(() => setExported(false), 1500);
+              }}
               text="Export"
               icon={!exported ? "save2" : "check-lg"}
             />
@@ -151,12 +144,7 @@ export default function Nav({ className = "" }) {
             />
             {deleting && (
               <Button
-                onClick={() =>
-                  deleteRepo(multiCtx.currentRepo.name, (data) => {
-                    multiCtx.setRepos(data.repos);
-                    multiCtx.setCurrentRepo(null);
-                  })
-                }
+                onClick={() => multiCtx.deleteRepo()}
                 className="red"
                 icon="question-lg"
               />

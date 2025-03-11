@@ -49,6 +49,13 @@ a:hover {
   color: var(--primary-bg);
 }
 
+.dropdown-item.active .orange.mx-1,
+.dropdown-item:hover .orange.mx-1,
+.dropdown-item.active .green.mx-1,
+.dropdown-item:hover .green.mx-1 {
+  color: var(--primary-bg);
+}
+
 .between {
   display: flex;
   justify-content: space-between;
@@ -70,7 +77,7 @@ hr {
   border: 1px solid var(--primary-txt);
   font-weight: unset;
   letter-spacing: 1px;
-  padding: 3px 10px;
+  padding: 3px 7px;
 }
 
 .border-bottom {
@@ -107,7 +114,7 @@ hr {
 .non-btn,
 .non-btn:hover {
   border: 0;
-  cursor: unset;
+  /* cursor: unset; */
   background-color: var(--primary-bg);
   color: var(--btn-color);
 }
@@ -187,4 +194,23 @@ hr {
 .kanban {
   background-color: var(--secondary-bg);
   border-radius: 10px;
+}
+
+.dropdown-item:hover .btn {
+  color: var(--btn-hover-text);
+}
+
+.branch.active,
+.branch.active .non-btn {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+}
+
+.branch.active .btn {
+  color: var(--btn-hover-text);
+}
+
+.border-end {
+  border-right-color: var(--btn-color) !important;
+  border-right-style: dotted !important;
 }

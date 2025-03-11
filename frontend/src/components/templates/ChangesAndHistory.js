@@ -5,7 +5,6 @@ import Button from "../atoms/Button";
 import DiffItem from "../organisms/DiffItem";
 import LogItem from "../organisms/LogItem";
 import Commit from "../organisms/forms/Commit";
-import { resetAll } from "../../hooks";
 import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "./Display";
 
@@ -71,12 +70,7 @@ export default function ChangesAndHistory({ className = "" }) {
                       className="red"
                       icon="question-lg"
                       border={false}
-                      onClick={() =>
-                        resetAll(multiCtx.currentRepo.name, (data) => {
-                          multiCtx.setCurrentRepo(data.repo);
-                          multiCtx.setRepos(data.repos);
-                        })
-                      }
+                      onClick={() => multiCtx.resetAll()}
                     />
                   )}
                 </div>

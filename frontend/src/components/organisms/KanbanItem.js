@@ -6,7 +6,6 @@ import Dropdown from "../molecules/Dropdown";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { api, tags } from "../../util";
-import { commitTodo, deleteTodo, editTodo, toggleTodo } from "../../hooks";
 
 export default function KanbanItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -28,27 +27,13 @@ export default function KanbanItem({ item, className = "" }) {
     setDescription(item.description || "");
   }, []);
 
-  // const commitTodo = () => {};
-
   return (
     <form
-      onSubmit={(e) =>
-        editTodo(
-          e,
-          item.id,
-          name,
-          tag,
-          item.status,
-          description,
-          multiCtx.currentRepo.name,
-          (data) => {
-            multiCtx.setCurrentRepo(data.repo);
-            multiCtx.setRepos(data.repos);
-            setSaved(true);
-            setTimeout(() => setSaved(false), 1000);
-          }
-        )
-      }
+      onSubmit={(e) => {
+        multiCtx.editTodo(e, item.id, name, tag, item.status, description);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 1500);
+      }}
       className={
         className + " kanban mb-2 p-3" + (item.done ? " opacity-25" : "")
       }>
@@ -59,7 +44,9 @@ export default function KanbanItem({ item, className = "" }) {
               <i className="bi bi-floppy2"></i>
             </span>
           )}
-          <span className="btn border-0">#{item.id}</span>
+          <div className="me-1">
+            <span className="badge">#{item.id}</span>
+          </div>
         </ButtonGroup>
         <Input
           required={true}
@@ -80,7 +67,7 @@ export default function KanbanItem({ item, className = "" }) {
           classNameBtn="btn border-0"
           icon="tag-fill"
           text={tag}>
-          {tags.map((x) => (
+          {multiCtx.tags.map((x) => (
             <a key={x} onClick={() => setTag(x)} className="dropdown-item">
               {x}
             </a>
@@ -100,12 +87,7 @@ export default function KanbanItem({ item, className = "" }) {
               <Button
                 icon="question-lg"
                 // title="Commit changes using this TODO as commit message."
-                onClick={() =>
-                  commitTodo(item.id, (data) => {
-                    multiCtx.setCurrentRepo(data.repo);
-                    multiCtx.setRepos(data.repos);
-                  })
-                }
+                onClick={() => multiCtx.commitTodo(item.id)}
                 className="border-0"
               />
             )}
@@ -113,38 +95,33 @@ export default function KanbanItem({ item, className = "" }) {
         )}
         <Button
           icon="check-lg"
-          onClick={() =>
-            toggleTodo(item.id, multiCtx.currentRepo.name, (data) => {
-              multiCtx.setCurrentRepo(data.repo);
-              multiCtx.setRepos(data.repos);
-            })
-          }
+          onClick={() => multiCtx.toggleTodo(item.id)}
           className="border-0"
         />
         {item.status !== "completed" && (
           <Button
+            className={item.status === "active" ? "orange" : ""}
             title="Toggle whether this TODO is actively being worked on."
             onClick={() =>
-              editTodo(
+              multiCtx.editTodo(
                 null,
                 item.id,
                 name,
                 tag,
                 item.status === "open" ? "active" : "open",
-                description,
-                multiCtx.currentRepo.name,
-                (data) => {
-                  multiCtx.setCurrentRepo(data.repo);
-                  multiCtx.setRepos(data.repos);
-                }
+                description
               )
             }
             border={false}
             icon={
-              "bi bi-chevron-double" +
-              (item.status === "open" ? "-right" : "-left")
+              "bi bi-pin-angle" + (item.status === "active" ? "-fill" : "")
             }></Button>
         )}
+        <Button
+          icon="copy"
+          border={false}
+          onClick={() => multiCtx.duplicateTodo(item.id)}
+        />
         <Button
           className="red"
           icon="x-lg"
@@ -156,12 +133,7 @@ export default function KanbanItem({ item, className = "" }) {
             className="red"
             icon="question-lg"
             border={false}
-            onClick={() =>
-              deleteTodo(item.id, multiCtx.currentRepo.name, (data) => {
-                multiCtx.setCurrentRepo(data.repo);
-                multiCtx.setRepos(data.repos);
-              })
-            }
+            onClick={() => multiCtx.deleteTodo(item.id)}
           />
         )}
       </InputGroup>

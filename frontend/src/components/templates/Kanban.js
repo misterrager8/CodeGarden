@@ -1,16 +1,11 @@
 import { useContext } from "react";
 import { MultiContext } from "../../MultiContext";
-import TodoItem from "../organisms/TodoItem";
 import NewTodo from "../organisms/forms/NewTodo";
-import { SectionContext } from "./Display";
 import Button from "../atoms/Button";
 import KanbanItem from "../organisms/KanbanItem";
-import { clearCompleted } from "../../hooks";
 
 export default function Kanban({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const sxnCtx = useContext(SectionContext);
-  const label = "todos";
 
   return (
     <div>
@@ -48,17 +43,12 @@ export default function Kanban({ className = "" }) {
                 text={`Clear Completed (${
                   multiCtx.currentRepo.todos.filter((x) => x.done).length
                 })`}
-                onClick={() =>
-                  clearCompleted(multiCtx.currentRepo.name, (data) => {
-                    multiCtx.setCurrentRepo(data.repo);
-                    multiCtx.setRepos(data.repos);
-                  })
-                }
+                onClick={() => multiCtx.clearCompleted()}
                 className="orange"
               />
             )}
           </div>
-          <div style={{ height: "70vh", overflowY: "auto" }}>
+          <div style={{ height: "65vh", overflowY: "auto" }}>
             {multiCtx.currentRepo.todos
               .filter((x) => x.status === "completed")
               .map((x) => (

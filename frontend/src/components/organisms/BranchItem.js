@@ -1,34 +1,42 @@
 import { useContext, useState } from "react";
 import { MultiContext } from "../../MultiContext";
-import { checkout, deleteBranch } from "../../hooks";
 import ButtonGroup from "../molecules/ButtonGroup";
 import Button from "../atoms/Button";
+import { BranchContext } from "../templates/Branches";
 
 export default function BranchItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
+  const branchCtx = useContext(BranchContext);
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <div className={className + " dropdown-item between"}>
-      <a
-        className="my-1"
-        onClick={() =>
-          checkout(item.name, multiCtx.currentRepo.name, (data) => {
-            multiCtx.setCurrentRepo(data.repo);
-            multiCtx.setRepos(data.repos);
-          })
-        }>
-        {item.name}
-      </a>
+    <div
+      className={
+        className +
+        " between branch" +
+        (item.name === branchCtx.selectedBranch?.name ? " active" : "")
+      }>
+      <ButtonGroup>
+        <Button
+          icon="cart-check"
+          border={false}
+          onClick={() => multiCtx.checkout(item.name)}
+        />
+        <Button
+          className="non-btn"
+          text={item.name}
+          border={false}
+          onClick={() =>
+            branchCtx.setSelectedBranch(
+              branchCtx.selectedBranch === item ? null : item
+            )
+          }
+        />
+      </ButtonGroup>
       <div>
         {deleting && (
           <Button
-            onClick={() =>
-              deleteBranch(multiCtx.currentRepo.name, item.name, (data) => {
-                multiCtx.setCurrentRepo(data.repo);
-                multiCtx.setRepos(data.repos);
-              })
-            }
+            onClick={() => multiCtx.deleteBranch(item.name)}
             className="red"
             size="sm"
             border={false}

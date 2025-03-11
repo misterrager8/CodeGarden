@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { MultiContext } from "../../MultiContext";
 import Button from "../atoms/Button";
-import { undoCommit } from "../../hooks";
 
 export default function LogItem({ item, id, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -16,12 +15,7 @@ export default function LogItem({ item, id, className = "" }) {
                 icon="rewind-fill"
                 className="border-0 me-1"
                 size="sm"
-                onClick={() =>
-                  undoCommit(multiCtx.currentRepo.name, (data) => {
-                    multiCtx.setCurrentRepo(data.repo);
-                    multiCtx.setRepos(data.repos);
-                  })
-                }
+                onClick={() => multiCtx.undoCommit()}
               />
             )}
             <span title={item.name}>{item.name}</span>

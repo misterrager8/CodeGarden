@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../MultiContext";
-import ButtonGroup from "../molecules/ButtonGroup";
 import Button from "../atoms/Button";
-import { editReadme } from "../../hooks";
 import { SectionContext } from "./Display";
 
 export default function Readme({ className = "" }) {
@@ -44,14 +42,11 @@ export default function Readme({ className = "" }) {
         />
         {mode === "write" && (
           <Button
-            onClick={() =>
-              editReadme(multiCtx.currentRepo.name, content, (data) => {
-                multiCtx.setCurrentRepo(data.repo);
-                multiCtx.setRepos(data.repos);
-                setSaved(true);
-                setTimeout(() => setSaved(false), 1000);
-              })
-            }
+            onClick={() => {
+              multiCtx.editReadme(content);
+              setSaved(true);
+              setTimeout(() => setSaved(false), 1500);
+            }}
             className="green ms-3"
             icon={saved ? "check-lg" : "floppy2"}
             // text={mode === "write" ? "View" : "Edit"}

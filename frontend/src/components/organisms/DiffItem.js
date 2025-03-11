@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { MultiContext } from "../../MultiContext";
 import ButtonGroup from "../molecules/ButtonGroup";
 import Button from "../atoms/Button";
-import { resetFile } from "../../hooks";
 
 export default function DiffItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -21,12 +20,7 @@ export default function DiffItem({ item, className = "" }) {
             icon="question-lg"
             border={false}
             className="red"
-            onClick={() =>
-              resetFile(item.name, multiCtx.currentRepo.name, (data) => {
-                multiCtx.setCurrentRepo(data.repo);
-                multiCtx.setRepos(data.repos);
-              })
-            }
+            onClick={() => multiCtx.resetFile(item.name)}
           />
         )}
         <Button

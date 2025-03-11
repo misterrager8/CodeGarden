@@ -66,6 +66,11 @@ class Repository(object):
             if i.startswith("* "):
                 return Branch(self.name, i.replace("* ", ""))
 
+    def compare_branches(self, base_branch, child_branch):
+        return self.run_command(
+            ["git", "rev-list", "--count", f"{base_branch}..{child_branch}"]
+        )
+
     @property
     def log(self):
         _ = []
@@ -138,6 +143,8 @@ class Repository(object):
             if self.run_command(["git", "remote", "-v"])
             else None
         )
+
+    # git rev-list --count PARENT..CHILD
 
     @classmethod
     def all(cls):
@@ -256,6 +263,11 @@ class Repository(object):
             )
             todo_.add()
 
+    def merge(self, parent_branch, child_branch, merge_msg):
+        self.run_command(["git", "checkout", parent_branch])
+        self.run_command(["git", "merge", "--squash", child_branch])
+        self.run_command(["git", "commit", "-m", merge_msg])
+
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
         return dict(
@@ -300,19 +312,6 @@ class Branch(object):
         """Checkout this branch."""
         Repository(self.repository).run_command(["git", "checkout", self.name])
 
-    @property
-    def compare_with_master(self):
-        """Compare this branch to master."""
-        comparison = Repository(self.repository).run_command(
-            [
-                "git",
-                "log",
-                f"{'master' if self.name != 'master' else 'origin/master'}...{self.name}",
-                "--oneline",
-            ]
-        )
-        return len([i.strip() for i in comparison.split("\n") if i])
-
     def merge(self, other_branch):
         """Merge this branch with another.
 
@@ -326,7 +325,6 @@ class Branch(object):
         return dict(
             repository=self.repository,
             name=self.name,
-            compare_with_master=self.compare_with_master,
         )
 
 
