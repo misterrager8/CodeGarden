@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../MultiContext";
+import markdownit from "markdown-it";
 import Button from "../atoms/Button";
 import { SectionContext } from "./Display";
 
@@ -15,7 +16,7 @@ export default function Readme({ className = "" }) {
   const onChangeContent = (e) => setContent(e.target.value);
 
   useEffect(() => {
-    setContent(multiCtx.currentRepo.readme.txt);
+    setContent(multiCtx.currentRepo.readme);
   }, [multiCtx.currentRepo]);
 
   return (
@@ -49,17 +50,15 @@ export default function Readme({ className = "" }) {
             }}
             className="green ms-3"
             icon={saved ? "check-lg" : "floppy2"}
-            // text={mode === "write" ? "View" : "Edit"}
-            // onClick={() => setMode(mode === "read" ? "write" : "read")}
           />
         )}
       </div>
-      <div style={{ height: "75vh", overflowY: "auto" }}>
+      <div style={{ height: "73vh", overflowY: "auto" }}>
         {mode === "read" ? (
           <div
             id="readme"
             dangerouslySetInnerHTML={{
-              __html: multiCtx.currentRepo?.readme?.md,
+              __html: markdownit({ html: true }).render(content),
             }}></div>
         ) : (
           <textarea

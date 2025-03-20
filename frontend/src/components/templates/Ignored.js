@@ -30,7 +30,7 @@ export default function Ignored({ className = "" }) {
         {multiCtx.currentRepo?.ignored.length > 0 ? (
           <div
             style={{
-              height: !sxnCtx.isCurrentSection(label) ? "33vh" : "70vh",
+              height: !sxnCtx.isCurrentSection(label) ? "31vh" : "70vh",
               overflowY: "auto",
             }}>
             {multiCtx.currentRepo?.ignored.map((x, idx) => (

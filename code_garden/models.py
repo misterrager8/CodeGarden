@@ -120,10 +120,9 @@ class Repository(object):
     @property
     def readme(self):
         try:
-            raw = open(self.path / "README.md").read()
-            return dict(txt=raw, md=markdown.markdown(raw))
+            return open(self.path / "README.md").read()
         except:
-            return {}
+            return ""
 
     @property
     def ignored(self):
@@ -221,7 +220,7 @@ class Repository(object):
 
     def push(self):
         """Push to remote branch."""
-        self.run_command(["git", "push", "origin"])
+        return self.run_command(["git", "push", "origin"])
 
     def stash(self):
         """Stash changes."""
@@ -237,7 +236,7 @@ class Repository(object):
 
     def pull(self):
         """Pull from remote."""
-        self.run_command(["git", "pull", "--all"])
+        return self.run_command(["git", "pull", "--all"])
 
     def export(self):
         """Export all Repository info, such as todos, to single JSON file."""

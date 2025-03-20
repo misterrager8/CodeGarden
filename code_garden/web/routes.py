@@ -1,6 +1,7 @@
 import datetime
 from pathlib import Path
 
+import click
 from flask import current_app, render_template, request, send_from_directory
 
 from code_garden.todos import Todo
@@ -400,17 +401,18 @@ def reset_all():
 @current_app.post("/push")
 def push():
     repo_ = Repository(request.json.get("name"))
-    repo_.push()
+    output = repo_.push()
+    click.secho(output, fg="blue")
 
-    return {"status": "done"}
+    return {"status": "done", "output": output}
 
 
 @current_app.post("/pull")
 def pull():
     repo_ = Repository(request.json.get("name"))
-    repo_.pull()
+    output = repo_.pull()
 
-    return {"status": "done"}
+    return {"status": "done", "output": output}
 
 
 @current_app.post("/run_command")

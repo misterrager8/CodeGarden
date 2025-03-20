@@ -14,7 +14,7 @@ export default function Kanban({ className = "" }) {
       <div className="row">
         <div className="col-4">
           <div className="text-center h5 mb-3">To Do</div>
-          <div style={{ height: "70vh", overflowY: "auto" }}>
+          <div style={{ height: "67vh", overflowY: "auto" }}>
             {multiCtx.currentRepo.todos
               .filter((x) => x.status === "open")
               .map((x) => (
@@ -24,7 +24,7 @@ export default function Kanban({ className = "" }) {
         </div>
         <div className="col-4">
           <div className="text-center h5 mb-3">Doing</div>
-          <div style={{ height: "70vh", overflowY: "auto" }}>
+          <div style={{ height: "67vh", overflowY: "auto" }}>
             {multiCtx.currentRepo.todos
               .filter((x) => x.status === "active")
               .map((x) => (
@@ -48,7 +48,7 @@ export default function Kanban({ className = "" }) {
               />
             )}
           </div>
-          <div style={{ height: "65vh", overflowY: "auto" }}>
+          <div style={{ height: "62vh", overflowY: "auto" }}>
             {multiCtx.currentRepo.todos
               .filter((x) => x.status === "completed")
               .map((x) => (

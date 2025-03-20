@@ -29,6 +29,22 @@ export default function MultiProvider({ children }) {
     });
   };
 
+  const push = () => {
+    setLoading(true);
+    api("push", { name: currentRepo.name }, (data) => {
+      alert(data.output);
+      setLoading(false);
+    });
+  };
+
+  const pull = () => {
+    setLoading(true);
+    api("pull", { name: currentRepo.name }, (data) => {
+      alert(data.output);
+      setLoading(false);
+    });
+  };
+
   const getRepo = (name) => {
     setLoading(true);
     api(
@@ -315,7 +331,7 @@ export default function MultiProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("code-garden-last-opened", currentRepo?.name || null);
+    localStorage.setItem("code-garden-last-opened", currentRepo?.name);
   }, [currentRepo]);
 
   useEffect(() => {
@@ -357,6 +373,9 @@ export default function MultiProvider({ children }) {
 
     tags: tags,
     setTags: setTags,
+
+    push: push,
+    pull: pull,
   };
 
   return (

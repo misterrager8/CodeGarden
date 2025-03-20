@@ -89,7 +89,7 @@ export default function ChangesAndHistory({ className = "" }) {
         ) : (
           <div
             style={{
-              height: !sxnCtx.isCurrentSection(label) ? "33vh" : "70vh",
+              height: !sxnCtx.isCurrentSection(label) ? "30vh" : "70vh",
               overflowY: "auto",
             }}>
             {multiCtx.currentRepo?.log.map((x, idx) => (

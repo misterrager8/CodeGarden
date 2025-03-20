@@ -33,7 +33,7 @@ export default function Todos({ className = "" }) {
           />
           <NewTodo className="mb-3" />
           {multiCtx.currentRepo?.todos.length > 0 ? (
-            <div style={{ height: "30vh", overflowY: "auto" }}>
+            <div style={{ height: "28vh", overflowY: "auto" }}>
               {multiCtx.currentRepo?.todos.map((x) => (
                 <TodoItem key={x.id} item={x} />
               ))}
