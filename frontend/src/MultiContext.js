@@ -332,6 +332,7 @@ export default function MultiProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem("code-garden-last-opened", currentRepo?.name);
+    localStorage.setItem("code-garden-last-opened", currentRepo?.name);
   }, [currentRepo]);
 
   useEffect(() => {
@@ -373,6 +374,9 @@ export default function MultiProvider({ children }) {
 
     tags: tags,
     setTags: setTags,
+
+    push: push,
+    pull: pull,
 
     push: push,
     pull: pull,
