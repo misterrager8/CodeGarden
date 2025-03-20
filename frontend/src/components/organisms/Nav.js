@@ -93,20 +93,34 @@ export default function Nav({ className = "" }) {
           ))}
         </Dropdown>
         {multiCtx.currentRepo && (
-          <Button
-            active={sxnCtx.isCurrentSection("branches")}
-            border={false}
-            onClick={() =>
-              sxnCtx.setCurrentSection(
-                sxnCtx.isCurrentSection("branches") ? null : "branches"
-              )
-            }
-            icon="signpost-split-fill">
-            <span className="ms-2 small">Current Branch: </span>
-            <span className="fw-bold">
-              {multiCtx.currentRepo.current_branch.name}
-            </span>
-          </Button>
+          <>
+            <Button
+              active={sxnCtx.isCurrentSection("branches")}
+              border={false}
+              onClick={() =>
+                sxnCtx.setCurrentSection(
+                  sxnCtx.isCurrentSection("branches") ? null : "branches"
+                )
+              }
+              icon="signpost-split-fill">
+              <span className="ms-2 small">Current Branch: </span>
+              <span className="fw-bold">
+                {multiCtx.currentRepo.current_branch.name}
+              </span>
+            </Button>
+            <Button
+              border={false}
+              text="Push"
+              icon="arrow-up"
+              onClick={() => multiCtx.push()}
+            />
+            <Button
+              border={false}
+              text="Pull"
+              icon="arrow-down"
+              onClick={() => multiCtx.pull()}
+            />
+          </>
         )}
       </ButtonGroup>
       <div>
@@ -152,6 +166,12 @@ export default function Nav({ className = "" }) {
           </ButtonGroup>
         )}
         <ButtonGroup>
+          <a
+            href="https://github.com/misterrager8/CodeGarden"
+            target="_blank"
+            className="btn btn-sm ">
+            <i className="bi bi-github me-2"></i>About
+          </a>
           <Button
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             className="text-capitalize"

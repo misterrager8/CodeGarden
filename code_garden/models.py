@@ -120,10 +120,9 @@ class Repository(object):
     @property
     def readme(self):
         try:
-            raw = open(self.path / "README.md").read()
-            return dict(txt=raw, md=markdown.markdown(raw))
+            return open(self.path / "README.md").read()
         except:
-            return {}
+            return ""
 
     @property
     def ignored(self):
