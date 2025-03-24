@@ -8,22 +8,50 @@ CodeGarden can make it easier to perform common Git operations such as cloning, 
 
 ![](/docs/screenshot2.png)
 
+![](/docs/screenshot6.png)
+
+![](/docs/screenshot7.png)
+
+<img width="200" src="/docs/screenshot3.png" />
+
+<img width="200" src="/docs/screenshot4.png" />
+
+<img width="200" src="/docs/screenshot5.png" />
+
+<img width="200" src="/docs/screenshot8.png" />
+
 ### Features
 
 - Add your local repositories just by putting them in the home directory.
 - View git information about your repo, such as status, history, diff, branches, etc. all on the dashboard.
-- Manage **TODOs** (tasks) for your repo. You can also commit your changes to the repo straight from your TODO list
+- Manage **TODOs** (tasks) for your repo with a built-in Kanban board. You can also commit your changes to the repo straight from your TODO list
 - Minimalist and responsive interface
 - Command-line Git wrapper functions that makes Git commands easier
 
 ### Installation / Usage
 
-1. Clone this **[repo](https://github.com/misterrager8/CodeGarden).**
-2. Run command: `python3 setup.py develop`
-3. Set up configuration:
-  1. Run command: `garden set-config home_dir [DIRECTORY]`
-  2. (Optional) run command: `garden set-config port [PORT]`
-  3. Run `--help` command for all options
+1. Clone this repo
+2. `pip install -r requirements.txt`
+3. `cd frontend/`
+4. `npm install .`
+
+##### For Regular Users:
+
+5. `npm run build`
+6. `cd -`
+7. `python3 setup.py develop`
+8. `garden --help`
+
+##### For Developers:
+
+5. `npm run dev`
+
+##### Configuration
+
+7. `garden set-config "port" [PORT]`
+8. `garden set-config "home_dir" [HOME_DIR]`
+
+9. Run `--help` command for all options:
 
 ```
   add-repo       Create a new repo.
