@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { api } from "./util";
 // import { getRepo } from "./hooks";
+import { v4 as uuidv4 } from "uuid";
 
 export const MultiContext = createContext();
 
@@ -10,15 +11,16 @@ export default function MultiProvider({ children }) {
   const [currentRepo, setCurrentRepo] = useState(null);
 
   const [tags, setTags] = useState(
-    JSON.parse(localStorage.getItem("code-garden-tags")) || [
-      "misc",
-      "bugfix",
-      "refactor",
-      "documentation",
-      "feature",
-      "tweak",
-      "ui",
-    ]
+    JSON.parse(localStorage.getItem("code-garden-tags")) ||
+      [
+        "misc",
+        "bugfix",
+        "refactor",
+        "documentation",
+        "feature",
+        "tweak",
+        "ui",
+      ].map((x) => ({ label: x, id: uuidv4() }))
   );
 
   const getRepos = () => {

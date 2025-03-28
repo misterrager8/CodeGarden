@@ -17,7 +17,11 @@ export default function Stashes({ className = "" }) {
         text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
         border={false}
         className="flex-grow-0 mb-1"
-        icon={sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"}
+        icon={
+          sxnCtx.isCurrentSection(label)
+            ? "fullscreen-exit"
+            : "arrows-fullscreen"
+        }
         onClick={() =>
           sxnCtx.setCurrentSection(
             sxnCtx.isCurrentSection(label) ? null : label

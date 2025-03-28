@@ -42,17 +42,17 @@ export default function Display({ className = "" }) {
   return (
     <div className={className}>
       <SectionContext value={contextValue}>
-        <Nav className="mb-4" />
+        <Nav className="border-bottom pb-3" />
         {multiCtx?.currentRepo && (
           <>
             {!currentSection ? (
               <div className="row mt-3 main">
-                <div className="col-3">
+                <div className="col-3 border-end">
                   <ChangesAndHistory />
                   <hr />
                   <Todos />
                 </div>
-                <div className="col-7">
+                <div className="col-7 border-end">
                   <Readme />
                 </div>
                 <div className="col-2">

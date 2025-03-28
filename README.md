@@ -84,9 +84,7 @@ To contribute to this project, please follow these steps:
 
 2. **Clone the Repository**: Clone your fork of the repository to your local machine.
 
-   ```bash
-   git clone https://github.com/misterrager/CodeGarden.git```
-
+```git clone https://github.com/misterrager/CodeGarden.git```
 
 ### License
 

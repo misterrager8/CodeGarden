@@ -6,7 +6,7 @@ export default function LogItem({ item, id, className = "" }) {
   const multiCtx = useContext(MultiContext);
 
   return (
-    <div className={className + " py-2"}>
+    <div className={className + " border-bottom py-2"}>
       <div>
         <div className="between mb-1">
           <div className="fw-bold text-truncate">

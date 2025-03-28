@@ -3,6 +3,7 @@ import { MultiContext } from "../../MultiContext";
 import markdownit from "markdown-it";
 import Button from "../atoms/Button";
 import { SectionContext } from "./Display";
+import ButtonGroup from "../molecules/ButtonGroup";
 
 export default function Readme({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -24,23 +25,31 @@ export default function Readme({ className = "" }) {
       className={
         className + (sxnCtx.isCurrentSection(label) ? " w-75 mx-auto" : "")
       }>
-      <Button
-        text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
-        border={false}
-        className="flex-grow-0 mb-1"
-        icon={sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"}
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection(label) ? null : label
-          )
-        }
-      />
-      <div className="between mb-3">
-        <Button
-          icon={mode === "write" ? "eye" : "pencil"}
-          text={mode === "write" ? "View" : "Edit"}
-          onClick={() => setMode(mode === "read" ? "write" : "read")}
-        />
+      <div
+        className={
+          "between mb-3" + (sxnCtx.isCurrentSection(label) ? " mt-3" : "")
+        }>
+        <ButtonGroup>
+          <Button
+            border={false}
+            className="flex-grow-0"
+            icon={
+              sxnCtx.isCurrentSection(label)
+                ? "fullscreen-exit"
+                : "arrows-fullscreen"
+            }
+            onClick={() =>
+              sxnCtx.setCurrentSection(
+                sxnCtx.isCurrentSection(label) ? null : label
+              )
+            }
+          />
+          <Button
+            icon={mode === "write" ? "eye" : "pencil"}
+            text={mode === "write" ? "View" : "Edit"}
+            onClick={() => setMode(mode === "read" ? "write" : "read")}
+          />
+        </ButtonGroup>
         {mode === "write" && (
           <Button
             onClick={() => {
@@ -53,7 +62,7 @@ export default function Readme({ className = "" }) {
           />
         )}
       </div>
-      <div style={{ height: "73vh", overflowY: "auto" }}>
+      <div style={{ height: "79vh", overflowY: "auto" }}>
         {mode === "read" ? (
           <div
             id="readme"

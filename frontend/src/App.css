@@ -17,6 +17,7 @@ a:hover {
   color: var(--btn-color);
   border-color: var(--btn-color);
   letter-spacing: 1px;
+  border-width: 0.5px;
 }
 
 .btn:hover,
@@ -63,18 +64,18 @@ a:hover {
 
 .form-control,
 .form-control:focus {
-  background-color: var(--secondary-bg);
-  border: 0;
+  background-color: transparent;
+  border: 0.5px solid var(--primary-txt);
   color: var(--primary-txt);
 }
 
 hr {
-  border-style: dotted !important;
+  border-width: 0.5px !important;
 }
 
 .badge {
-  color: var(--primary-txt);
-  border: 1px solid var(--primary-txt);
+  color: var(--orange);
+  border: 0.5px solid var(--orange);
   font-weight: unset;
   letter-spacing: 1px;
   padding: 3px 7px;
@@ -84,14 +85,6 @@ hr {
   border-bottom-color: var(--primary-txt) !important;
 }
 
-.hover:hover {
-  border-bottom: 1px dotted var(--primary-txt);
-}
-
-.hover {
-  border-bottom: 1px dotted var(--primary-bg);
-}
-
 ::-webkit-scrollbar {
   background-color: var(--primary-bg);
   width: 2px;
@@ -99,16 +92,27 @@ hr {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--btn-color);
+  background-color: var(--blue);
 }
 
 #readme img {
   display: none;
 }
 
-#readme code,
+#readme h1,
+#readme h2,
+#readme h3,
+#readme h4,
+#readme h5 {
+  color: var(--readme-heading-color);
+}
+
 #readme a {
-  color: var(--btn-color) !important;
+  color: var(--readme-link-color) !important;
+}
+
+#readme code {
+  color: var(--readme-code-color) !important;
 }
 
 .non-btn,
@@ -140,6 +144,18 @@ hr {
 .btn.orange.active {
   color: var(--btn-hover-text);
   background-color: var(--orange);
+  border-color: transparent;
+}
+
+.yellow {
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.btn.yellow:hover,
+.btn.yellow.active {
+  color: var(--btn-hover-text);
+  background-color: var(--yellow);
   border-color: transparent;
 }
 
@@ -192,8 +208,7 @@ hr {
 }
 
 .kanban {
-  background-color: var(--secondary-bg);
-  border-radius: 10px;
+  border-bottom: 0.5px solid var(--border-color);
 }
 
 .dropdown-item:hover .btn {
@@ -211,6 +226,9 @@ hr {
 }
 
 .border-end {
-  border-right-color: var(--btn-color) !important;
-  border-right-style: dotted !important;
+  border-right: 0.5px solid var(--border-color) !important;
+}
+
+.border-bottom {
+  border-bottom: 0.5px solid var(--border-color) !important;
 }

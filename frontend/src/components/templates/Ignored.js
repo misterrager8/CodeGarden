@@ -14,23 +14,12 @@ export default function Ignored({ className = "" }) {
 
   return (
     <div className={className}>
-      <Button
-        text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
-        border={false}
-        className="flex-grow-0 mb-1"
-        icon={sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"}
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection(label) ? null : label
-          )
-        }
-      />
       <NewIgnored />
       <div>
         {multiCtx.currentRepo?.ignored.length > 0 ? (
           <div
             style={{
-              height: !sxnCtx.isCurrentSection(label) ? "31vh" : "70vh",
+              height: !sxnCtx.isCurrentSection(label) ? "35vh" : "70vh",
               overflowY: "auto",
             }}>
             {multiCtx.currentRepo?.ignored.map((x, idx) => (

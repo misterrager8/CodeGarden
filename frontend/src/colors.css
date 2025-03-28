@@ -1,32 +1,131 @@
 :root,
 html[data-theme="light"] {
-  --primary-bg: #cccccc;
-  --primary-txt: #1a1a1a;
+  --red-000: rgb(255, 204, 204);
+  --red-100: hsl(0, 100%, 80%);
+  --red-200: hsl(0, 100%, 70%);
+  --red-300: hsl(0, 100%, 60%);
+  --red-400: hsl(0, 100%, 50%);
+  --red-500: hsl(0, 100%, 40%);
+  --red-600: hsl(0, 100%, 30%);
+  --red-700: hsl(0, 100%, 20%);
+  --red-800: hsl(0, 100%, 10%);
+  --red-900: hsl(0, 100%, 5%);
 
-  --red: #ac4141;
-  --orange: #e28513;
-  --green: #4f7d4f;
-  --blue: #5151ff;
-  --purple: #6e346e;
+  --orange-000: hsl(39, 100%, 90%);
+  --orange-100: hsl(39, 100%, 80%);
+  --orange-200: hsl(39, 100%, 70%);
+  --orange-300: hsl(39, 100%, 60%);
+  --orange-400: hsl(39, 100%, 50%);
+  --orange-500: hsl(39, 100%, 40%);
+  --orange-600: hsl(39, 100%, 30%);
+  --orange-700: hsl(39, 100%, 20%);
+  --orange-800: hsl(39, 100%, 10%);
+  --orange-900: hsl(39, 100%, 5%);
 
-  --secondary-bg: #b9b9b9;
+  --yellow-000: hsl(60, 100%, 90%);
+  --yellow-100: hsl(60, 100%, 80%);
+  --yellow-200: hsl(60, 100%, 70%);
+  --yellow-300: hsl(60, 100%, 60%);
+  --yellow-400: hsl(60, 100%, 50%);
+  --yellow-500: hsl(60, 100%, 40%);
+  --yellow-600: hsl(60, 100%, 30%);
+  --yellow-700: hsl(60, 100%, 20%);
+  --yellow-800: hsl(60, 100%, 10%);
+  --yellow-900: hsl(60, 100%, 5%);
 
-  --btn-color: hsl(265, 45%, 40%);
+  --green-000: hsl(120, 100%, 90%);
+  --green-100: hsl(120, 100%, 80%);
+  --green-200: hsl(120, 100%, 70%);
+  --green-300: hsl(120, 100%, 60%);
+  --green-400: hsl(120, 100%, 50%);
+  --green-500: hsl(120, 100%, 40%);
+  --green-600: hsl(120, 100%, 30%);
+  --green-700: hsl(120, 100%, 20%);
+  --green-800: hsl(120, 100%, 10%);
+  --green-900: hsl(120, 100%, 5%);
+
+  --blue-000: hsl(240, 100%, 90%);
+  --blue-100: hsl(240, 100%, 80%);
+  --blue-200: hsl(240, 100%, 70%);
+  --blue-300: hsl(240, 100%, 60%);
+  --blue-400: hsl(240, 100%, 50%);
+  --blue-500: hsl(240, 100%, 40%);
+  --blue-600: hsl(240, 100%, 30%);
+  --blue-700: hsl(240, 100%, 20%);
+  --blue-800: hsl(240, 100%, 10%);
+  --blue-900: hsl(240, 100%, 5%);
+
+  --purple-000: hsl(300, 100%, 90%);
+  --purple-100: hsl(300, 100%, 80%);
+  --purple-200: hsl(300, 100%, 70%);
+  --purple-300: hsl(300, 100%, 60%);
+  --purple-400: hsl(300, 100%, 50%);
+  --purple-500: hsl(300, 100%, 40%);
+  --purple-600: hsl(300, 100%, 30%);
+  --purple-700: hsl(300, 100%, 20%);
+  --purple-800: hsl(300, 100%, 10%);
+  --purple-900: hsl(300, 100%, 5%);
+
+  --gray-000: hsl(0, 0%, 90%);
+  --gray-100: hsl(0, 0%, 80%);
+  --gray-200: hsl(0, 0%, 70%);
+  --gray-300: hsl(0, 0%, 60%);
+  --gray-400: hsl(0, 0%, 50%);
+  --gray-500: hsl(0, 0%, 40%);
+  --gray-600: hsl(0, 0%, 30%);
+  --gray-700: hsl(0, 0%, 20%);
+  --gray-800: hsl(0, 0%, 10%);
+  --gray-900: hsl(0, 0%, 5%);
+
+  --red: var(--red-600);
+  --orange: var(--orange-600);
+  --yellow: var(--yellow-600);
+  --green: var(--green-700);
+  --blue: var(--blue-600);
+  --purple: var(--purple-700);
+  --gray: var(--gray-600);
+
+  --primary-bg: var(--gray-200);
+  --primary-txt: var(--gray-800);
+
+  --secondary-bg: var(--gray-300);
+
+  --btn-color: var(--blue-800);
   --btn-hover-text: #cccccc;
+
+  --border-color: var(--gray-400);
+
+  --input-bg: var(--gray-300);
+  --input-txt: var(--gray-800);
+
+  --readme-code-color: var(--blue-600);
+  --readme-link-color: var(--purple-700);
+  --readme-heading-color: var(--blue-700);
 }
 
 html[data-theme="dark"] {
-  --primary-bg: #1a1a1a;
-  --primary-txt: #cccccc;
+  --red: var(--red-200);
+  --orange: var(--orange-500);
+  --yellow: var(--yellow-500);
+  --green: var(--green-200);
+  --blue: var(--blue-200);
+  --purple: var(--purple-000);
+  --gray: var(--gray-600);
 
-  --red: #de5858;
-  --orange: #d68b00;
-  --green: #72a172;
-  --blue: #5f5fd6;
-  --purple: #b882b8;
+  --primary-bg: var(--gray-800);
+  --primary-txt: var(--gray-100);
 
   --secondary-bg: #252525;
 
-  --btn-color: hsl(280, 30%, 60%);
+  --btn-color: var(--blue-100);
   --btn-hover-text: #1a1a1a;
+
+  --border-color: var(--gray-700);
+
+  --input-bg: var(--gray-700);
+  --input-txt: var(--gray-200);
+
+  --readme-code-color: var(--blue-000);
+  --readme-link-color: var(--blue-100);
+  --readme-heading-color: var(--blue-200);
 }

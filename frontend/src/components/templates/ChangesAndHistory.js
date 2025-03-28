@@ -19,20 +19,23 @@ export default function ChangesAndHistory({ className = "" }) {
   return (
     <div
       className={
-        className + (sxnCtx.isCurrentSection(label) ? " w-75 mx-auto" : "")
+        className + (sxnCtx.isCurrentSection(label) ? " w-75 mx-auto pt-3" : "")
       }>
-      <Button
-        text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
-        border={false}
-        className="flex-grow-0 mb-1"
-        icon={sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"}
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection(label) ? null : label
-          )
-        }
-      />
-      <ButtonGroup className="w-100">
+      <ButtonGroup className={"w-100"}>
+        <Button
+          border={false}
+          className="flex-grow-0"
+          icon={
+            sxnCtx.isCurrentSection(label)
+              ? "fullscreen-exit"
+              : "arrows-fullscreen"
+          }
+          onClick={() =>
+            sxnCtx.setCurrentSection(
+              sxnCtx.isCurrentSection(label) ? null : label
+            )
+          }
+        />
         <Button
           active={tab === "changes"}
           text={`Changes${

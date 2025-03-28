@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import Input from "../../atoms/Input";
 import { MultiContext } from "../../../MultiContext";
+import { v4 as uuidv4 } from "uuid";
 
 export default function NewTag({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -12,7 +13,7 @@ export default function NewTag({ className = "" }) {
   const addTag = (e) => {
     e.preventDefault();
     let tags_ = [...multiCtx.tags];
-    tags_.push(name);
+    tags_.push({ label: name, id: uuidv4() });
     multiCtx.setTags(tags_);
     setName("");
   };

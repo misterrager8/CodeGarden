@@ -79,21 +79,6 @@ export default function Branches({ className = "" }) {
   return (
     <BranchContext.Provider value={contextValue}>
       <div className={className} style={{ height: "70vh" }}>
-        <Button
-          text={sxnCtx.isCurrentSection("branches") ? "Minimize" : "Maximize"}
-          border={false}
-          className="flex-grow-0 mb-1"
-          icon={
-            sxnCtx.isCurrentSection("branches")
-              ? "fullscreen-exit"
-              : "fullscreen"
-          }
-          onClick={() =>
-            sxnCtx.setCurrentSection(
-              sxnCtx.isCurrentSection("branches") ? null : "branches"
-            )
-          }
-        />
         <div className="row">
           <div className="col-3 border-end" style={{ height: "80vh" }}>
             <NewBranch className="my-2" />
@@ -137,7 +122,7 @@ export default function Branches({ className = "" }) {
               {!merging ? (
                 <div>
                   {comparison?.map((x) => (
-                    <div className="between mb-1">
+                    <div className="between mb-1 border-bottom">
                       <div className="d-flex">
                         <div className="purple small py-1 me-2">
                           {x.abbrev_hash}

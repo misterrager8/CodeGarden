@@ -18,22 +18,9 @@ export default function Todos({ className = "" }) {
           className={
             className + (sxnCtx.isCurrentSection(label) ? " w-75 mx-auto" : "")
           }>
-          <Button
-            text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
-            border={false}
-            className="flex-grow-0 mb-1"
-            icon={
-              sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"
-            }
-            onClick={() =>
-              sxnCtx.setCurrentSection(
-                sxnCtx.isCurrentSection(label) ? null : label
-              )
-            }
-          />
           <NewTodo className="mb-3" />
           {multiCtx.currentRepo?.todos.length > 0 ? (
-            <div style={{ height: "28vh", overflowY: "auto" }}>
+            <div style={{ height: "37vh", overflowY: "auto" }}>
               {multiCtx.currentRepo?.todos.map((x) => (
                 <TodoItem key={x.id} item={x} />
               ))}
@@ -45,22 +32,7 @@ export default function Todos({ className = "" }) {
           )}
         </div>
       ) : (
-        <>
-          <Button
-            text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
-            border={false}
-            className="flex-grow-0 mb-1"
-            icon={
-              sxnCtx.isCurrentSection(label) ? "fullscreen-exit" : "fullscreen"
-            }
-            onClick={() =>
-              sxnCtx.setCurrentSection(
-                sxnCtx.isCurrentSection(label) ? null : label
-              )
-            }
-          />
-          <Kanban />
-        </>
+        <Kanban />
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Input from "../../atoms/Input";
 import Dropdown from "../../molecules/Dropdown";
 import Button from "../../atoms/Button";
@@ -8,16 +8,17 @@ import { SectionContext } from "../../templates/Display";
 import NewTag from "./NewTag";
 import ButtonGroup from "../../molecules/ButtonGroup";
 import TagItem from "../TagItem";
+import Icon from "../../atoms/Icon";
 
 export const TagContext = createContext();
 
 export default function NewTodo({ className = "" }) {
   const multiCtx = useContext(MultiContext);
   const sxnCtx = useContext(SectionContext);
+  const label = "todos";
 
   const [name, setName] = useState("");
-  const [tag, setTag] = useState("misc");
-  const [showtags, setShowTags] = useState(false);
+  const [tag, setTag] = useState(multiCtx.tags[0].label);
 
   const onChangeName = (e) => setName(e.target.value);
 
@@ -26,20 +27,43 @@ export default function NewTodo({ className = "" }) {
     setTag: setTag,
   };
 
+  useEffect(() => {
+    setTag(multiCtx.tags[0].label);
+  }, [multiCtx.tags]);
+
   return (
     <TagContext.Provider value={contextValue}>
       <form
-        className={className + " input-group input-group-sm"}
+        className={className + " input-group input-group-sm mt-3"}
         onSubmit={(e) => {
           multiCtx.addTodo(e, name, tag);
           setName("");
         }}>
         <Button
-          icon="tag-fill"
-          text={tag}
-          className="border-0"
-          onClick={() => setShowTags(!showtags)}
+          border={false}
+          className="flex-grow-0"
+          icon={
+            sxnCtx.isCurrentSection(label)
+              ? "fullscreen-exit"
+              : "arrows-fullscreen"
+          }
+          onClick={() =>
+            sxnCtx.setCurrentSection(
+              sxnCtx.isCurrentSection(label) ? null : label
+            )
+          }
         />
+        <Dropdown icon="tag-fill" text={tag} classNameBtn="border-0">
+          {multiCtx.tags.map((x) => (
+            <a
+              key={x.id}
+              onClick={() => setTag(x.label)}
+              className="dropdown-item">
+              <Icon name="tags-fill" className="me-2" />
+              {x.label}
+            </a>
+          ))}
+        </Dropdown>
         <Input
           value={name}
           onChange={onChangeName}
@@ -60,19 +84,6 @@ export default function NewTodo({ className = "" }) {
             />
           )}
       </form>
-
-      {showtags && (
-        <div
-          className="dropdown-menu show overflow-auto"
-          style={{ height: "230px" }}>
-          <div className="p-2">
-            <NewTag />
-          </div>
-          {multiCtx.tags.map((x, idx) => (
-            <TagItem id={idx} item={x} />
-          ))}
-        </div>
-      )}
     </TagContext.Provider>
   );
 }

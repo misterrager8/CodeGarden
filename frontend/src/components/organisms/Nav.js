@@ -104,7 +104,7 @@ export default function Nav({ className = "" }) {
               }
               icon="signpost-split-fill">
               <span className="ms-2 small">Current Branch: </span>
-              <span className="fw-bold">
+              <span className="f">
                 {multiCtx.currentRepo.current_branch.name}
               </span>
             </Button>

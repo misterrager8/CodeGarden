@@ -8,8 +8,8 @@ export default function DiffItem({ item, className = "" }) {
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <div className={className + " between p-1 diff-item"}>
-      <span>
+    <div className={className + " between p-1 border-bottom"}>
+      <span className="small py-1">
         <i className="bi bi-record me-2" style={{ color: item.color }}></i>
         {item.name}
       </span>

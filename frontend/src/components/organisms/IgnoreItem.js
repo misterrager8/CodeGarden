@@ -8,8 +8,8 @@ export default function IgnoreItem({ id, item, className = "" }) {
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <div className={className + " between"}>
-      <div>{item.name}</div>
+    <div className={className + " between border-bottom"}>
+      <div className="small py-1">{item.name}</div>
       <ButtonGroup size="sm">
         {deleting && (
           <Button

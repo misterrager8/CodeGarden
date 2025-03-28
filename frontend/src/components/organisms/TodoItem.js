@@ -6,6 +6,7 @@ import Dropdown from "../molecules/Dropdown";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { tags } from "../../util";
+import Icon from "../atoms/Icon";
 
 export default function TodoItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -13,7 +14,6 @@ export default function TodoItem({ item, className = "" }) {
   const [committing, setCommitting] = useState(false);
 
   const [name, setName] = useState("");
-  const [tag, setTag] = useState("");
   const [description, setDescription] = useState("");
   const [saved, setSaved] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
@@ -23,14 +23,13 @@ export default function TodoItem({ item, className = "" }) {
 
   useEffect(() => {
     setName(item.name);
-    setTag(item.tag);
     setDescription(item.description || "");
   }, []);
 
   return (
     <form
       onSubmit={(e) => {
-        multiCtx.editTodo(e, item.id, name, tag, item.status, description);
+        multiCtx.editTodo(e, item.id, name, item.tag, item.status, description);
         setSaved(true);
         setTimeout(() => setSaved(false), 1500);
       }}
@@ -52,7 +51,7 @@ export default function TodoItem({ item, className = "" }) {
         </ButtonGroup>
         <Input
           required={true}
-          className="border-0 fw-bold"
+          className="border-0 fst-italic"
           value={name}
           onChange={onChangeName}
         />
@@ -68,10 +67,23 @@ export default function TodoItem({ item, className = "" }) {
           target="edit-tags"
           classNameBtn="btn border-0"
           icon="tag-fill"
-          text={tag}>
+          text={item.tag}>
           {multiCtx.tags.map((x) => (
-            <a key={x} onClick={() => setTag(x)} className="dropdown-item">
-              {x}
+            <a
+              key={x.id}
+              onClick={() =>
+                multiCtx.editTodo(
+                  null,
+                  item.id,
+                  name,
+                  x.label,
+                  item.status,
+                  description
+                )
+              }
+              className="dropdown-item">
+              <Icon name="tags-fill" className="me-2" />
+              {x.label}
             </a>
           ))}
         </Dropdown>
@@ -100,26 +112,26 @@ export default function TodoItem({ item, className = "" }) {
           onClick={() => multiCtx.toggleTodo(item.id)}
           className="border-0"
         />
-        {item.status !== "completed" && (
-          <Button
-            title="Toggle whether this TODO is actively being worked on."
-            onClick={() =>
-              multiCtx.editTodo(
-                null,
-                item.id,
-                name,
-                tag,
-                item.status === "open" ? "active" : "open",
-                description
-              )
-            }
-            className={
-              "border-0" + (item.status === "active" ? " orange" : " ")
-            }
-            icon={
-              "bi bi-pin-angle" + (item.status === "active" ? "-fill" : "")
-            }></Button>
-        )}
+        <Button
+          title="Toggle whether this TODO is actively being worked on."
+          onClick={() =>
+            multiCtx.editTodo(
+              null,
+              item.id,
+              name,
+              item.tag,
+              item.status === "open"
+                ? "active"
+                : item.status === "completed"
+                ? "active"
+                : "open",
+              description
+            )
+          }
+          className={"border-0" + (item.status === "active" ? " red" : " ")}
+          icon={
+            "bi bi-pin-angle" + (item.status === "active" ? "-fill" : "")
+          }></Button>
         <Button
           icon="copy"
           border={false}
