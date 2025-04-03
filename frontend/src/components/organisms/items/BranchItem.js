@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
-import { MultiContext } from "../../MultiContext";
-import ButtonGroup from "../molecules/ButtonGroup";
-import Button from "../atoms/Button";
-import { BranchContext } from "../templates/Branches";
+import { MultiContext } from "../../../MultiContext";
+import ButtonGroup from "../../molecules/ButtonGroup";
+import Button from "../../atoms/Button";
+import { BranchContext } from "../../templates/Branches";
+import Icon from "../../atoms/Icon";
 
 export default function BranchItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -13,27 +14,25 @@ export default function BranchItem({ item, className = "" }) {
     <div
       className={
         className +
-        " between branch" +
+        " between branch-item" +
         (item.name === branchCtx.selectedBranch?.name ? " active" : "")
       }>
-      <ButtonGroup>
+      <div
+        className="small my-1"
+        onClick={() =>
+          branchCtx.setSelectedBranch(
+            branchCtx.selectedBranch === item ? null : item
+          )
+        }>
+        <Icon className="me-2" name="bezier" />
+        {item.name}
+      </div>
+      <div>
         <Button
-          icon="cart-check"
+          icon="basket2-fill"
           border={false}
           onClick={() => multiCtx.checkout(item.name)}
         />
-        <Button
-          className="non-btn"
-          text={item.name}
-          border={false}
-          onClick={() =>
-            branchCtx.setSelectedBranch(
-              branchCtx.selectedBranch === item ? null : item
-            )
-          }
-        />
-      </ButtonGroup>
-      <div>
         {deleting && (
           <Button
             onClick={() => multiCtx.deleteBranch(item.name)}

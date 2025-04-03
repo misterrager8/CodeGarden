@@ -24,9 +24,7 @@ export default function NewIgnored({ className = "" }) {
         border={false}
         className="flex-grow-0"
         icon={
-          sxnCtx.isCurrentSection(label)
-            ? "fullscreen-exit"
-            : "arrows-fullscreen"
+          sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
         }
         onClick={() =>
           sxnCtx.setCurrentSection(

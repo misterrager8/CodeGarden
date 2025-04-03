@@ -4,9 +4,10 @@ import Nav from "../organisms/Nav";
 import Readme from "./Readme";
 import Stashes from "./Stashes";
 import Ignored from "./Ignored";
-import ChangesAndHistory from "./ChangesAndHistory";
 import Todos from "./Todos";
 import Branches from "./Branches";
+import Container from "./ChangesAndHistory/Container";
+import Config from "./Config";
 
 export const SectionContext = createContext();
 
@@ -17,12 +18,13 @@ export default function Display({ className = "" }) {
   );
 
   const sections = [
-    { label: "changes-history", element: <ChangesAndHistory /> },
+    { label: "changes-history", element: <Container /> },
     { label: "todos", element: <Todos /> },
     { label: "readme", element: <Readme /> },
     { label: "stashes", element: <Stashes /> },
     { label: "ignored", element: <Ignored /> },
     { label: "branches", element: <Branches /> },
+    { label: "config", element: <Config /> },
   ];
 
   const isCurrentSection = (label) => currentSection === label;
@@ -48,7 +50,7 @@ export default function Display({ className = "" }) {
             {!currentSection ? (
               <div className="row mt-3 main">
                 <div className="col-3 border-end">
-                  <ChangesAndHistory />
+                  <Container />
                   <hr />
                   <Todos />
                 </div>

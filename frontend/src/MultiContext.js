@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { api } from "./util";
-// import { getRepo } from "./hooks";
 import { v4 as uuidv4 } from "uuid";
 
 export const MultiContext = createContext();
@@ -99,15 +98,6 @@ export default function MultiProvider({ children }) {
   const deleteTodo = (id) => {
     setLoading(true);
     api("delete_todo", { id: id, repository: currentRepo.name }, (data) => {
-      setCurrentRepo(data.repo);
-      setRepos(data.repos);
-      setLoading(false);
-    });
-  };
-
-  const duplicateTodo = (id) => {
-    setLoading(true);
-    api("duplicate_todo", { id: id, repository: currentRepo.name }, (data) => {
       setCurrentRepo(data.repo);
       setRepos(data.repos);
       setLoading(false);
@@ -232,12 +222,12 @@ export default function MultiProvider({ children }) {
     );
   };
 
-  const resetFile = (name) => {
+  const resetFile = (path) => {
     setLoading(true);
     api(
       "reset_file",
       {
-        name: name,
+        path: path,
         repository: currentRepo.name,
       },
       (data) => {
@@ -372,13 +362,9 @@ export default function MultiProvider({ children }) {
     addIgnore: addIgnore,
     deleteIgnore: deleteIgnore,
     editReadme: editReadme,
-    duplicateTodo: duplicateTodo,
 
     tags: tags,
     setTags: setTags,
-
-    push: push,
-    pull: pull,
 
     push: push,
     pull: pull,

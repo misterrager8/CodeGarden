@@ -8,13 +8,3 @@ export const api = (url, params, callback) =>
   })
     .then((response) => response.json())
     .then((data) => callback(data));
-
-export const tags = [
-  "misc",
-  "bugfix",
-  "refactor",
-  "documentation",
-  "feature",
-  "tweak",
-  "ui",
-];

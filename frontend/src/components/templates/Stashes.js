@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { MultiContext } from "../../MultiContext";
-import StashItem from "../organisms/StashItem";
+import StashItem from "../organisms/items/StashItem";
 import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "./Display";
 import Button from "../atoms/Button";
@@ -14,13 +14,12 @@ export default function Stashes({ className = "" }) {
   return (
     <div className={className}>
       <Button
-        text={sxnCtx.isCurrentSection(label) ? "Minimize" : "Maximize"}
         border={false}
-        className="flex-grow-0 mb-1"
+        className={
+          "flex-grow-0 mb-1" + (sxnCtx.isCurrentSection(label) ? " mt-3" : "")
+        }
         icon={
-          sxnCtx.isCurrentSection(label)
-            ? "fullscreen-exit"
-            : "arrows-fullscreen"
+          sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
         }
         onClick={() =>
           sxnCtx.setCurrentSection(
@@ -29,7 +28,7 @@ export default function Stashes({ className = "" }) {
         }
       />
       <>
-        {multiCtx.currentRepo?.stashes.length > 0 ? (
+        {/* {multiCtx.currentRepo?.stashes.length > 0 ? (
           <div style={{ height: "35vh", overflowY: "auto" }}>
             {multiCtx.currentRepo?.stashes.map((x) => (
               <StashItem key={uuidv4()} item={x} />
@@ -37,9 +36,12 @@ export default function Stashes({ className = "" }) {
           </div>
         ) : (
           <div className="d-flex" style={{ height: "35vh" }}>
-            <span className="m-auto small opacity-50">No Stashes</span>
+            <span className="muted-label-center">No Stashes</span>
           </div>
-        )}
+        )} */}
+        <div className="d-flex" style={{ height: "35vh" }}>
+          <span className="muted-label-center">No Stashes</span>
+        </div>
       </>
     </div>
   );

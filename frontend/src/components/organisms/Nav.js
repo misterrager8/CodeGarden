@@ -102,7 +102,7 @@ export default function Nav({ className = "" }) {
                   sxnCtx.isCurrentSection("branches") ? null : "branches"
                 )
               }
-              icon="signpost-split-fill">
+              icon="bezier2">
               <span className="ms-2 small">Current Branch: </span>
               <span className="f">
                 {multiCtx.currentRepo.current_branch.name}
@@ -166,11 +166,21 @@ export default function Nav({ className = "" }) {
           </ButtonGroup>
         )}
         <ButtonGroup>
+          <Button
+            active={sxnCtx.isCurrentSection("config")}
+            onClick={() =>
+              sxnCtx.setCurrentSection(
+                sxnCtx.isCurrentSection("config") ? null : "config"
+              )
+            }
+            icon="gear"
+            text="Settings"
+          />
           <a
             href="https://github.com/misterrager8/CodeGarden"
             target="_blank"
             className="btn btn-sm ">
-            <i className="bi bi-github me-2"></i>About
+            <i className="bi bi-info-circle me-2"></i>About
           </a>
           <Button
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}

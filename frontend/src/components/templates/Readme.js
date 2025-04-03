@@ -35,8 +35,8 @@ export default function Readme({ className = "" }) {
             className="flex-grow-0"
             icon={
               sxnCtx.isCurrentSection(label)
-                ? "fullscreen-exit"
-                : "arrows-fullscreen"
+                ? "arrow-left"
+                : "box-arrow-up-right"
             }
             onClick={() =>
               sxnCtx.setCurrentSection(

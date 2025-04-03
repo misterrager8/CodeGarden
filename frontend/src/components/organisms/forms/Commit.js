@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import Input from "../../atoms/Input";
 import { MultiContext } from "../../../MultiContext";
-import Button from "../../atoms/Button";
 
 export default function Commit({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -17,13 +16,6 @@ export default function Commit({ className = "" }) {
         setMsg("");
       }}>
       <Input onChange={onChangeMsg} value={msg} placeholder="Commit" />
-      <Button
-        text="Amend"
-        icon="eraser-fill"
-        // text="Amend Changes To Last Commit"
-        onClick={() => multiCtx.amendCommit()}
-        className="border-0"
-      />
     </form>
   );
 }

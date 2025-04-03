@@ -6,13 +6,13 @@ import {
   useState,
 } from "react";
 import { MultiContext } from "../../MultiContext";
-import { SectionContext } from "./Display";
 import NewBranch from "../organisms/forms/NewBranch";
-import BranchItem from "../organisms/BranchItem";
+import BranchItem from "../organisms/items/BranchItem";
 
 import { v4 as uuidv4 } from "uuid";
 import Button from "../atoms/Button";
 import { api } from "../../util";
+import ButtonGroup from "../molecules/ButtonGroup";
 
 export const BranchContext = createContext();
 
@@ -22,11 +22,9 @@ export default function Branches({ className = "" }) {
   const [comparison, setComparison] = useState(null);
 
   const [merging, setMerging] = useState(false);
+  const [deleteHead, setDeleteHead] = useState(false);
   const [mergeMsg, setMergeMsg] = useState("");
   const onChangeMergeMsg = (e) => setMergeMsg(e.target.value);
-
-  const sxnCtx = useContext(SectionContext);
-  const label = "branches";
 
   const merge = () => {
     multiCtx.setLoading(true);
@@ -37,6 +35,7 @@ export default function Branches({ className = "" }) {
         parentBranch: selectedBranch.name,
         childBranch: multiCtx.currentRepo.current_branch.name,
         msg: mergeMsg,
+        deleteHead: deleteHead,
       },
       (data) => {
         multiCtx.setCurrentRepo(data.repo);
@@ -81,18 +80,18 @@ export default function Branches({ className = "" }) {
       <div className={className} style={{ height: "70vh" }}>
         <div className="row">
           <div className="col-3 border-end" style={{ height: "80vh" }}>
-            <NewBranch className="my-2" />
+            <NewBranch className="my-3" />
             {multiCtx.currentRepo.branches.map((x) => (
               <Fragment key={uuidv4()}>
                 {`* ${multiCtx.currentRepo.current_branch.name}` !== x.name && (
-                  <BranchItem className="px-2 rounded" item={x} />
+                  <BranchItem item={x} />
                 )}
               </Fragment>
             ))}
           </div>
           {selectedBranch && (
             <div className="col-9 px-4">
-              <div className="mb-3">
+              <div className="my-3">
                 <span className="purple">
                   {multiCtx.currentRepo.current_branch?.name}
                 </span>
@@ -104,17 +103,32 @@ export default function Branches({ className = "" }) {
                 {" ahead of "}
                 <span className="purple">{selectedBranch?.name}.</span>
               </div>
-              <div className="mb-3">
-                <Button
-                  icon="sign-intersection-y-fill"
-                  active={merging}
-                  onClick={() => setMerging(!merging)}
-                  text="Squash + Merge"
-                />
+              <div className="between mb-3">
+                <ButtonGroup>
+                  <Button
+                    icon="sign-intersection-y-fill"
+                    active={merging}
+                    onClick={() => setMerging(!merging)}
+                    text="Squash + Merge"
+                  />
+                  {merging && (
+                    <Button
+                      active={deleteHead}
+                      className="red"
+                      icon={deleteHead ? "check-circle-fill" : "circle"}
+                      text={`Delete ${
+                        multiCtx.currentRepo.current_branch?.name
+                      }${!deleteHead ? "?" : ""}`}
+                      onClick={() => setDeleteHead(!deleteHead)}
+                    />
+                  )}
+                </ButtonGroup>
                 {merging && (
                   <Button
+                    className="green"
+                    icon="chevron-double-right"
+                    text="Confirm Merge"
                     border={false}
-                    icon="question-lg"
                     onClick={() => merge()}
                   />
                 )}

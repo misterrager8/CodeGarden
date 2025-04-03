@@ -2,11 +2,9 @@ import { useContext } from "react";
 import { MultiContext } from "../../MultiContext";
 import NewTodo from "../organisms/forms/NewTodo";
 import Button from "../atoms/Button";
-import KanbanItem from "../organisms/KanbanItem";
 import NewTag from "../organisms/forms/NewTag";
-import Icon from "../atoms/Icon";
-import TagItem from "../organisms/TagItem";
-import { v4 as uuidv4 } from "uuid";
+import TagItem from "../organisms/items/TagItem";
+import TodoItem from "../organisms/items/TodoItem";
 
 export default function Kanban({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -23,7 +21,7 @@ export default function Kanban({ className = "" }) {
               {multiCtx.currentRepo.todos
                 .filter((x) => x.status === "open")
                 .map((x) => (
-                  <KanbanItem item={x} key={x.id} />
+                  <TodoItem item={x} key={x.id} />
                 ))}
             </div>
           </div>
@@ -33,7 +31,7 @@ export default function Kanban({ className = "" }) {
               {multiCtx.currentRepo.todos
                 .filter((x) => x.status === "active")
                 .map((x) => (
-                  <KanbanItem item={x} key={x.id} />
+                  <TodoItem item={x} key={x.id} />
                 ))}
             </div>
           </div>
@@ -45,12 +43,12 @@ export default function Kanban({ className = "" }) {
                 <Button
                   border={false}
                   size="sm"
-                  icon="x-lg"
+                  icon="eraser-fill"
                   text={`Clear Completed (${
                     multiCtx.currentRepo.todos.filter((x) => x.done).length
                   })`}
                   onClick={() => multiCtx.clearCompleted()}
-                  className="orange"
+                  className="red"
                 />
               )}
             </div>
@@ -58,7 +56,7 @@ export default function Kanban({ className = "" }) {
               {multiCtx.currentRepo.todos
                 .filter((x) => x.status === "completed")
                 .map((x) => (
-                  <KanbanItem item={x} key={x.id} />
+                  <TodoItem item={x} key={x.id} />
                 ))}
             </div>
           </div>

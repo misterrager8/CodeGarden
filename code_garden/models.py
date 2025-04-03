@@ -3,7 +3,6 @@ import json
 import shutil
 import subprocess
 
-import markdown
 import requests
 
 from code_garden.readme import Readme
@@ -111,7 +110,7 @@ class Repository(object):
     def diffs(self):
         return [
             DiffItem(
-                self.name, (self.path / i.strip().split()[1]).name, i.strip().split()[0]
+                self.name, (self.path / i.strip().split()[1]), i.strip().split()[0]
             )
             for i in self.run_command(["git", "status", "--short"]).split("\n")
             if i.strip()
@@ -192,6 +191,18 @@ class Repository(object):
         """
         subprocess.run(["git", "clone", url], cwd=config.HOME_DIR)
 
+    @classmethod
+    def config(cls):
+        return [
+            i
+            for i in subprocess.run(
+                ["git", "config", "--list"],
+                cwd=config.HOME_DIR,
+                text=True,
+                capture_output=True,
+            ).stdout.split("\n")
+        ]
+
     def delete(self):
         """Delete this Repository."""
         shutil.rmtree(self.path)
@@ -262,10 +273,12 @@ class Repository(object):
             )
             todo_.add()
 
-    def merge(self, parent_branch, child_branch, merge_msg):
+    def merge(self, parent_branch, child_branch, merge_msg, delete_head=False):
         self.run_command(["git", "checkout", parent_branch])
         self.run_command(["git", "merge", "--squash", child_branch])
         self.run_command(["git", "commit", "-m", merge_msg])
+        if delete_head:
+            self.run_command(["git", "branch", "-D", child_branch])
 
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
@@ -371,14 +384,10 @@ class DiffItem(object):
         name (str): name of this file.
     """
 
-    def __init__(self, repository, name, type_):
+    def __init__(self, repository, path, type_):
         self.repository = repository
-        self.name = name
+        self.path = path
         self.type_ = type_
-
-    @property
-    def path(self):
-        return Repository(self.repository).path / self.name
 
     @property
     def color(self):
@@ -397,11 +406,14 @@ class DiffItem(object):
             ["git", "checkout", "HEAD", "--", str(self.path)]
         )
 
+    def get_diff(self):
+        return Repository(self.repository).run_command(["git", "diff", self.path])
+
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""
         return dict(
             repository=self.repository,
-            name=self.name,
+            name=self.path.name,
             path=str(self.path),
             type_=str(self.type_),
             color=self.color,

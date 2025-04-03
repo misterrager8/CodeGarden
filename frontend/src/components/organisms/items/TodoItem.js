@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { MultiContext } from "../../MultiContext";
-import InputGroup from "../molecules/InputGroup";
-import ButtonGroup from "../molecules/ButtonGroup";
-import Dropdown from "../molecules/Dropdown";
-import Input from "../atoms/Input";
-import Button from "../atoms/Button";
-import { tags } from "../../util";
-import Icon from "../atoms/Icon";
+import { MultiContext } from "../../../MultiContext";
+import InputGroup from "../../molecules/InputGroup";
+import ButtonGroup from "../../molecules/ButtonGroup";
+import Dropdown from "../../molecules/Dropdown";
+import Input from "../../atoms/Input";
+import Button from "../../atoms/Button";
+import Icon from "../../atoms/Icon";
 
 export default function TodoItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -16,6 +15,7 @@ export default function TodoItem({ item, className = "" }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
 
   const onChangeName = (e) => setName(e.target.value);
@@ -25,6 +25,12 @@ export default function TodoItem({ item, className = "" }) {
     setName(item.name);
     setDescription(item.description || "");
   }, []);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`(${item.tag}) ${item.name}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1000);
+  };
 
   return (
     <form
@@ -55,15 +61,7 @@ export default function TodoItem({ item, className = "" }) {
           value={name}
           onChange={onChangeName}
         />
-        <Button
-          // title="See detailed description of this TODO."
-          className={showDescription ? "" : " border-0"}
-          onClick={() => setShowDescription(!showDescription)}
-          icon={
-            "file-earmark" + (description?.length > 0 ? "-fill" : "")
-          }></Button>
         <Dropdown
-          // className="btn-group btn-group-sm"
           target="edit-tags"
           classNameBtn="btn border-0"
           icon="tag-fill"
@@ -93,16 +91,13 @@ export default function TodoItem({ item, className = "" }) {
           <>
             <Button
               icon="file-earmark-diff"
-              // title="Commit changes using this TODO as commit message."
               onClick={() => setCommitting(!committing)}
               className="border-0"
             />
             {committing && (
               <Button
                 icon="question-lg"
-                // title="Commit changes using this TODO as commit message."
                 onClick={() => multiCtx.commitTodo(item.id)}
-                className="border-0"
               />
             )}
           </>
@@ -133,9 +128,18 @@ export default function TodoItem({ item, className = "" }) {
             "bi bi-pin-angle" + (item.status === "active" ? "-fill" : "")
           }></Button>
         <Button
-          icon="copy"
+          className={
+            (showDescription ? "" : " border-0") +
+            (description?.length > 0 ? " purple" : "")
+          }
+          onClick={() => setShowDescription(!showDescription)}
+          icon={
+            "chat-left-text" + (description?.length > 0 ? "-fill" : "")
+          }></Button>
+        <Button
+          icon={copied ? "hand-thumbs-up-fill" : "copy"}
           border={false}
-          onClick={() => multiCtx.duplicateTodo(item.id)}
+          onClick={() => copyToClipboard()}
         />
         <Button
           className="red"

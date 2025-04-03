@@ -2,12 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import Input from "../../atoms/Input";
 import Dropdown from "../../molecules/Dropdown";
 import Button from "../../atoms/Button";
-import { tags } from "../../../util";
 import { MultiContext } from "../../../MultiContext";
 import { SectionContext } from "../../templates/Display";
-import NewTag from "./NewTag";
-import ButtonGroup from "../../molecules/ButtonGroup";
-import TagItem from "../TagItem";
 import Icon from "../../atoms/Icon";
 
 export const TagContext = createContext();
@@ -43,9 +39,7 @@ export default function NewTodo({ className = "" }) {
           border={false}
           className="flex-grow-0"
           icon={
-            sxnCtx.isCurrentSection(label)
-              ? "fullscreen-exit"
-              : "arrows-fullscreen"
+            sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
           }
           onClick={() =>
             sxnCtx.setCurrentSection(
@@ -75,12 +69,12 @@ export default function NewTodo({ className = "" }) {
             <Button
               border={false}
               size="sm"
-              icon="x-lg"
+              icon="eraser-fill"
               text={`${
                 multiCtx.currentRepo.todos.filter((x) => x.done).length
               } Done`}
               onClick={() => multiCtx.clearCompleted()}
-              className="orange"
+              className="red"
             />
           )}
       </form>

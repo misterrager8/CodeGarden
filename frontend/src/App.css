@@ -118,7 +118,6 @@ hr {
 .non-btn,
 .non-btn:hover {
   border: 0;
-  /* cursor: unset; */
   background-color: var(--primary-bg);
   color: var(--btn-color);
 }
@@ -207,21 +206,7 @@ hr {
   border-color: transparent;
 }
 
-.kanban {
-  border-bottom: 0.5px solid var(--border-color);
-}
-
 .dropdown-item:hover .btn {
-  color: var(--btn-hover-text);
-}
-
-.branch.active,
-.branch.active .non-btn {
-  background-color: var(--btn-color);
-  color: var(--btn-hover-text);
-}
-
-.branch.active .btn {
   color: var(--btn-hover-text);
 }
 
@@ -231,4 +216,91 @@ hr {
 
 .border-bottom {
   border-bottom: 0.5px solid var(--border-color) !important;
+}
+
+.muted-label-center {
+  margin: auto;
+  opacity: 50%;
+  font-size: small;
+}
+
+.diff-content {
+  font-family: monospace;
+  font-size: small;
+  white-space: pre-wrap;
+  height: 78vh;
+  overflow-y: auto;
+  border-bottom: 0.5px solid var(--border-color) !important;
+}
+
+.branch-item {
+  border-bottom: 0.5px solid var(--border-color);
+  cursor: pointer;
+  padding: 1px 20px;
+  margin-bottom: 3px;
+}
+
+.branch-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+  border-radius: 7.5px;
+}
+
+.branch-item.active .btn {
+  color: var(--btn-hover-text);
+}
+
+.diff-item {
+  cursor: pointer;
+  border-bottom: 0.5px solid var(--border-color);
+  padding: 1px 12px;
+  margin-bottom: 2px;
+}
+
+.diff-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+  border-radius: 7.5px;
+}
+
+.diff-item.active .btn {
+  color: var(--btn-hover-text);
+}
+
+.ignore-item {
+  border-bottom: 0.5px solid var(--border-color);
+}
+
+.kanban-item {
+  border-bottom: 0.5px solid var(--border-color);
+}
+
+.log-item {
+  border-bottom: 0.5px solid var(--border-color);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.log-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+  border-radius: 7.5px;
+}
+
+.log-item.active .btn {
+  color: var(--btn-hover-text);
+}
+
+.stash-item {
+  border-bottom: 0.5px solid var(--border-color);
+  padding: 5px 8px;
+}
+
+.tag-item {
+  border-bottom: 0.5px solid var(--border-color);
+  margin-bottom: 2px;
+}
+
+.todo-item {
+  border-bottom: 0.5px solid var(--border-color);
 }

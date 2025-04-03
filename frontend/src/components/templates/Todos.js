@@ -1,9 +1,8 @@
 import { useContext } from "react";
 import { MultiContext } from "../../MultiContext";
-import TodoItem from "../organisms/TodoItem";
+import TodoItem from "../organisms/items/TodoItem";
 import NewTodo from "../organisms/forms/NewTodo";
 import { SectionContext } from "./Display";
-import Button from "../atoms/Button";
 import Kanban from "./Kanban";
 
 export default function Todos({ className = "" }) {
@@ -26,8 +25,8 @@ export default function Todos({ className = "" }) {
               ))}
             </div>
           ) : (
-            <div className="d-flex h-100">
-              <span className="m-auto small opacity-50">No Todos</span>
+            <div style={{ height: "37vh", display: "flex" }}>
+              <span className="muted-label-center">No TODOs</span>
             </div>
           )}
         </div>

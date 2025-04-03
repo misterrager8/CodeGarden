@@ -112,6 +112,11 @@ def clone_repository():
     return {"status": "done"}
 
 
+@current_app.post("/git_config")
+def git_config():
+    return {"config": Repository.config()}
+
+
 @current_app.post("/edit_readme")
 def edit_readme():
     repository_ = Repository(request.json.get("name"))
@@ -203,6 +208,7 @@ def merge_branch():
         request.json.get("parentBranch"),
         request.json.get("childBranch"),
         request.json.get("msg"),
+        request.json.get("deleteHead"),
     )
 
     return {"status": "done", "repo": repo_.to_dict()}
@@ -219,28 +225,6 @@ def create_todo():
         request.json.get("repository"),
     )
     todo_.add()
-    repo_ = Repository(request.json.get("repository"))
-
-    return {
-        "status": "done",
-        "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
-    }
-
-
-@current_app.post("/duplicate_todo")
-def duplicate_todo():
-    og_todo = Todo.get(request.json.get("id"))
-    todo_ = Todo(
-        og_todo.title,
-        og_todo.description,
-        og_todo.tag,
-        og_todo.date_added,
-        og_todo.status if og_todo.status != "completed" else "open",
-        og_todo.repo,
-    )
-    todo_.add()
-
     repo_ = Repository(request.json.get("repository"))
 
     return {
@@ -374,15 +358,24 @@ def delete_ignore():
 
 @current_app.post("/reset_file")
 def reset_file():
-    diff_ = DiffItem(request.json.get("repository"), request.json.get("name"), "")
-    diff_.reset()
-
     repo_ = Repository(request.json.get("repository"))
+    diff_ = DiffItem(repo_.name, repo_.path / request.json.get("path"), "")
+    diff_.reset()
 
     return {
         "status": "done",
         "repo": repo_.to_dict(),
         "repos": [i.to_dict() for i in Repository.all()],
+    }
+
+
+@current_app.post("/get_diff")
+def get_diff():
+    repo_ = Repository(request.json.get("repository"))
+    diff_ = DiffItem(repo_.name, request.json.get("path"), "")
+
+    return {
+        "details": diff_.get_diff(),
     }
 
 

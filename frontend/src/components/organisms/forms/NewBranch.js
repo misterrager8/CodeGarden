@@ -26,9 +26,7 @@ export default function NewBranch({ className = "" }) {
       <Button
         border={false}
         className="flex-grow-0"
-        icon={
-          sxnCtx.isCurrentSection("branches") ? "fullscreen-exit" : "fullscreen"
-        }
+        icon={sxnCtx.isCurrentSection("branches") ? "arrow-left" : "fullscreen"}
         onClick={() =>
           sxnCtx.setCurrentSection(
             sxnCtx.isCurrentSection("branches") ? null : "branches"
