@@ -28,20 +28,17 @@ export default function Stashes({ className = "" }) {
         }
       />
       <>
-        {/* {multiCtx.currentRepo?.stashes.length > 0 ? (
+        {multiCtx.currentRepo?.stashes.length > 0 ? (
           <div style={{ height: "35vh", overflowY: "auto" }}>
-            {multiCtx.currentRepo?.stashes.map((x) => (
-              <StashItem key={uuidv4()} item={x} />
+            {multiCtx.currentRepo?.stashes.map((x, idx) => (
+              <StashItem key={uuidv4()} id={idx} item={x} />
             ))}
           </div>
         ) : (
           <div className="d-flex" style={{ height: "35vh" }}>
             <span className="muted-label-center">No Stashes</span>
           </div>
-        )} */}
-        <div className="d-flex" style={{ height: "35vh" }}>
-          <span className="muted-label-center">No Stashes</span>
-        </div>
+        )}
       </>
     </div>
   );

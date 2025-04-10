@@ -6,6 +6,7 @@ import Commit from "../../organisms/forms/Commit";
 import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "../Display";
 import { api } from "../../../util";
+import NewStash from "../../organisms/forms/NewStash";
 
 export const DiffContext = createContext();
 
@@ -13,6 +14,7 @@ export default function Changes({ className = "" }) {
   const multiCtx = useContext(MultiContext);
   const sxnCtx = useContext(SectionContext);
   const [resetting, setResetting] = useState(false);
+  const [stashing, setStashing] = useState(false);
 
   const [selectedDiff, setSelectedDiff] = useState(null);
   const [diffDetails, setDiffDetails] = useState(null);
@@ -56,12 +58,19 @@ export default function Changes({ className = "" }) {
             className={
               "col" + (sxnCtx.isCurrentSection(label) ? "-3 border-end" : "")
             }>
-            <Commit className="mb-2" />
+            <div className="mb-2">{!stashing ? <Commit /> : <NewStash />}</div>
             <div className="text-center mb-2">
               <Button
                 text="Amend"
                 icon="vector-pen"
                 onClick={() => multiCtx.amendCommit()}
+                className="border-0"
+              />
+              <Button
+                onClick={() => setStashing(!stashing)}
+                text="Stash"
+                icon="archive"
+                active={stashing}
                 className="border-0"
               />
               <Button

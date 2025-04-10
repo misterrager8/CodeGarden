@@ -5,9 +5,11 @@ import { TagContext } from "../forms/NewTodo";
 import ButtonGroup from "../../molecules/ButtonGroup";
 import Icon from "../../atoms/Icon";
 import Input from "../../atoms/Input";
+import { SortContext } from "../../templates/Kanban";
 
 export default function TagItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
+  const sortCtx = useContext(SortContext);
   const tagCtx = useContext(TagContext);
   const [deleting, setDeleting] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -36,7 +38,12 @@ export default function TagItem({ item, className = "" }) {
     ).length;
 
   return (
-    <div className={className + " tag-item"}>
+    <div
+      className={
+        className +
+        " tag-item" +
+        (sortCtx.filter === item.label ? " active" : "")
+      }>
       <form className="input-group" onSubmit={(e) => editTag(e)}>
         {saved && (
           <Button className="non-btn green" icon="floppy2" border={false} />
@@ -44,6 +51,11 @@ export default function TagItem({ item, className = "" }) {
         <Input className="border-0" onChange={onChangeName} value={name} />
         {filteredTodos() > 0 && (
           <Button
+            onClick={() =>
+              sortCtx.setFilter(
+                item.label === sortCtx.filter ? null : item.label
+              )
+            }
             icon="tags-fill"
             border={false}
             text={filteredTodos().toString()}

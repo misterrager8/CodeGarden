@@ -233,9 +233,17 @@ class Repository(object):
         """Push to remote branch."""
         return self.run_command(["git", "push", "origin"])
 
-    def stash(self):
+    def stash(self, name):
         """Stash changes."""
-        self.run_command(["git", "stash", "push", "-u"])
+        self.run_command(
+            [
+                "git",
+                "stash",
+                "push",
+                "-um",
+                name or datetime.datetime.now().strftime("%B %-d, %Y"),
+            ]
+        ),
 
     def unstash(self, id_):
         """Unstash changes."""
@@ -371,6 +379,7 @@ class LogItem(object):
             repository=self.repository,
             name=self.name,
             timestamp=self.timestamp.strftime("%B %-d, %Y @ %-I:%M %p"),
+            iso_timestamp=self.timestamp.strftime("%Y-%m-%dT%H:%M:00Z"),
             abbrev_hash=self.abbrev_hash,
             author=self.author,
         )

@@ -120,6 +120,7 @@ hr {
   border: 0;
   background-color: var(--primary-bg);
   color: var(--btn-color);
+  cursor: unset;
 }
 
 .red {
@@ -224,6 +225,11 @@ hr {
   font-size: small;
 }
 
+.muted-label {
+  opacity: 50%;
+  font-size: small;
+}
+
 .diff-content {
   font-family: monospace;
   font-size: small;
@@ -299,8 +305,30 @@ hr {
 .tag-item {
   border-bottom: 0.5px solid var(--border-color);
   margin-bottom: 2px;
+  padding: 1px 14px;
+}
+
+.tag-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+  border-radius: 7.5px;
+}
+
+.tag-item.active input {
+  color: var(--btn-hover-text);
+}
+
+.tag-item.active .btn {
+  color: var(--btn-hover-text);
 }
 
 .todo-item {
   border-bottom: 0.5px solid var(--border-color);
+}
+
+.kanban-heading {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: lighter;
 }

@@ -26,6 +26,14 @@ export default function Branches({ className = "" }) {
   const [mergeMsg, setMergeMsg] = useState("");
   const onChangeMergeMsg = (e) => setMergeMsg(e.target.value);
 
+  const [sort, setSort] = useState("newest");
+
+  const sortOptions = [
+    { label: "Newest", value: "newest" },
+    { label: "Oldest", value: "oldest" },
+    { label: "Name", value: "name" },
+  ];
+
   const merge = () => {
     multiCtx.setLoading(true);
     api(
@@ -61,14 +69,33 @@ export default function Branches({ className = "" }) {
   }, [selectedBranch, multiCtx.currentRepo]);
 
   useEffect(() => {
-    if (comparison) {
-      let msg = "";
-      for (let x = 0; x < comparison.length; x++) {
-        msg += `- ${comparison[x].name}\n`;
-      }
-      setMergeMsg(msg);
+    comparison && sortCommits();
+  }, [sort, comparison, multiCtx.currentRepo]);
+
+  const sortCommits = () => {
+    let msg = "";
+    let comparison_;
+    if (sort === "newest") {
+      comparison_ = comparison.sort(
+        (x, y) => new Date(y.iso_timestamp) - new Date(x.iso_timestamp)
+      );
+    } else if (sort === "oldest") {
+      comparison_ = comparison.sort(
+        (x, y) => new Date(x.iso_timestamp) - new Date(y.iso_timestamp)
+      );
+    } else {
+      comparison_ = comparison.map((x) => x.name).sort();
     }
-  }, [comparison, multiCtx.currentRepo]);
+
+    for (let x = 0; x < comparison.length; x++) {
+      msg += `- ${
+        ["newest", "oldest"].includes(sort)
+          ? comparison_[x].name
+          : comparison_[x]
+      }\n`;
+    }
+    setMergeMsg(msg);
+  };
 
   const contextValue = {
     selectedBranch: selectedBranch,
@@ -112,6 +139,24 @@ export default function Branches({ className = "" }) {
                     text="Squash + Merge"
                   />
                   {merging && (
+                    <>
+                      <Button
+                        icon="filter-right"
+                        className="non-btn"
+                        text="Sort By"
+                      />
+                      {sortOptions.map((x) => (
+                        <Button
+                          active={x.value === sort}
+                          onClick={() => setSort(x.value)}
+                          text={x.label}
+                        />
+                      ))}
+                    </>
+                  )}
+                </ButtonGroup>
+                {merging && (
+                  <ButtonGroup>
                     <Button
                       active={deleteHead}
                       className="red"
@@ -121,16 +166,14 @@ export default function Branches({ className = "" }) {
                       }${!deleteHead ? "?" : ""}`}
                       onClick={() => setDeleteHead(!deleteHead)}
                     />
-                  )}
-                </ButtonGroup>
-                {merging && (
-                  <Button
-                    className="green"
-                    icon="chevron-double-right"
-                    text="Confirm Merge"
-                    border={false}
-                    onClick={() => merge()}
-                  />
+                    <Button
+                      className="green"
+                      icon="chevron-double-right"
+                      text="Confirm Merge"
+                      border={false}
+                      onClick={() => merge()}
+                    />
+                  </ButtonGroup>
                 )}
               </div>
               {!merging ? (
