@@ -384,6 +384,24 @@ def reset_file():
     }
 
 
+@current_app.post("/toggle_stage")
+def toggle_stage():
+    repo_ = Repository(request.json.get("repository"))
+    diff_ = DiffItem(
+        repo_.name,
+        repo_.path / request.json.get("path"),
+        request.json.get("type_"),
+        request.json.get("staged"),
+    )
+    diff_.toggle_stage()
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
+
+
 @current_app.post("/get_diff")
 def get_diff():
     repo_ = Repository(request.json.get("repository"))
@@ -398,6 +416,30 @@ def get_diff():
 def reset_all():
     repo_ = Repository(request.json.get("name"))
     repo_.reset_all()
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
+
+
+@current_app.post("/unstage_all")
+def unstage_all():
+    repo_ = Repository(request.json.get("name"))
+    repo_.unstage_all()
+
+    return {
+        "status": "done",
+        "repo": repo_.to_dict(),
+        "repos": [i.to_dict() for i in Repository.all()],
+    }
+
+
+@current_app.post("/stage_all")
+def stage_all():
+    repo_ = Repository(request.json.get("name"))
+    repo_.stage_all()
 
     return {
         "status": "done",

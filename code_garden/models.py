@@ -3,6 +3,7 @@ import json
 import shutil
 import subprocess
 
+import click
 import requests
 
 from code_garden.readme import Readme
@@ -108,13 +109,30 @@ class Repository(object):
 
     @property
     def diffs(self):
-        return [
-            DiffItem(
-                self.name, (self.path / i.strip().split()[1]), i.strip().split()[0]
-            )
-            for i in self.run_command(["git", "status", "--short"]).split("\n")
-            if i.strip()
-        ]
+        diffs = []
+        for i in self.run_command(["git", "status", "--short"]).split("\n"):
+            if i.strip():
+                path_ = self.path / i[3:].replace('"', "")
+                prefix = i[:2]
+                type_ = ""
+                staged = False
+
+                staged = prefix[0] != " " or prefix[0] != "?"
+                if prefix[0] == " " or prefix[0] == "?":
+                    staged = False
+                else:
+                    staged = True
+
+                if prefix[1] == "M":
+                    type_ = "modified"
+                elif prefix[1] == "D":
+                    type_ = "deleted"
+                elif prefix[1] == "?" or prefix[1] == "A":
+                    type_ = "added"
+
+                diffs.append(DiffItem(self.name, path_, type_, staged))
+
+        return diffs
 
     @property
     def readme(self):
@@ -216,13 +234,20 @@ class Repository(object):
         open((self.path / "README.md"), "w").write(content)
 
     def commit(self, msg: str):
-        """Commit all local changes to git.
+        """Commit all staged changes to git.
 
         Args:
             msg (str): Commit message.
         """
+        self.run_command(["git", "commit", "-m", msg])
+
+    def stage_all(self):
+        """Stage all files in the working directory."""
         self.run_command(["git", "add", "-A"])
-        self.run_command(["git", "commit", "-am", msg])
+
+    def unstage_all(self):
+        """Unstage all files in the working directory."""
+        self.run_command(["git", "reset"])
 
     def reset_all(self):
         """Discard all local changes, reset Repository to most recent commit."""
@@ -250,7 +275,7 @@ class Repository(object):
         self.run_command(["git", "stash", "pop", str(id_)])
 
     def drop_stash(self, id_):
-        """Unstash changes."""
+        """Delete stash."""
         self.run_command(["git", "stash", "drop", str(id_)])
 
     def pull(self):
@@ -282,6 +307,14 @@ class Repository(object):
             todo_.add()
 
     def merge(self, parent_branch, child_branch, merge_msg, delete_head=False):
+        """Merge two branches.
+
+        Args:
+            parent_branch (str): Branch receiving the merge.
+            child_branch (str): Branch merging into parent.
+            merge_msg (str): Commit message.
+            delete_head (bool): Delete child branch after merge
+        """
         self.run_command(["git", "checkout", parent_branch])
         self.run_command(["git", "merge", "--squash", child_branch])
         self.run_command(["git", "commit", "-m", merge_msg])
@@ -393,19 +426,20 @@ class DiffItem(object):
         name (str): name of this file.
     """
 
-    def __init__(self, repository, path, type_):
+    def __init__(self, repository, path, type_, staged=False):
         self.repository = repository
         self.path = path
         self.type_ = type_
+        self.staged = staged
 
     @property
     def color(self):
+        """Color representation of diff's current status"""
         choices = {
-            "M": "#bf5408",
-            "A": "green",
-            "D": "red",
-            "R": "yellow",
-            "?": "green",
+            "modified": "#bf5408",
+            "added": "green",
+            "deleted": "red",
+            "added": "green",
         }
         return choices.get(self.type_) or "green"
 
@@ -415,7 +449,14 @@ class DiffItem(object):
             ["git", "checkout", "HEAD", "--", str(self.path)]
         )
 
+    def toggle_stage(self):
+        """If file is staged, unstage it, vice versa."""
+        stage = ["git", "add", str(self.path)]
+        unstage = ["git", "reset", str(self.path)]
+        Repository(self.repository).run_command(unstage if self.staged else stage)
+
     def get_diff(self):
+        """See specifid changes in a file."""
         return Repository(self.repository).run_command(["git", "diff", self.path])
 
     def to_dict(self):
@@ -426,6 +467,7 @@ class DiffItem(object):
             path=str(self.path),
             type_=str(self.type_),
             color=self.color,
+            staged=self.staged,
         )
 
 

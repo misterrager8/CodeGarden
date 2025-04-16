@@ -1,3 +1,5 @@
+"""Main CLI"""
+
 import pprint
 import webbrowser
 

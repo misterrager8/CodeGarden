@@ -26,11 +26,21 @@ export default function DiffItem({ item, className = "" }) {
               diffCtx.selectedDiff === item ? null : item
             );
         }}>
-        <i className="bi bi-record me-2" style={{ color: item.color }}></i>
+        <i
+          className={"me-2 bi bi-record" + (item.staged ? "-fill" : "")}
+          style={{ color: item.color }}></i>
         {item.name}
       </span>
 
       <ButtonGroup size="sm">
+        <Button
+          icon={(item.staged ? "dash" : "plus") + "-lg"}
+          border={false}
+          className={item.staged ? "orange" : "green"}
+          onClick={() =>
+            multiCtx.toggleStage(item.path, item.type_, item.staged)
+          }
+        />
         {deleting && (
           <Button
             icon="question-lg"

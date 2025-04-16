@@ -238,10 +238,58 @@ export default function MultiProvider({ children }) {
     );
   };
 
+  const toggleStage = (path, type_, staged) => {
+    setLoading(true);
+    api(
+      "toggle_stage",
+      {
+        path: path,
+        type_: type_,
+        staged: staged,
+        repository: currentRepo.name,
+      },
+      (data) => {
+        setCurrentRepo(data.repo);
+        setRepos(data.repos);
+        setLoading(false);
+      }
+    );
+  };
+
   const resetAll = () => {
     setLoading(true);
     api(
       "reset_all",
+      {
+        name: currentRepo.name,
+      },
+      (data) => {
+        setCurrentRepo(data.repo);
+        setRepos(data.repos);
+        setLoading(false);
+      }
+    );
+  };
+
+  const stageAll = () => {
+    setLoading(true);
+    api(
+      "stage_all",
+      {
+        name: currentRepo.name,
+      },
+      (data) => {
+        setCurrentRepo(data.repo);
+        setRepos(data.repos);
+        setLoading(false);
+      }
+    );
+  };
+
+  const unstageAll = () => {
+    setLoading(true);
+    api(
+      "unstage_all",
       {
         name: currentRepo.name,
       },
@@ -368,6 +416,10 @@ export default function MultiProvider({ children }) {
 
     push: push,
     pull: pull,
+
+    toggleStage: toggleStage,
+    unstageAll: unstageAll,
+    stageAll: stageAll,
   };
 
   return (

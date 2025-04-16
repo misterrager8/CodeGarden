@@ -1,3 +1,5 @@
+"""Full README fnality."""
+
 import pathlib
 
 import click

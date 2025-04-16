@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "../Display";
 import { api } from "../../../util";
 import NewStash from "../../organisms/forms/NewStash";
+import Icon from "../../atoms/Icon";
 
 export const DiffContext = createContext();
 
@@ -15,6 +16,9 @@ export default function Changes({ className = "" }) {
   const sxnCtx = useContext(SectionContext);
   const [resetting, setResetting] = useState(false);
   const [stashing, setStashing] = useState(false);
+
+  const [stagedDiffs, setStagedDiffs] = useState([]);
+  const [unstagedDiffs, setUnstagedDiffs] = useState([]);
 
   const [selectedDiff, setSelectedDiff] = useState(null);
   const [diffDetails, setDiffDetails] = useState(null);
@@ -32,6 +36,11 @@ export default function Changes({ className = "" }) {
   useEffect(() => {
     selectedDiff ? getDiff() : setDiffDetails(null);
   }, [selectedDiff]);
+
+  useEffect(() => {
+    setUnstagedDiffs(multiCtx.currentRepo?.diffs.filter((x) => !x.staged));
+    setStagedDiffs(multiCtx.currentRepo?.diffs.filter((x) => x.staged));
+  }, [multiCtx.currentRepo]);
 
   const contextValue = {
     selectedDiff: selectedDiff,
@@ -95,9 +104,44 @@ export default function Changes({ className = "" }) {
                 overflowY: "auto",
               }}>
               <DiffContext.Provider value={contextValue}>
-                {multiCtx.currentRepo?.diffs.map((x) => (
-                  <DiffItem key={uuidv4()} item={x} />
-                ))}
+                {stagedDiffs.length > 0 && (
+                  <>
+                    <div className="muted-label mb-1">Staged</div>
+                    {stagedDiffs.map((x) => (
+                      <DiffItem key={uuidv4()} item={x} />
+                    ))}
+                    <div className="between mt-2">
+                      <div></div>
+                      <span
+                        onClick={() => multiCtx.unstageAll()}
+                        className="px-1 red"
+                        style={{ fontSize: ".7rem", cursor: "pointer" }}>
+                        <Icon className="me-1" name="dash-lg" />
+                        Unstage All
+                      </span>
+                    </div>
+                  </>
+                )}
+                {unstagedDiffs.length > 0 && (
+                  <>
+                    <div className="between my-1">
+                      <div className="muted-label">Unstaged</div>
+                    </div>
+                    {unstagedDiffs.map((x) => (
+                      <DiffItem key={uuidv4()} item={x} />
+                    ))}
+                    <div className="between mt-2">
+                      <div></div>
+                      <span
+                        onClick={() => multiCtx.stageAll()}
+                        className="px-1 green"
+                        style={{ fontSize: ".7rem", cursor: "pointer" }}>
+                        <Icon className="me-1" name="plus-lg" />
+                        Stage All
+                      </span>
+                    </div>
+                  </>
+                )}
               </DiffContext.Provider>
             </div>
           </div>

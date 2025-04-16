@@ -1,3 +1,5 @@
+"""API for command-line functions."""
+
 import datetime
 import subprocess
 from pathlib import Path

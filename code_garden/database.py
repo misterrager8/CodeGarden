@@ -1,3 +1,5 @@
+"""Database controller """
+
 import sqlite3
 
 from code_garden import config
