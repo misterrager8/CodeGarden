@@ -4,6 +4,7 @@ import LogItem from "../../organisms/items/LogItem";
 import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "../Display";
 import { api } from "../../../util";
+import HunkItem from "../../organisms/items/HunkItem";
 
 export const LogContext = createContext();
 
@@ -12,7 +13,9 @@ export default function History({ className = "" }) {
   const sxnCtx = useContext(SectionContext);
 
   const [selectedCommit, setSelectedCommit] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [commitDetails, setCommitDetails] = useState(null);
+  const [fileDetails, setFileDetails] = useState([]);
 
   const getCommit = () => {
     api(
@@ -25,8 +28,27 @@ export default function History({ className = "" }) {
     );
   };
 
+  const getFileAtCommit = (path) => {
+    api(
+      "get_file_at_commit",
+      {
+        name: multiCtx.currentRepo.name,
+        path: path,
+        abbrevHash: selectedCommit?.abbrev_hash,
+      },
+      (data) => {
+        setFileDetails(data.info);
+        setSelectedFile(path);
+      }
+    );
+  };
+
   useEffect(() => {
-    selectedCommit && getCommit();
+    if (selectedCommit) {
+      setFileDetails([]);
+      setSelectedFile(null);
+      getCommit();
+    }
   }, [selectedCommit]);
 
   const label = "changes-history";
@@ -56,14 +78,63 @@ export default function History({ className = "" }) {
       {sxnCtx.isCurrentSection(label) && (
         <div className="col-9">
           {selectedCommit ? (
-            <div
-              className="px-5 font-monospace small"
-              style={{
-                whiteSpace: "pre-wrap",
-                height: "78vh",
-                overflowY: "auto",
-              }}>
-              {commitDetails}
+            <div className="row">
+              <div className="col-3 border-end">
+                <div
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    height: "25vh",
+                    overflowY: "auto",
+                  }}
+                  className="fst-italic small">
+                  {commitDetails?.commitInfo}
+                </div>
+                <div
+                  className="small"
+                  style={{
+                    height: "53vh",
+                    overflowY: "auto",
+                  }}>
+                  <hr className="mb-4" />
+                  {commitDetails?.files.map((x) => (
+                    <div
+                      className={
+                        "file-item" + (selectedFile === x ? " active" : "")
+                      }
+                      onClick={() => {
+                        if (selectedFile !== x) {
+                          getFileAtCommit(x);
+                        } else {
+                          setSelectedFile(null);
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}>
+                      {x}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="col-9 diff-content">
+                {fileDetails.map((x) => (
+                  <div className="pb-4">
+                    {x.id}
+                    <HunkItem
+                      added={false}
+                      item={x.lines
+                        .filter((y) => !y.added)
+                        .map((z) => z.content)
+                        .join("\n")}
+                    />
+                    <HunkItem
+                      added={true}
+                      item={x.lines
+                        .filter((y) => y.added)
+                        .map((z) => z.content)
+                        .join("\n")}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="d-flex h-100">

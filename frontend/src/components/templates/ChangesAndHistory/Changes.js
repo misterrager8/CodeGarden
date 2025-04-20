@@ -8,6 +8,7 @@ import { SectionContext } from "../Display";
 import { api } from "../../../util";
 import NewStash from "../../organisms/forms/NewStash";
 import Icon from "../../atoms/Icon";
+import HunkItem from "../../organisms/items/HunkItem";
 
 export const DiffContext = createContext();
 
@@ -21,7 +22,7 @@ export default function Changes({ className = "" }) {
   const [unstagedDiffs, setUnstagedDiffs] = useState([]);
 
   const [selectedDiff, setSelectedDiff] = useState(null);
-  const [diffDetails, setDiffDetails] = useState(null);
+  const [diffDetails, setDiffDetails] = useState([]);
 
   const label = "changes-history";
 
@@ -34,7 +35,7 @@ export default function Changes({ className = "" }) {
   };
 
   useEffect(() => {
-    selectedDiff ? getDiff() : setDiffDetails(null);
+    selectedDiff ? getDiff() : setDiffDetails([]);
   }, [selectedDiff]);
 
   useEffect(() => {
@@ -148,7 +149,27 @@ export default function Changes({ className = "" }) {
           {sxnCtx.isCurrentSection(label) && (
             <div className="col-9">
               {selectedDiff ? (
-                <div className="px-5 diff-content">{diffDetails}</div>
+                <div className="px-5 diff-content">
+                  {diffDetails.map((x) => (
+                    <div className="pb-4">
+                      {x.id}
+                      <HunkItem
+                        added={false}
+                        item={x.lines
+                          .filter((y) => !y.added)
+                          .map((z) => z.content)
+                          .join("\n")}
+                      />
+                      <HunkItem
+                        added={true}
+                        item={x.lines
+                          .filter((y) => y.added)
+                          .map((z) => z.content)
+                          .join("\n")}
+                      />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="d-flex h-100">
                   <div className="muted-label-center">No Changes Selected</div>

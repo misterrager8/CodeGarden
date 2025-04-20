@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 import shutil
 import subprocess
 
@@ -76,7 +77,7 @@ class Repository(object):
         _ = []
         try:
             for i in self.run_command(
-                ["git", "log", "--oneline", "-20", "--pretty=format:%s\t%at\t%h\t%an"]
+                ["git", "log", "--oneline", "-1000", "--pretty=format:%s\t%at\t%h\t%an"]
             ).split("\n"):
                 if len(i.strip().split("\t")) == 2:
                     _.append(
@@ -110,7 +111,7 @@ class Repository(object):
     @property
     def diffs(self):
         diffs = []
-        for i in self.run_command(["git", "status", "--short"]).split("\n"):
+        for i in self.run_command(["git", "status", "-su"]).split("\n"):
             if i.strip():
                 path_ = self.path / i[3:].replace('"', "")
                 prefix = i[:2]
@@ -399,12 +400,17 @@ class LogItem(object):
     @classmethod
     def get(cls, repository, abbrev_hash):
         """Get more details about a specified commit."""
-        info = (
-            Repository(repository)
-            .run_command(["git", "show", "--stat", abbrev_hash])
-            .splitlines()[4:]
+        repo_ = Repository(repository)
+        commit_info = repo_.run_command(
+            ["git", "log", "-1", "--format=%B", abbrev_hash]
         )
-        return "\n".join(info)
+        files_ = repo_.run_command(
+            ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", abbrev_hash]
+        ).splitlines()
+        return {
+            "commitInfo": commit_info,
+            "files": files_,
+        }
 
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""
@@ -456,8 +462,32 @@ class DiffItem(object):
         Repository(self.repository).run_command(unstage if self.staged else stage)
 
     def get_diff(self):
-        """See specifid changes in a file."""
-        return Repository(self.repository).run_command(["git", "diff", self.path])
+        """See specific changes in a file."""
+        diff_ = (
+            Repository(self.repository)
+            .run_command(["git", "diff", "--unified=0", "--no-prefix", self.path])
+            .splitlines()
+        )
+        hunks = []
+        current_hunk = None
+
+        for line in diff_:
+            if line.startswith("@@"):
+                if current_hunk:
+                    hunks.append(current_hunk)
+                current_hunk = {
+                    "id": line,
+                    "lines": [],
+                }
+            elif re.match(r"^\+[^+]", line):
+                current_hunk["lines"].append({"added": True, "content": line[1:]})
+            elif re.match(r"^-[^-]", line):
+                current_hunk["lines"].append({"added": False, "content": line[1:]})
+
+        if current_hunk:
+            hunks.append(current_hunk)
+
+        return hunks
 
     def to_dict(self):
         """Get a dict representation of this object (for API use)."""

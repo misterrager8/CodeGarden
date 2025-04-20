@@ -1,5 +1,6 @@
 import datetime
 from pathlib import Path
+import re
 
 import click
 from flask import current_app, render_template, request, send_from_directory
@@ -63,6 +64,41 @@ def get_commit():
             request.json.get("name"), request.json.get("abbrev_hash")
         )
     }
+
+
+@current_app.post("/get_file_at_commit")
+def get_file_at_commit():
+    repository_ = Repository(request.json.get("name"))
+    diff_ = repository_.run_command(
+        [
+            "git",
+            "show",
+            request.json.get("abbrevHash"),
+            "--",
+            request.json.get("path"),
+        ]
+    ).splitlines()
+
+    hunks = []
+    current_hunk = None
+
+    for line in diff_:
+        if line.startswith("@@"):
+            if current_hunk:
+                hunks.append(current_hunk)
+            current_hunk = {
+                "id": line,
+                "lines": [],
+            }
+        elif re.match(r"^\+[^+]", line):
+            current_hunk["lines"].append({"added": True, "content": line[1:]})
+        elif re.match(r"^-[^-]", line):
+            current_hunk["lines"].append({"added": False, "content": line[1:]})
+
+    if current_hunk:
+        hunks.append(current_hunk)
+
+    return {"info": hunks}
 
 
 @current_app.post("/create_repository")

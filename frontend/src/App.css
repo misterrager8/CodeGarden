@@ -236,7 +236,6 @@ hr {
   white-space: pre-wrap;
   height: 78vh;
   overflow-y: auto;
-  border-bottom: 0.5px solid var(--border-color) !important;
 }
 
 .branch-item {
@@ -247,6 +246,16 @@ hr {
 }
 
 .branch-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-text);
+  border-radius: 7.5px;
+}
+
+.file-item {
+  padding: 3px 20px;
+}
+
+.file-item.active {
   background-color: var(--btn-color);
   color: var(--btn-hover-text);
   border-radius: 7.5px;
