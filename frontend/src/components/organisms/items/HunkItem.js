@@ -6,7 +6,7 @@ export default function HunkItem({ item, added, className = "" }) {
   const [copied, setCopied] = useState(false);
 
   const copyHunk = () => {
-    navigator.clipboard.writeText(item);
+    navigator.clipboard.writeText(`${item}\n`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   };

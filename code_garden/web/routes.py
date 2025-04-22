@@ -48,7 +48,7 @@ def repositories():
 @current_app.post("/commit")
 def commit():
     repository_ = Repository(request.json.get("name"))
-    repository_.commit(request.json.get("msg"))
+    repository_.commit(request.json.get("msg"), request.json.get("addAll"))
 
     return {
         "status": "done",
@@ -68,6 +68,8 @@ def get_commit():
 
 @current_app.post("/get_file_at_commit")
 def get_file_at_commit():
+    "git show abc1234^:src/main.py"
+
     repository_ = Repository(request.json.get("name"))
     diff_ = repository_.run_command(
         [
@@ -78,6 +80,22 @@ def get_file_at_commit():
             request.json.get("path"),
         ]
     ).splitlines()
+
+    before = repository_.run_command(
+        [
+            "git",
+            "show",
+            f"{request.json.get("abbrevHash")}^:{request.json.get("path")}",
+        ]
+    )
+
+    after = repository_.run_command(
+        [
+            "git",
+            "show",
+            f"{request.json.get("abbrevHash")}:{request.json.get("path")}",
+        ]
+    )
 
     hunks = []
     current_hunk = None
@@ -98,7 +116,7 @@ def get_file_at_commit():
     if current_hunk:
         hunks.append(current_hunk)
 
-    return {"info": hunks}
+    return {"info": hunks, "before": before, "after": after}
 
 
 @current_app.post("/create_repository")
@@ -150,7 +168,7 @@ def clone_repository():
 
 @current_app.post("/git_config")
 def git_config():
-    return {"config": Repository.config()}
+    return {"config": Repository(request.json.get("name")).config()}
 
 
 @current_app.post("/edit_readme")
@@ -369,7 +387,8 @@ def commit_todo():
     todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
     todo_.edit()
     repo_.commit(
-        f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}"
+        f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}",
+        True,
     )
     repos = [i.to_dict() for i in Repository.all()]
 

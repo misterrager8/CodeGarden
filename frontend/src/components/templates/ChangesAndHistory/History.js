@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { SectionContext } from "../Display";
 import { api } from "../../../util";
 import HunkItem from "../../organisms/items/HunkItem";
+import ButtonGroup from "../../molecules/ButtonGroup";
+import Button from "../../atoms/Button";
 
 export const LogContext = createContext();
 
@@ -16,6 +18,10 @@ export default function History({ className = "" }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [commitDetails, setCommitDetails] = useState(null);
   const [fileDetails, setFileDetails] = useState([]);
+  const [mode, setMode] = useState("unified");
+
+  const [before, setBefore] = useState(null);
+  const [after, setAfter] = useState(null);
 
   const getCommit = () => {
     api(
@@ -28,17 +34,19 @@ export default function History({ className = "" }) {
     );
   };
 
-  const getFileAtCommit = (path) => {
+  const getFileAtCommit = (file) => {
     api(
       "get_file_at_commit",
       {
         name: multiCtx.currentRepo.name,
-        path: path,
+        path: file.path,
         abbrevHash: selectedCommit?.abbrev_hash,
       },
       (data) => {
         setFileDetails(data.info);
-        setSelectedFile(path);
+        setBefore(data.before);
+        setAfter(data.after);
+        setSelectedFile(file);
       }
     );
   };
@@ -78,62 +86,102 @@ export default function History({ className = "" }) {
       {sxnCtx.isCurrentSection(label) && (
         <div className="col-9">
           {selectedCommit ? (
-            <div className="row">
-              <div className="col-3 border-end">
-                <div
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    height: "25vh",
-                    overflowY: "auto",
-                  }}
-                  className="fst-italic small">
-                  {commitDetails?.commitInfo}
-                </div>
-                <div
-                  className="small"
-                  style={{
-                    height: "53vh",
-                    overflowY: "auto",
-                  }}>
-                  <hr className="mb-4" />
-                  {commitDetails?.files.map((x) => (
-                    <div
-                      className={
-                        "file-item" + (selectedFile === x ? " active" : "")
-                      }
-                      onClick={() => {
-                        if (selectedFile !== x) {
-                          getFileAtCommit(x);
-                        } else {
-                          setSelectedFile(null);
-                        }
-                      }}
-                      style={{ cursor: "pointer" }}>
-                      {x}
-                    </div>
-                  ))}
-                </div>
+            <div>
+              <div
+                style={{
+                  whiteSpace: "pre-wrap",
+                  height: "15vh",
+                  overflowY: "auto",
+                }}
+                className="fst-italic small border-bottom px-4">
+                {commitDetails?.commitInfo}
               </div>
-              <div className="col-9 diff-content">
-                {fileDetails.map((x) => (
-                  <div className="pb-4">
-                    {x.id}
-                    <HunkItem
-                      added={false}
-                      item={x.lines
-                        .filter((y) => !y.added)
-                        .map((z) => z.content)
-                        .join("\n")}
-                    />
-                    <HunkItem
-                      added={true}
-                      item={x.lines
-                        .filter((y) => y.added)
-                        .map((z) => z.content)
-                        .join("\n")}
-                    />
+              <div className="row">
+                <div
+                  className="col-3 border-end py-3"
+                  style={{ height: "55vh", overflowY: "auto" }}>
+                  <div className="small">
+                    {commitDetails?.files.map((x) => (
+                      <div
+                        className={
+                          "file-item" + (selectedFile === x ? " active" : "")
+                        }
+                        onClick={() => {
+                          if (selectedFile !== x) {
+                            getFileAtCommit(x);
+                          } else {
+                            setSelectedFile(null);
+                          }
+                        }}
+                        style={{ cursor: "pointer" }}>
+                        {x.name}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+                {selectedFile && (
+                  <div className="col-9 ">
+                    <ButtonGroup className="my-3">
+                      <Button
+                        active={mode === "before"}
+                        icon="rewind-fill"
+                        onClick={() => setMode("before")}
+                        text="Before"
+                      />
+                      <Button
+                        active={mode === "unified"}
+                        icon="circle"
+                        onClick={() => setMode("unified")}
+                        text="Unified"
+                      />
+                      <Button
+                        active={mode === "after"}
+                        icon="fast-forward-fill"
+                        onClick={() => setMode("after")}
+                        text="After"
+                      />
+                    </ButtonGroup>
+                    <div style={{ height: "50vh", overflowY: "auto" }}>
+                      {mode === "unified" ? (
+                        <div className="diff-content py-3">
+                          {fileDetails.map((x) => (
+                            <div className="pb-4">
+                              {x.id}
+                              <HunkItem
+                                added={false}
+                                item={x.lines
+                                  .filter((y) => !y.added)
+                                  .map((z) => z.content)
+                                  .join("\n")}
+                              />
+                              <HunkItem
+                                added={true}
+                                item={x.lines
+                                  .filter((y) => y.added)
+                                  .map((z) => z.content)
+                                  .join("\n")}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ) : mode === "before" ? (
+                        <div
+                          className="font-monospace small"
+                          style={{ whiteSpace: "pre-wrap" }}>
+                          {before}
+                        </div>
+                      ) : mode === "after" ? (
+                        <div
+                          className="font-monospace small"
+                          style={{ whiteSpace: "pre-wrap" }}>
+                          {after}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

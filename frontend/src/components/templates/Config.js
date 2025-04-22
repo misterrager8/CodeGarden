@@ -1,12 +1,16 @@
 import { api } from "../../util";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { MultiContext } from "../../MultiContext";
 
 export default function Config({ className = "" }) {
   const [config, setConfig] = useState([]);
+  const multiCtx = useContext(MultiContext);
 
   const getConfig = () => {
-    api("git_config", {}, (data) => setConfig(data.config));
+    api("git_config", { name: multiCtx.currentRepo?.name }, (data) =>
+      setConfig(data.config)
+    );
   };
 
   useEffect(() => {

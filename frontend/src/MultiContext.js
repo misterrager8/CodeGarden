@@ -131,14 +131,18 @@ export default function MultiProvider({ children }) {
     });
   };
 
-  const commit = (e, msg) => {
+  const commit = (e, msg, addAll) => {
     e.preventDefault();
     setLoading(true);
-    api("commit", { name: currentRepo.name, msg: msg }, (data) => {
-      setCurrentRepo(data.repo);
-      setRepos(data.repos);
-      setLoading(false);
-    });
+    api(
+      "commit",
+      { name: currentRepo.name, msg: msg, addAll: addAll },
+      (data) => {
+        setCurrentRepo(data.repo);
+        setRepos(data.repos);
+        setLoading(false);
+      }
+    );
   };
 
   const undoCommit = () => {

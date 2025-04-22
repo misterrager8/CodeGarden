@@ -166,7 +166,7 @@ export default function Nav({ className = "" }) {
           </ButtonGroup>
         )}
         <ButtonGroup>
-          <Button
+          {/* <Button
             active={sxnCtx.isCurrentSection("config")}
             onClick={() =>
               sxnCtx.setCurrentSection(
@@ -175,7 +175,7 @@ export default function Nav({ className = "" }) {
             }
             icon="gear"
             text="Settings"
-          />
+          /> */}
           <a
             href="https://github.com/misterrager8/CodeGarden"
             target="_blank"

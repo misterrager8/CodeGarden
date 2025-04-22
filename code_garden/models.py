@@ -1,5 +1,6 @@
 import datetime
 import json
+from pathlib import Path
 import re
 import shutil
 import subprocess
@@ -124,11 +125,11 @@ class Repository(object):
                 else:
                     staged = True
 
-                if prefix[1] == "M":
+                if prefix[1] == "M" or prefix[0] == "M":
                     type_ = "modified"
-                elif prefix[1] == "D":
+                elif prefix[1] == "D" or prefix[0] == "D":
                     type_ = "deleted"
-                elif prefix[1] == "?" or prefix[1] == "A":
+                elif prefix[1] == "?" or prefix[1] == "A" or prefix[0] == "A":
                     type_ = "added"
 
                 diffs.append(DiffItem(self.name, path_, type_, staged))
@@ -210,16 +211,12 @@ class Repository(object):
         """
         subprocess.run(["git", "clone", url], cwd=config.HOME_DIR)
 
-    @classmethod
-    def config(cls):
+    def config(self):
         return [
             i
-            for i in subprocess.run(
-                ["git", "config", "--list"],
-                cwd=config.HOME_DIR,
-                text=True,
-                capture_output=True,
-            ).stdout.split("\n")
+            for i in self.run_command(
+                ["git", "config", "--local", "--list"]
+            ).splitlines()
         ]
 
     def delete(self):
@@ -234,12 +231,14 @@ class Repository(object):
         """
         open((self.path / "README.md"), "w").write(content)
 
-    def commit(self, msg: str):
+    def commit(self, msg: str, add_all=False):
         """Commit all staged changes to git.
 
         Args:
             msg (str): Commit message.
         """
+        if add_all:
+            self.stage_all()
         self.run_command(["git", "commit", "-m", msg])
 
     def stage_all(self):
@@ -404,9 +403,17 @@ class LogItem(object):
         commit_info = repo_.run_command(
             ["git", "log", "-1", "--format=%B", abbrev_hash]
         )
-        files_ = repo_.run_command(
-            ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", abbrev_hash]
-        ).splitlines()
+
+        files_ = [
+            {
+                "path": i,
+                "name": (repo_.path / i).name,
+            }
+            for i in repo_.run_command(
+                ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", abbrev_hash]
+            ).splitlines()
+        ]
+
         return {
             "commitInfo": commit_info,
             "files": files_,
@@ -445,7 +452,6 @@ class DiffItem(object):
             "modified": "#bf5408",
             "added": "green",
             "deleted": "red",
-            "added": "green",
         }
         return choices.get(self.type_) or "green"
 
