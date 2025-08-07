@@ -5,7 +5,7 @@ import { TagContext } from "../forms/NewTodo";
 import ButtonGroup from "../../molecules/ButtonGroup";
 import Icon from "../../atoms/Icon";
 import Input from "../../atoms/Input";
-import { SortContext } from "../../templates/Kanban";
+import { SortContext } from "../../templates/Todos";
 
 export default function TagItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);

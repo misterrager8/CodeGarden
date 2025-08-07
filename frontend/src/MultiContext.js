@@ -8,6 +8,7 @@ export default function MultiProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [repos, setRepos] = useState([]);
   const [currentRepo, setCurrentRepo] = useState(null);
+  const [currentPage, setCurrentPage] = useState("repositories");
 
   const [tags, setTags] = useState(
     JSON.parse(localStorage.getItem("code-garden-tags")) ||
@@ -369,13 +370,14 @@ export default function MultiProvider({ children }) {
   };
 
   useEffect(() => {
-    getRepo(localStorage.getItem("code-garden-last-opened"), (data) =>
-      setCurrentRepo(data)
-    );
+    getRepo(localStorage.getItem("code-garden-last-opened"));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("code-garden-last-opened", currentRepo?.name);
+    getRepos();
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("code-garden-last-opened", currentRepo?.name);
   }, [currentRepo]);
 
@@ -424,6 +426,9 @@ export default function MultiProvider({ children }) {
     toggleStage: toggleStage,
     unstageAll: unstageAll,
     stageAll: stageAll,
+
+    currentPage: currentPage,
+    setCurrentPage: setCurrentPage,
   };
 
   return (

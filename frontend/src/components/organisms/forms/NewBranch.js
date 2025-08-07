@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
 import Input from "../../atoms/Input";
 import { MultiContext } from "../../../MultiContext";
-import { SectionContext } from "../../templates/Display";
+// import { SectionContext } from "../../templates/Display";
 import Button from "../../atoms/Button";
 import Dropdown from "../../molecules/Dropdown";
 
 export default function NewBranch({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const sxnCtx = useContext(SectionContext);
+  // const sxnCtx = useContext(SectionContext);
 
   const [name, setName] = useState("");
   const [prefix, setPrefix] = useState(null);
@@ -19,24 +19,13 @@ export default function NewBranch({ className = "" }) {
   return (
     <form
       className={
-        className +
-        " input-group input-group-sm" +
-        (sxnCtx.isCurrentSection("branches") ? " mt-3" : "")
+        className + " input-group input-group-sm"
+        // + (sxnCtx.isCurrentSection("branches") ? " mt-3" : "")
       }
       onSubmit={(e) => {
         multiCtx.addBranch(e, !prefix ? name : `${prefix}/${name}`);
         setName("");
       }}>
-      <Button
-        border={false}
-        className="flex-grow-0"
-        icon={sxnCtx.isCurrentSection("branches") ? "arrow-left" : "fullscreen"}
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection("branches") ? null : "branches"
-          )
-        }
-      />
       <Dropdown
         showCaret={!prefix}
         classNameBtn="border-0"

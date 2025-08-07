@@ -1,13 +1,11 @@
 import { useContext } from "react";
 import { MultiContext } from "../../../MultiContext";
 import Button from "../../atoms/Button";
-import { LogContext } from "../../templates/ChangesAndHistory/History";
-import { SectionContext } from "../../templates/Display";
+import { LogContext } from "../../templates/History";
 
 export default function LogItem({ item, id, className = "" }) {
   const multiCtx = useContext(MultiContext);
   const logCtx = useContext(LogContext);
-  const sxnCtx = useContext(SectionContext);
 
   return (
     <div
@@ -32,7 +30,6 @@ export default function LogItem({ item, id, className = "" }) {
             )}
             <span
               onClick={() => {
-                sxnCtx.isCurrentSection("changes-history") &&
                   logCtx.setSelectedCommit(
                     logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
                       ? null

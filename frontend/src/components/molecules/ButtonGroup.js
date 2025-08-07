@@ -1,8 +1,3 @@
-export default function ButtonGroup({ children, size = "sm", className = "" }) {
-  return (
-    <div
-      className={className + " btn-group" + (size ? ` btn-group-${size}` : "")}>
-      {children}
-    </div>
-  );
+export default function ButtonGroup({ children, className = "" }) {
+  return <div className={className + " btn-group"}>{children}</div>;
 }

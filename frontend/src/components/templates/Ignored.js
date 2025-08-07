@@ -3,12 +3,10 @@ import { MultiContext } from "../../MultiContext";
 import IgnoreItem from "../organisms/items/IgnoreItem";
 import NewIgnored from "../organisms/forms/NewIgnored";
 import { v4 as uuidv4 } from "uuid";
-import { SectionContext } from "./Display";
 
 export default function Ignored({ className = "" }) {
   const multiCtx = useContext(MultiContext);
 
-  const sxnCtx = useContext(SectionContext);
   const label = "ignored";
 
   return (
@@ -18,7 +16,7 @@ export default function Ignored({ className = "" }) {
         {multiCtx.currentRepo?.ignored.length > 0 ? (
           <div
             style={{
-              height: !sxnCtx.isCurrentSection(label) ? "35vh" : "70vh",
+              height: "70vh",
               overflowY: "auto",
             }}>
             {multiCtx.currentRepo?.ignored.map((x, idx) => (
@@ -28,7 +26,7 @@ export default function Ignored({ className = "" }) {
         ) : (
           <div
             style={{
-              height: !sxnCtx.isCurrentSection(label) ? "35vh" : "70vh",
+              height: "70vh",
               display: "flex",
             }}>
             <span className="muted-label-center">No Ignored</span>

@@ -2,13 +2,13 @@ import { useContext, useState } from "react";
 import { MultiContext } from "../../../MultiContext";
 import ButtonGroup from "../../molecules/ButtonGroup";
 import Button from "../../atoms/Button";
-import { SectionContext } from "../../templates/Display";
-import { DiffContext } from "../../templates/ChangesAndHistory/Changes";
+// import { SectionContext } from "../../templates/Display";
+import { DiffContext } from "../../templates/Changes";
 
 export default function DiffItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
   const [deleting, setDeleting] = useState(false);
-  const sxnCtx = useContext(SectionContext);
+  // const sxnCtx = useContext(SectionContext);
   const diffCtx = useContext(DiffContext);
 
   return (
@@ -21,10 +21,7 @@ export default function DiffItem({ item, className = "" }) {
       <span
         className="small py-1 flex-grow-1"
         onClick={() => {
-          sxnCtx.isCurrentSection("changes-history") &&
-            diffCtx.setSelectedDiff(
-              diffCtx.selectedDiff === item ? null : item
-            );
+          diffCtx.setSelectedDiff(diffCtx.selectedDiff === item ? null : item);
         }}>
         <i
           className={"me-2 bi bi-record" + (item.staged ? "-fill" : "")}

@@ -1,10 +1,3 @@
-export default function InputGroup({ size = "sm", children, className = "" }) {
-  return (
-    <div
-      className={
-        className + " input-group" + (size ? ` input-group-${size}` : "")
-      }>
-      {children}
-    </div>
-  );
+export default function InputGroup({ children, className = "" }) {
+  return <div className={className + " input-group"}>{children}</div>;
 }

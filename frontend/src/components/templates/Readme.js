@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../MultiContext";
 import markdownit from "markdown-it";
 import Button from "../atoms/Button";
-import { SectionContext } from "./Display";
 import ButtonGroup from "../molecules/ButtonGroup";
 
 export default function Readme({ className = "" }) {
@@ -17,7 +16,7 @@ export default function Readme({ className = "" }) {
     selected: "",
   });
 
-  const sxnCtx = useContext(SectionContext);
+  // const sxnCtx = useContext(SectionContext);
   const label = "readme";
 
   const formats = [
@@ -141,30 +140,9 @@ export default function Readme({ className = "" }) {
   }, [multiCtx.currentRepo]);
 
   return (
-    <div
-      className={className + (sxnCtx.isCurrentSection(label) ? " w-100" : "")}>
-      <div className={"mb-3" + (sxnCtx.isCurrentSection(label) ? " mt-3" : "")}>
-        <Button
-          border={false}
-          className="flex-grow-0 me-1"
-          icon={
-            sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
-          }
-          onClick={() =>
-            sxnCtx.setCurrentSection(
-              sxnCtx.isCurrentSection(label) ? null : label
-            )
-          }
-        />
-        {!sxnCtx.isCurrentSection(label) && (
-          <Button
-            className="me-1"
-            icon={mode === "write" ? "eye" : "pencil"}
-            text={mode === "write" ? "View" : "Edit"}
-            onClick={() => setMode(mode === "read" ? "write" : "read")}
-          />
-        )}
-        {(mode === "write" || sxnCtx.isCurrentSection(label)) && (
+    <div className={className + " w-100"}>
+      <div className={"mb-3" + " mt-3"}>
+        {mode === "write" && (
           <ButtonGroup>
             <Button
               onClick={() => {
@@ -185,42 +163,22 @@ export default function Readme({ className = "" }) {
           </ButtonGroup>
         )}
       </div>
-      {!sxnCtx.isCurrentSection(label) ? (
-        <div style={{ height: "79vh", overflowY: "auto" }}>
-          {mode === "read" ? (
-            <div
-              id="readme"
-              dangerouslySetInnerHTML={{
-                __html: markdownit({ html: true }).render(content),
-              }}></div>
-          ) : (
-            <textarea
-              id="editor"
-              onMouseUp={() => getSelection()}
-              rows={25}
-              onChange={onChangeContent}
-              value={content}
-              className="form-control h-100"></textarea>
-          )}
+      <div style={{ height: "79vh", display: "flex" }}>
+        <textarea
+          id="editor"
+          rows={25}
+          onMouseUp={() => getSelection()}
+          onChange={onChangeContent}
+          value={content}
+          className="form-control h-100 w-50 me-4"></textarea>
+        <div className="w-50 h-100 overflow-auto px-4">
+          <div
+            id="readme"
+            dangerouslySetInnerHTML={{
+              __html: markdownit({ html: true }).render(content),
+            }}></div>
         </div>
-      ) : (
-        <div style={{ height: "79vh", display: "flex" }}>
-          <textarea
-            id="editor"
-            rows={25}
-            onMouseUp={() => getSelection()}
-            onChange={onChangeContent}
-            value={content}
-            className="form-control h-100 w-50 me-4"></textarea>
-          <div className="w-50 h-100 overflow-auto px-4">
-            <div
-              id="readme"
-              dangerouslySetInnerHTML={{
-                __html: markdownit({ html: true }).render(content),
-              }}></div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -2,11 +2,11 @@ import { useContext, useState } from "react";
 import Input from "../../atoms/Input";
 import { MultiContext } from "../../../MultiContext";
 import Button from "../../atoms/Button";
-import { SectionContext } from "../../templates/Display";
+// import { SectionContext } from "../../templates/Display";
 
 export default function NewIgnored({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const sxnCtx = useContext(SectionContext);
+  // const sxnCtx = useContext(SectionContext);
   const label = "ignored";
 
   const [name, setName] = useState("");
@@ -20,18 +20,6 @@ export default function NewIgnored({ className = "" }) {
         multiCtx.addIgnore(e, name);
         setName("");
       }}>
-      <Button
-        border={false}
-        className="flex-grow-0"
-        icon={
-          sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
-        }
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection(label) ? null : label
-          )
-        }
-      />
       <Input
         required={true}
         value={name}

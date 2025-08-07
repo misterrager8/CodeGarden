@@ -1,20 +1,18 @@
-export default function Input({
+export default function Button({
   value,
   onChange,
-  required = false,
-  size = "sm",
   placeholder,
   type_ = "text",
   className = "",
+  size = "sm",
 }) {
   return (
     <input
-      required={required}
-      type={type_}
       autoComplete="off"
-      onChange={onChange}
       value={value}
+      onChange={onChange}
       placeholder={placeholder}
+      type={type_}
       className={
         className + " form-control" + (size ? ` form-control-${size}` : "")
       }

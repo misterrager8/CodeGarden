@@ -1,3 +1,3 @@
-export default function Badge({ className = "" }) {
-  return <div className={className}></div>;
+export default function Badge({ text, className = "" }) {
+  return <span className={className + " badge"}>{text}</span>;
 }
