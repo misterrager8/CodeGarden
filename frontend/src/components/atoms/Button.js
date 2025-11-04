@@ -21,7 +21,7 @@ export default function Button({
         (size ? ` btn-${size}` : "")
       }>
       {icon && <i className={(text ? "me-2" : "") + " bi bi-" + icon}></i>}
-      {text}
+      <span>{text}</span>
       {children}
     </button>
   );

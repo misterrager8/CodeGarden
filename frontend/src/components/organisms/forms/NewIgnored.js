@@ -20,18 +20,6 @@ export default function NewIgnored({ className = "" }) {
         multiCtx.addIgnore(e, name);
         setName("");
       }}>
-      <Button
-        border={false}
-        className="flex-grow-0"
-        icon={
-          sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
-        }
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection(label) ? null : label
-          )
-        }
-      />
       <Input
         required={true}
         value={name}

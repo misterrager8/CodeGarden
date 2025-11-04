@@ -144,18 +144,6 @@ export default function Readme({ className = "" }) {
     <div
       className={className + (sxnCtx.isCurrentSection(label) ? " w-100" : "")}>
       <div className={"mb-3" + (sxnCtx.isCurrentSection(label) ? " mt-3" : "")}>
-        <Button
-          border={false}
-          className="flex-grow-0 me-1"
-          icon={
-            sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
-          }
-          onClick={() =>
-            sxnCtx.setCurrentSection(
-              sxnCtx.isCurrentSection(label) ? null : label
-            )
-          }
-        />
         {!sxnCtx.isCurrentSection(label) && (
           <Button
             className="me-1"
@@ -204,7 +192,7 @@ export default function Readme({ className = "" }) {
           )}
         </div>
       ) : (
-        <div style={{ height: "79vh", display: "flex" }}>
+        <div style={{ height: "75vh", display: "flex" }}>
           <textarea
             id="editor"
             rows={25}

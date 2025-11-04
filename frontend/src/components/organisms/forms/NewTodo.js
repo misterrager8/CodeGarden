@@ -35,18 +35,6 @@ export default function NewTodo({ className = "" }) {
           multiCtx.addTodo(e, name, tag);
           setName("");
         }}>
-        <Button
-          border={false}
-          className="flex-grow-0"
-          icon={
-            sxnCtx.isCurrentSection(label) ? "arrow-left" : "box-arrow-up-right"
-          }
-          onClick={() =>
-            sxnCtx.setCurrentSection(
-              sxnCtx.isCurrentSection(label) ? null : label
-            )
-          }
-        />
         <Dropdown icon="tag-fill" text={tag} classNameBtn="border-0">
           {multiCtx.tags.map((x) => (
             <a

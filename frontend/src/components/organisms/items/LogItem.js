@@ -32,7 +32,7 @@ export default function LogItem({ item, id, className = "" }) {
             )}
             <span
               onClick={() => {
-                sxnCtx.isCurrentSection("changes-history") &&
+                sxnCtx.isCurrentSection("history") &&
                   logCtx.setSelectedCommit(
                     logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
                       ? null

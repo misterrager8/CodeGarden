@@ -1,4 +1,5 @@
 @import "./colors.css";
+@import "./responsive.css";
 
 body {
   background-color: var(--primary-bg);
@@ -74,8 +75,8 @@ hr {
 }
 
 .badge {
-  color: var(--orange);
-  border: 0.5px solid var(--orange);
+  color: var(--btn-color);
+  border: 0.5px solid var(--btn-color);
   font-weight: unset;
   letter-spacing: 1px;
   padding: 3px 7px;
@@ -92,7 +93,7 @@ hr {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--blue);
+  background-color: var(--btn-color);
 }
 
 #readme img {
@@ -108,7 +109,7 @@ hr {
 }
 
 #readme a {
-  color: var(--readme-link-color) !important;
+  color: var(--btn-color) !important;
 }
 
 #readme code {
@@ -212,11 +213,11 @@ hr {
 }
 
 .border-end {
-  border-right: 0.5px solid var(--border-color) !important;
+  border-right: 0.5px solid var(--secondary-bg) !important;
 }
 
 .border-bottom {
-  border-bottom: 0.5px solid var(--border-color) !important;
+  border-bottom: 0.5px solid var(--secondary-bg) !important;
 }
 
 .muted-label-center {
@@ -239,7 +240,7 @@ hr {
 }
 
 .branch-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
   cursor: pointer;
   padding: 1px 20px;
   margin-bottom: 3px;
@@ -267,7 +268,7 @@ hr {
 
 .diff-item {
   cursor: pointer;
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
   padding: 1px 12px;
   margin-bottom: 2px;
 }
@@ -283,15 +284,15 @@ hr {
 }
 
 .ignore-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
 }
 
 .kanban-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
 }
 
 .log-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
   padding: 8px 14px;
   cursor: pointer;
 }
@@ -307,12 +308,12 @@ hr {
 }
 
 .stash-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
   padding: 5px 8px;
 }
 
 .tag-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
   margin-bottom: 2px;
   padding: 1px 14px;
 }
@@ -332,7 +333,7 @@ hr {
 }
 
 .todo-item {
-  border-bottom: 0.5px solid var(--border-color);
+  border-bottom: 0.5px solid var(--secondary-bg);
 }
 
 .kanban-heading {
@@ -340,4 +341,118 @@ hr {
   text-transform: uppercase;
   letter-spacing: 3px;
   font-weight: lighter;
+}
+
+/* NEW */
+
+.nav-custom {
+  border-bottom: 0.5px dotted var(--secondary-bg);
+  z-index: 99;
+  height: 60px;
+  width: 100%;
+  top: 0;
+  position: absolute;
+  padding: 10px;
+  display: flex;
+}
+
+.border-start {
+  border-left: 0.5px solid var(--secondary-bg) !important;
+}
+
+body {
+  margin-top: 60px;
+}
+
+@media screen and (max-width: 1000px) {
+  .nav-custom {
+    width: 85px;
+    height: 100%;
+    left: 0;
+    border-right: 0.5px solid var(--secondary-bg);
+  }
+
+  .nav-custom .between,
+  .nav-custom .d-flex,
+  .row {
+    flex-direction: column;
+  }
+
+  body {
+    margin-left: 85px;
+    margin-top: unset;
+  }
+
+  .todo-section {
+    width: 100% !important;
+  }
+
+  .flex-75 {
+    flex-direction: column;
+    width: 100% !important;
+    height: 40vh;
+    overflow-y: auto;
+    margin: 10px;
+  }
+
+  .w-25 {
+    width: 100% !important;
+    height: 40vh;
+    overflow-y: auto;
+  }
+
+  .flex {
+    flex-direction: column;
+  }
+
+  .log {
+    height: 40vh !important;
+    margin: 10px;
+  }
+
+  .file {
+    height: 48vh !important;
+    margin: 10px;
+  }
+
+  .branch-list {
+    width: 100% !important;
+    height: 40vh !important;
+    overflow-y: auto;
+  }
+
+  .selected-branch {
+    width: 100% !important;
+    height: 50vh !important;
+    overflow-y: auto;
+  }
+}
+
+.todo-section {
+  width: 33.3%;
+  padding: 10px;
+}
+
+.flex-75 {
+  display: flex;
+  width: 75%;
+}
+
+.flex {
+  display: flex;
+}
+
+.log {
+  height: 85vh;
+  overflow-y: auto;
+}
+
+.branch-list {
+  width: 25%;
+  margin: 10px;
+}
+
+.selected-branch {
+  width: 75%;
+  margin: 10px;
 }

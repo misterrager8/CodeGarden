@@ -21,7 +21,7 @@ export default function DiffItem({ item, className = "" }) {
       <span
         className="small py-1 flex-grow-1"
         onClick={() => {
-          sxnCtx.isCurrentSection("changes-history") &&
+          sxnCtx.isCurrentSection("changes") &&
             diffCtx.setSelectedDiff(
               diffCtx.selectedDiff === item ? null : item
             );

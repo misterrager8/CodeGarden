@@ -8,6 +8,8 @@ import Todos from "./Todos";
 import Branches from "./Branches";
 import Container from "./ChangesAndHistory/Container";
 import Config from "./Config";
+import Changes from "./ChangesAndHistory/Changes";
+import History from "./ChangesAndHistory/History";
 
 export const SectionContext = createContext();
 
@@ -18,7 +20,8 @@ export default function Display({ className = "" }) {
   );
 
   const sections = [
-    { label: "changes-history", element: <Container /> },
+    { label: "changes", element: <Changes /> },
+    { label: "history", element: <History /> },
     { label: "todos", element: <Todos /> },
     { label: "readme", element: <Readme /> },
     { label: "stashes", element: <Stashes /> },
@@ -44,32 +47,14 @@ export default function Display({ className = "" }) {
   return (
     <div className={className}>
       <SectionContext value={contextValue}>
-        <Nav className="border-bottom pb-3" />
-        {multiCtx?.currentRepo && (
-          <>
-            {!currentSection ? (
-              <div className="row mt-3 main">
-                <div className="col-3 border-end">
-                  <Container />
-                  <hr />
-                  <Todos />
-                </div>
-                <div className="col-7 border-end">
-                  <Readme />
-                </div>
-                <div className="col-2">
-                  <Stashes />
-                  <hr />
-                  <Ignored />
-                </div>
-              </div>
-            ) : (
-              <div>
-                {sections.find((x) => x.label === currentSection).element}
-              </div>
-            )}
-          </>
-        )}
+        <Nav />
+        <div className="p-4">
+          {multiCtx?.currentRepo && (
+            <div>
+              {sections.find((x) => x.label === currentSection)?.element}
+            </div>
+          )}
+        </div>
       </SectionContext>
     </div>
   );

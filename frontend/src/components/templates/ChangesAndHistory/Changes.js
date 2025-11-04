@@ -24,7 +24,7 @@ export default function Changes({ className = "" }) {
   const [selectedDiff, setSelectedDiff] = useState(null);
   const [diffDetails, setDiffDetails] = useState([]);
 
-  const label = "changes-history";
+  const label = "changes";
 
   const getDiff = () => {
     api(
@@ -54,20 +54,12 @@ export default function Changes({ className = "" }) {
   return (
     <>
       {multiCtx.currentRepo?.diffs.length === 0 ? (
-        <div
-          className={
-            "d-flex border-end" +
-            (sxnCtx.isCurrentSection(label) ? " col-3 pe-3" : "")
-          }
-          style={{ height: "30vh" }}>
+        <div className="d-flex border-end">
           <span className="muted-label-center">No Changes</span>
         </div>
       ) : (
-        <div className="row">
-          <div
-            className={
-              "col" + (sxnCtx.isCurrentSection(label) ? "-3 border-end" : "")
-            }>
+        <div className="flex">
+          <div className="w-25">
             <div className="mb-2">{!stashing ? <Commit /> : <NewStash />}</div>
             <div className="text-center mb-2">
               <Button
@@ -100,10 +92,12 @@ export default function Changes({ className = "" }) {
               )}
             </div>
             <div
-              style={{
-                height: !sxnCtx.isCurrentSection(label) ? "20vh" : "60vh",
-                overflowY: "auto",
-              }}>
+              style={
+                {
+                  // height: "75vh",
+                  // overflowY: "auto",
+                }
+              }>
               <DiffContext.Provider value={contextValue}>
                 {stagedDiffs.length > 0 && (
                   <>
@@ -147,7 +141,7 @@ export default function Changes({ className = "" }) {
             </div>
           </div>
           {sxnCtx.isCurrentSection(label) && (
-            <div className="col-9">
+            <div className="file w-75">
               {selectedDiff ? (
                 <div className="px-5 diff-content">
                   {diffDetails.map((x) => (

@@ -105,8 +105,8 @@ export default function Branches({ className = "" }) {
   return (
     <BranchContext.Provider value={contextValue}>
       <div className={className} style={{ height: "70vh" }}>
-        <div className="row">
-          <div className="col-3 border-end" style={{ height: "80vh" }}>
+        <div className="flex">
+          <div className="branch-list" style={{ height: "80vh" }}>
             <NewBranch className="my-3" />
             {multiCtx.currentRepo.branches.map((x) => (
               <Fragment key={uuidv4()}>
@@ -117,7 +117,7 @@ export default function Branches({ className = "" }) {
             ))}
           </div>
           {selectedBranch && (
-            <div className="col-9 px-4">
+            <div className="selected-branch">
               <div className="my-3">
                 <span className="purple">
                   {multiCtx.currentRepo.current_branch?.name}

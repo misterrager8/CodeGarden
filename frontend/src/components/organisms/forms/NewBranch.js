@@ -27,16 +27,6 @@ export default function NewBranch({ className = "" }) {
         multiCtx.addBranch(e, !prefix ? name : `${prefix}/${name}`);
         setName("");
       }}>
-      <Button
-        border={false}
-        className="flex-grow-0"
-        icon={sxnCtx.isCurrentSection("branches") ? "arrow-left" : "fullscreen"}
-        onClick={() =>
-          sxnCtx.setCurrentSection(
-            sxnCtx.isCurrentSection("branches") ? null : "branches"
-          )
-        }
-      />
       <Dropdown
         showCaret={!prefix}
         classNameBtn="border-0"

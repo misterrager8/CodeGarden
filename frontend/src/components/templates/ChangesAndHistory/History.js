@@ -59,7 +59,7 @@ export default function History({ className = "" }) {
     }
   }, [selectedCommit]);
 
-  const label = "changes-history";
+  const label = "history";
 
   const contextValue = {
     selectedCommit: selectedCommit,
@@ -68,15 +68,8 @@ export default function History({ className = "" }) {
   };
 
   return (
-    <div className="row">
-      <div
-        style={{
-          height: !sxnCtx.isCurrentSection(label) ? "30vh" : "70vh",
-          overflowY: "auto",
-        }}
-        className={
-          "col" + (!sxnCtx.isCurrentSection(label) ? "" : "-3 border-end")
-        }>
+    <div className="flex">
+      <div className="w-25 log">
         <LogContext.Provider value={contextValue}>
           {multiCtx.currentRepo?.log.map((x, idx) => (
             <LogItem key={uuidv4()} id={idx} item={x} />
@@ -84,13 +77,13 @@ export default function History({ className = "" }) {
         </LogContext.Provider>
       </div>
       {sxnCtx.isCurrentSection(label) && (
-        <div className="col-9">
+        <div className="flex-75 file">
           {selectedCommit ? (
             <div>
               <div
                 style={{
                   whiteSpace: "pre-wrap",
-                  height: "15vh",
+                  height: "30vh",
                   overflowY: "auto",
                 }}
                 className="fst-italic small border-bottom px-4">
@@ -141,7 +134,7 @@ export default function History({ className = "" }) {
                         text="After"
                       />
                     </ButtonGroup>
-                    <div style={{ height: "50vh", overflowY: "auto" }}>
+                    <div style={{ height: "45vh", overflowY: "auto" }}>
                       {mode === "unified" ? (
                         <div className="diff-content py-3">
                           {fileDetails.map((x) => (

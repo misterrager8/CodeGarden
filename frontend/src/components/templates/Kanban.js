@@ -28,13 +28,13 @@ export default function Kanban({ className = "" }) {
   return (
     <SortContext.Provider value={contextValue}>
       <div>
-        <NewTodo className="" />
+        <NewTodo />
         <hr />
-        <div className="row">
-          <div className="row col-10 border-end me-2">
-            <div className="col-4">
+        <div className="flex">
+          <div className="flex-75">
+            <div className="todo-section">
               <div className="kanban-heading mb-3">To Do</div>
-              <div style={{ height: "67vh", overflowY: "auto" }}>
+              <div className="inner">
                 {todos
                   .filter((x) => x.status === "open")
                   .map((x) => (
@@ -42,9 +42,9 @@ export default function Kanban({ className = "" }) {
                   ))}
               </div>
             </div>
-            <div className="col-4">
+            <div className="todo-section">
               <div className="kanban-heading mb-3">Doing</div>
-              <div style={{ height: "67vh", overflowY: "auto" }}>
+              <div className="inner">
                 {todos
                   .filter((x) => x.status === "active")
                   .map((x) => (
@@ -52,7 +52,7 @@ export default function Kanban({ className = "" }) {
                   ))}
               </div>
             </div>
-            <div className="col-4">
+            <div className="todo-section">
               <div className="text-center mb-3">
                 <div className="kanban-heading">Done</div>
                 {todos.filter((x) => x.done).length !== 0 && (
@@ -68,7 +68,7 @@ export default function Kanban({ className = "" }) {
                   />
                 )}
               </div>
-              <div style={{ height: "62vh", overflowY: "auto" }}>
+              <div className="inner">
                 {todos
                   .filter((x) => x.status === "completed")
                   .map((x) => (
@@ -77,7 +77,7 @@ export default function Kanban({ className = "" }) {
               </div>
             </div>
           </div>
-          <div className="col-2">
+          <div className="w-25">
             <NewTag className="mb-3" />
             <div>
               {multiCtx.tags.map((x) => (
