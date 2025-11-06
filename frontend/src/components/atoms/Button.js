@@ -4,7 +4,7 @@ export default function Button({
   size = "sm",
   icon,
   type_ = "button",
-  border = true,
+  border = false,
   active,
   className = "",
   children,
@@ -20,8 +20,8 @@ export default function Button({
         (border ? "" : " border-0") +
         (size ? ` btn-${size}` : "")
       }>
-      {icon && <i className={(text ? "me-2" : "") + " bi bi-" + icon}></i>}
-      <span>{text}</span>
+      {icon && <i className={" bi bi-" + icon}></i>}
+      {text && <span className={icon ? "ms-2" : ""}>{text}</span>}
       {children}
     </button>
   );
