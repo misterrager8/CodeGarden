@@ -7,7 +7,11 @@ export default function RepoItem({ item, className = "" }) {
   return (
     <a
       onClick={() => multiCtx.getRepo(item.name)}
-      className={className + " dropdown-item between"}>
+      className={
+        className +
+        " dropdown-item between" +
+        (multiCtx.currentRepo?.name === item.name ? " active" : "")
+      }>
       <div>{item.name}</div>
       <div>
         {item.diffs.length > 0 && (

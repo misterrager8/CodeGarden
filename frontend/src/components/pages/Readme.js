@@ -142,15 +142,21 @@ export default function Readme({ className = "" }) {
     <div className={className}>
       <div className="flex">
         <div className="col-50">
-          <Button
-            onClick={() => {
-              multiCtx.editReadme(content);
-              setSaved(true);
-              setTimeout(() => setSaved(false), 1500);
-            }}
-            className="green"
-            icon={saved ? "check-lg" : "floppy2"}
-          />
+          <div
+            className={
+              multiCtx.currentRepo?.readme !== content ? "" : "invisible"
+            }>
+            <Button
+              text="Save Changes"
+              onClick={() => {
+                multiCtx.editReadme(content);
+                setSaved(true);
+                setTimeout(() => setSaved(false), 1500);
+              }}
+              className="orange mb-1"
+              icon="record2-fill"
+            />
+          </div>
           <textarea
             id="editor"
             onMouseUp={() => getSelection()}

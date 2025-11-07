@@ -1,29 +1,4 @@
-:root,
-html[data-theme="light"] {
-  --primary-bg: #cccccc;
-  --primary-txt: #1a1a1a;
-
-  --secondary-bg: #c4c4c4;
-  --orange: #9a5500;
-  --red: #a32919;
-  --green: #20763d;
-
-  --btn-color: #4c3a7b;
-  --btn-hover-txt: #cccccc;
-}
-
-html[data-theme="dark"] {
-  --primary-bg: #1a1a1a;
-  --primary-txt: #cccccc;
-
-  --secondary-bg: #202020;
-  --orange: #c97918;
-  --red: #c94f3f;
-  --green: #74b577;
-
-  --btn-color: #a399e7;
-  --btn-hover-txt: #1a1a1a;
-}
+@import "./colors.css";
 
 a,
 a:hover {
@@ -90,7 +65,9 @@ body {
 }
 
 .btn:hover,
-.btn.active {
+.btn.active,
+.dropdown-item.active,
+.dropdown-item:hover {
   border-color: transparent;
   color: var(--btn-hover-txt) !important;
   background-color: var(--btn-color);
@@ -132,7 +109,7 @@ body {
     width: 100%;
   }
 
-  .nav-custom .btn span {
+  .btn.abbreviate span {
     display: none;
     margin: 0 !important;
   }
@@ -337,6 +314,11 @@ body {
   color: var(--orange);
 }
 
+.btn.orange.active {
+  background-color: var(--orange);
+  color: var(--primary-txt);
+}
+
 .btn.green {
   color: var(--green);
 }
@@ -366,5 +348,9 @@ body {
 }
 
 .show-on-mini {
+  display: none;
+}
+
+#readme img {
   display: none;
 }

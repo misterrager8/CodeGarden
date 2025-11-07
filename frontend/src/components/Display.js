@@ -50,35 +50,13 @@ export default function Display({ className = "" }) {
       {multiCtx.currentRepo && (
         <>
           <div className="mini-top">
-            <div className="fw-bold">{multiCtx.currentRepo?.name}</div>
+            <div className="fw-bold">
+              <Icon name="git" className="me-2" />
+              {multiCtx.currentRepo?.name}
+            </div>
             <div>
               <Icon name="bezier2" className="me-2" />
               {multiCtx.currentRepo?.current_branch.name}
-            </div>
-            <div className="d-flex">
-              <div
-                className={
-                  "me-3 " +
-                  (multiCtx.currentRepo?.todos.filter(
-                    (todo) => todo.status !== "completed"
-                  ).length > 0
-                    ? "orange"
-                    : "")
-                }>
-                <Icon name="check-all" className="me-2" />
-                {
-                  multiCtx.currentRepo?.todos.filter(
-                    (todo) => todo.status !== "completed"
-                  ).length
-                }
-              </div>
-              <div
-                className={
-                  multiCtx.currentRepo?.diffs.length > 0 ? "orange" : ""
-                }>
-                <Icon name="pencil" className="me-2" />
-                {multiCtx.currentRepo?.diffs.length}
-              </div>
             </div>
           </div>
           <div className="body d-flex">

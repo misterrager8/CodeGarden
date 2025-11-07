@@ -48,7 +48,13 @@ def repositories():
 @current_app.post("/commit")
 def commit():
     repository_ = Repository(request.json.get("name"))
-    repository_.commit(request.json.get("msg"), request.json.get("addAll"))
+
+    msg = request.json.get("msg")
+    msgDetails = request.json.get("msgDetails")
+
+    msg_ = msg + (f"\n\n{msgDetails}" if msgDetails else "")
+
+    repository_.commit(msg_, request.json.get("addAll"))
 
     return {
         "status": "done",

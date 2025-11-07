@@ -134,12 +134,17 @@ export default function MultiProvider({ children }) {
     });
   };
 
-  const commit = (e, msg, addAll) => {
+  const commit = (e, msg, addAll, msgDetails) => {
     e.preventDefault();
     setLoading(true);
     api(
       "commit",
-      { name: currentRepo.name, msg: msg, addAll: addAll },
+      {
+        name: currentRepo.name,
+        msg: msg,
+        addAll: addAll,
+        msgDetails: msgDetails,
+      },
       (data) => {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
