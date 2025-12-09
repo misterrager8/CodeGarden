@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.8c382f5d.css",
-    "main.js": "/static/js/main.1562c57e.js",
-    "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
-    "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
-    "index.html": "/index.html",
-    "main.8c382f5d.css.map": "/static/css/main.8c382f5d.css.map",
-    "main.1562c57e.js.map": "/static/js/main.1562c57e.js.map"
+    "main.css": "/CodeGarden/static/css/main.f64495c9.css",
+    "main.js": "/CodeGarden/static/js/main.7dec3d67.js",
+    "static/media/bootstrap-icons.woff?": "/CodeGarden/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
+    "static/media/bootstrap-icons.woff2?": "/CodeGarden/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
+    "index.html": "/CodeGarden/index.html",
+    "main.f64495c9.css.map": "/CodeGarden/static/css/main.f64495c9.css.map",
+    "main.7dec3d67.js.map": "/CodeGarden/static/js/main.7dec3d67.js.map"
   },
   "entrypoints": [
-    "static/css/main.8c382f5d.css",
-    "static/js/main.1562c57e.js"
+    "static/css/main.f64495c9.css",
+    "static/js/main.7dec3d67.js"
   ]
 }
