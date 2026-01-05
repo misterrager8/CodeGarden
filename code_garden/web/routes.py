@@ -128,7 +128,7 @@ def get_file_at_commit():
 @current_app.post("/create_repository")
 def create_repository():
     repository_ = Repository(request.json.get("name"))
-    repository_.init("")
+    repository_.init(request.json.get("description"))
 
     return repository_.to_dict()
 
@@ -536,3 +536,40 @@ def run_command():
         "repo": repo_.to_dict(),
         "repos": [i.to_dict() for i in Repository.all()],
     }
+
+
+
+@current_app.post("/get_files")
+def get_files():
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "files": repo_.get_files(),
+    }
+
+
+
+
+@current_app.post("/get_file_history")
+def get_file_history():
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "commits": [i.to_dict() for i in repo_.get_file_history(request.json.get("path"))]
+    }
+
+
+
+
+@current_app.post("/get_file_at_point")
+def get_file_at_point():
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "file": repo_.get_file_at_commit(request.json.get("path"), request.json.get("hash"))
+    }
+
+

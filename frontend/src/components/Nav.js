@@ -16,13 +16,15 @@ export default function Nav({ className = "" }) {
 
   const themes = [
     "light",
-    "cotton-candy",
-    "manila",
-    "lavender",
+    "orchard",
+    "green-tea",
+    "summer-blue",
+    "sunrise",
     "dark",
+    "cranberry",
+    "pine",
+    "winterfresh",
     "coffee",
-    "forest",
-    "orchid",
   ];
 
   useEffect(() => {
@@ -69,9 +71,6 @@ export default function Nav({ className = "" }) {
               showCaret={false}
               text={multiCtx.currentRepo?.name || "Select Repo"}
               icon="git">
-              <div className="px-3 mb-1">
-                <NewRepo />
-              </div>
               {multiCtx.repos.map((repo) => (
                 <RepoItem item={repo} />
               ))}
@@ -105,25 +104,40 @@ export default function Nav({ className = "" }) {
                   .length.toString()}
               />
               <Button
+                className="abbreviate"
+                text="History"
                 active={multiCtx.currentPage === "history"}
                 onClick={() => multiCtx.setCurrentPage("history")}
                 icon="clock-history"
               />
 
               <Button
+                className="abbreviate"
+                text="README"
                 active={multiCtx.currentPage === "readme"}
                 onClick={() => multiCtx.setCurrentPage("readme")}
                 icon="book"
               />
               <Button
+                className="abbreviate"
+                text="Stashes"
                 active={multiCtx.currentPage === "stashes"}
                 onClick={() => multiCtx.setCurrentPage("stashes")}
                 icon="archive"
               />
               <Button
+                className="abbreviate"
+                text="Ignored"
                 active={multiCtx.currentPage === "ignored"}
                 onClick={() => multiCtx.setCurrentPage("ignored")}
                 icon="eye-slash-fill"
+              />
+              <Button
+                className="abbreviate"
+                text="Files"
+                active={multiCtx.currentPage === "files"}
+                onClick={() => multiCtx.setCurrentPage("files")}
+                icon="folder"
               />
               <div className="divider"></div>
               <Button
@@ -133,45 +147,66 @@ export default function Nav({ className = "" }) {
                 icon="bezier2"
                 text={multiCtx.currentRepo?.current_branch?.name}
               />
-              <Button onClick={() => multiCtx.push()} icon="arrow-up" />
-              <Button onClick={() => multiCtx.pull()} icon="arrow-down" />
+              <Button
+                className="abbreviate"
+                text="Push"
+                onClick={() => multiCtx.push()}
+                icon="arrow-up"
+              />
+              <Button
+                className="abbreviate"
+                text="Pull"
+                onClick={() => multiCtx.pull()}
+                icon="arrow-down"
+              />
             </div>
           )}
         </div>
         <div className="flex">
           {multiCtx.currentRepo && (
-            <>
-              <Button
+            <Dropdown classNameMenu="" icon="three-dots" autoClose="false">
+              <a
+                className="dropdown-item"
                 onClick={() => {
                   multiCtx.exportRepo();
                   setExported(true);
                   setTimeout(() => setExported(false), 1500);
-                }}
-                icon={!exported ? "save2" : "check-lg"}
-              />
-              <Button
-                onClick={() => copyPath()}
-                icon={copied ? "check-lg" : "clipboard"}
-              />
+                }}>
+                <i
+                  className={
+                    "me-2 bi bi-" + (!exported ? "save2" : "check-lg")
+                  }></i>
+                <span>Export Todos</span>
+              </a>
+              <a className="dropdown-item" onClick={() => copyPath()}>
+                <i
+                  className={
+                    "me-2 bi bi-" + (copied ? "check-lg" : "clipboard")
+                  }></i>
+                <span>Copy Path</span>
+              </a>
               <a
-                href={multiCtx.currentRepo?.remote_url}
-                className="btn btn-sm border-0"
-                target="_blank">
-                <i className="bi bi-github"></i>
+                target="_blank"
+                className="dropdown-item"
+                href={multiCtx.currentRepo?.remote_url}>
+                <i className="me-2 bi bi-github"></i>
+                <span>View GitHub</span>
+              </a>
+              <a
+                className="dropdown-item red"
+                onClick={() => setDeleting(!deleting)}>
+                <i className="me-2 bi bi-trash2"></i>
+                <span>Delete Repo</span>
               </a>
               {deleting && (
-                <Button
-                  className="red"
-                  onClick={() => multiCtx.deleteRepo()}
-                  icon="question-lg"
-                />
+                <a
+                  className="dropdown-item red text-center"
+                  onClick={() => multiCtx.deleteRepo()}>
+                  Delete
+                  <i className="ms-2 bi bi-question-lg"></i>
+                </a>
               )}
-              <Button
-                className="red"
-                onClick={() => setDeleting(!deleting)}
-                icon="trash2"
-              />
-            </>
+            </Dropdown>
           )}
           <div className="divider"></div>
           <a

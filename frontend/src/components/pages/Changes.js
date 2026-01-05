@@ -7,6 +7,7 @@ import Button from "../atoms/Button";
 import NewStash from "../forms/NewStash";
 import Icon from "../atoms/Icon";
 import HunkItem from "../items/HunkItem";
+import { v4 as uuidv4 } from "uuid";
 
 export const DiffContext = createContext();
 
@@ -94,7 +95,7 @@ export default function Changes({ className = "" }) {
 
           <div>
             {stagedDiffs.map((item) => (
-              <DiffItem item={item} />
+              <DiffItem key={uuidv4()} item={item} />
             ))}
             {stagedDiffs.length > 0 && (
               <div className="between my-2">
@@ -110,7 +111,7 @@ export default function Changes({ className = "" }) {
             )}
 
             {unstagedDiffs.map((item) => (
-              <DiffItem item={item} />
+              <DiffItem key={uuidv4()} item={item} />
             ))}
             {unstagedDiffs.length > 0 && (
               <div className="between my-2">

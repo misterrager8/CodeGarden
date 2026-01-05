@@ -32,7 +32,7 @@ export default function Dropdown({
               //  + (text ? " me-2" : "")
             }></i>
         )}
-        <span className={icon ? "ms-2" : ""}>{text}</span>
+        {text && <span className={icon ? "ms-2" : ""}>{text}</span>}
       </a>
       <div id={target} className={"dropdown-menu " + classNameMenu}>
         {children}

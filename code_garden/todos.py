@@ -96,6 +96,7 @@ class Todo:
             "repository": self.repo,
             "done": self.status == "completed",
             "status": self.status,
+            "toStr": f"({self.tag}) {self.title}",
         }
 
 

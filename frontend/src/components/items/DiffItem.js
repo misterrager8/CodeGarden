@@ -38,6 +38,11 @@ export default function DiffItem({ item, className = "" }) {
             multiCtx.toggleStage(item.path, item.type_, item.staged)
           }
         />
+        <Button
+          icon="eye-slash"
+          border={false}
+          onClick={() => multiCtx.addIgnore(null, item.name)}
+        />
         {deleting && (
           <Button
             icon="question-lg"

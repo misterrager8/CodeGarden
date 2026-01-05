@@ -49,7 +49,7 @@ export default function Kanban({ className = "" }) {
           <div className="col-33">
             <div className="heading">TODO</div>
             <NewTodo />
-            <div className="mt-3">
+            <div className="mt-3" style={{ height: "69vh", overflowY: "auto" }}>
               {undone.map((todo) => (
                 <TodoItem key={todo.id} item={todo} />
               ))}
@@ -65,9 +65,11 @@ export default function Kanban({ className = "" }) {
 
           <div className="col-33">
             <div className="heading">DONE</div>
-            {done.map((todo) => (
-              <TodoItem key={todo.id} item={todo} />
-            ))}
+            <div style={{ height: "76vh", overflowY: "auto" }}>
+              {done.map((todo) => (
+                <TodoItem key={todo.id} item={todo} />
+              ))}
+            </div>
           </div>
         </div>
 

@@ -8,17 +8,9 @@ CodeGarden can make it easier to perform common Git operations such as cloning, 
 
 ![](/docs/screenshot2.png)
 
-![](/docs/screenshot6.png)
+![](/docs/screenshot3.png)
 
-![](/docs/screenshot7.png)
-
-<img width="200" src="/docs/screenshot3.png" />
-
-<img width="200" src="/docs/screenshot4.png" />
-
-<img width="200" src="/docs/screenshot5.png" />
-
-<img width="200" src="/docs/screenshot8.png" />
+![](/docs/screenshot4.png)
 
 ### Features
 

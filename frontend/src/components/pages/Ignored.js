@@ -14,7 +14,7 @@ export default function Ignored({ className = "" }) {
     <div className={className + ""}>
       <NewIgnored />
       {multiCtx.currentRepo?.ignored.length > 0 ? (
-        <div>
+        <div style={{ height: "78vh", overflowY: "auto" }}>
           {multiCtx.currentRepo?.ignored.map((x, idx) => (
             <IgnoreItem id={idx} key={uuidv4()} item={x} />
           ))}

@@ -313,13 +313,14 @@ export default function MultiProvider({ children }) {
     );
   };
 
-  const addRepo = (e, name) => {
+  const addRepo = (e, name, description) => {
     e.preventDefault();
     setLoading(true);
     api(
       "create_repository",
       {
         name: name,
+        description: description,
       },
       (data) => {
         setCurrentRepo(data);
@@ -345,7 +346,7 @@ export default function MultiProvider({ children }) {
   };
 
   const addIgnore = (e, name) => {
-    e.preventDefault();
+    e && e.preventDefault();
     setLoading(true);
     api(
       "create_ignore",

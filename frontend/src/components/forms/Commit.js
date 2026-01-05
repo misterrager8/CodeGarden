@@ -30,7 +30,11 @@ export default function Commit({ className = "" }) {
         setMsgDetails("");
       }}>
       <div className="input-group">
-        <Dropdown showCaret icon="tag-fill" classNameBtn="border-0">
+        <Dropdown
+          target="pick-tag"
+          showCaret
+          icon="tag-fill"
+          classNameBtn="border-0">
           <a onClick={() => setTag(null)} className="dropdown-item">
             <Icon name="dash-lg" className="me-2" />
             No Tag
@@ -46,6 +50,23 @@ export default function Commit({ className = "" }) {
           ))}
         </Dropdown>
         <Input onChange={onChangeMsg} value={msg} placeholder="Commit" />
+        <Dropdown
+          target="commit-todo"
+          showCaret
+          icon="check-all"
+          classNameBtn="border-0">
+          {multiCtx.currentRepo.todos
+            .filter((w) => !w.done)
+            .map((x) => (
+              <a
+                key={x.id}
+                onClick={() => multiCtx.commitTodo(x.id)}
+                className="dropdown-item">
+                <Icon name="check-all" className="me-2" />
+                {x.toStr}
+              </a>
+            ))}
+        </Dropdown>
         <Button
           active={showTextarea}
           onClick={() => setShowTextarea(!showTextarea)}

@@ -180,10 +180,10 @@ class Repository(object):
     @classmethod
     def generate_name(cls):
         adj = requests.get(
-            "https://random-word-form.herokuapp.com/random/adjective"
+            "https://random-word-api.herokuapp.com/word"
         ).json()[0]
         noun = requests.get(
-            "https://random-word-form.herokuapp.com/random/noun"
+            "https://random-word-api.herokuapp.com/word"
         ).json()[0]
         return f"{adj}-{noun}"
 
@@ -321,13 +321,65 @@ class Repository(object):
         if delete_head:
             self.run_command(["git", "branch", "-D", child_branch])
 
+    def get_files(self):
+        files_ = []
+        for i in self.run_command(["git", "ls-files"]).split("\n"):
+            file_ = self.path / i
+            files_.append({
+                "path":str(file_),
+                "name":file_.name,
+                "relativePath":i
+            })
+
+        return files_
+
+
+
+    def get_file_history(self, path):
+        _ = []
+        try:
+            for i in self.run_command(
+                ["git", "log", "--oneline", "-1000", "--pretty=format:%s\t%at\t%h\t%an", path]
+            ).split("\n"):
+                if len(i.strip().split("\t")) == 2:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            "[No Commit Message]",
+                            datetime.datetime.min,
+                            i.strip().split("\t")[0],
+                            i.strip().split("\t")[1],
+                        )
+                    )
+                else:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            i.strip().split("\t")[0],
+                            datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+                            i.strip().split("\t")[2],
+                            i.strip().split("\t")[3],
+                        )
+                    )
+
+            return _
+        except:
+            return []
+        
+
+    def get_file_at_commit(self, path, hash):
+        return self.run_command([
+            "git",
+            "show",
+            f"{hash}:{path}"])
+
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
         return dict(
             name=self.name,
             path=str(self.path),
             branches=[i.to_dict() for i in self.branches],
-            current_branch=self.current_branch.to_dict(),
+            current_branch=self.current_branch.to_dict() if self.current_branch else {},
             remote_url=self.remote_url,
             log=[i.to_dict() for i in self.log],
             todos=[i.to_dict() for i in self.todos],
