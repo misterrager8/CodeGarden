@@ -22,7 +22,11 @@ export default function HunkItem({ item, added, className = "" }) {
           <div
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
+            style={{
+              cursor: "pointer",
+              whiteSpace: "pre-wrap",
+              fontFamily: "monospace",
+            }}
             onClick={() => copyHunk()}
             className={className + (added ? " green" : " red")}>
             {item}

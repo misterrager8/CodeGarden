@@ -179,12 +179,8 @@ class Repository(object):
 
     @classmethod
     def generate_name(cls):
-        adj = requests.get(
-            "https://random-word-api.herokuapp.com/word"
-        ).json()[0]
-        noun = requests.get(
-            "https://random-word-api.herokuapp.com/word"
-        ).json()[0]
+        adj = requests.get("https://random-word-api.herokuapp.com/word").json()[0]
+        noun = requests.get("https://random-word-api.herokuapp.com/word").json()[0]
         return f"{adj}-{noun}"
 
     def init(self, brief_descrip: str):
@@ -325,21 +321,25 @@ class Repository(object):
         files_ = []
         for i in self.run_command(["git", "ls-files"]).split("\n"):
             file_ = self.path / i
-            files_.append({
-                "path":str(file_),
-                "name":file_.name,
-                "relativePath":i
-            })
+            if not file_.is_dir():
+                files_.append(
+                    {"path": str(file_), "name": file_.name, "relativePath": i}
+                )
 
         return files_
-
-
 
     def get_file_history(self, path):
         _ = []
         try:
             for i in self.run_command(
-                ["git", "log", "--oneline", "-1000", "--pretty=format:%s\t%at\t%h\t%an", path]
+                [
+                    "git",
+                    "log",
+                    "--oneline",
+                    "-1000",
+                    "--pretty=format:%s\t%at\t%h\t%an",
+                    path,
+                ]
             ).split("\n"):
                 if len(i.strip().split("\t")) == 2:
                     _.append(
@@ -365,13 +365,9 @@ class Repository(object):
             return _
         except:
             return []
-        
 
     def get_file_at_commit(self, path, hash):
-        return self.run_command([
-            "git",
-            "show",
-            f"{hash}:{path}"])
+        return self.run_command(["git", "show", f"{hash}:{path}"])
 
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""

@@ -116,9 +116,9 @@ export default function MultiProvider({ children }) {
     });
   };
 
-  const commitTodo = (id) => {
+  const commitTodo = (id, inProgress) => {
     setLoading(true);
-    api("commit_todo", { id: id }, (data) => {
+    api("commit_todo", { id: id, inProgress: inProgress }, (data) => {
       setCurrentRepo(data.repo);
       setRepos(data.repos);
       setLoading(false);

@@ -390,7 +390,8 @@ def commit_todo():
     todo_ = Todo.get(request.json.get("id"))
     repo_ = Repository(todo_.repo)
 
-    todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
+    if not request.json.get("inProgress"):
+        todo_.status = "completed" if todo_.status in ["open", "active"] else "open"
     todo_.edit()
     repo_.commit(
         f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}",
@@ -538,7 +539,6 @@ def run_command():
     }
 
 
-
 @current_app.post("/get_files")
 def get_files():
     repo_ = Repository(request.json.get("repository"))
@@ -549,18 +549,16 @@ def get_files():
     }
 
 
-
-
 @current_app.post("/get_file_history")
 def get_file_history():
     repo_ = Repository(request.json.get("repository"))
 
     return {
         "status": "done",
-        "commits": [i.to_dict() for i in repo_.get_file_history(request.json.get("path"))]
+        "commits": [
+            i.to_dict() for i in repo_.get_file_history(request.json.get("path"))
+        ],
     }
-
-
 
 
 @current_app.post("/get_file_at_point")
@@ -569,7 +567,7 @@ def get_file_at_point():
 
     return {
         "status": "done",
-        "file": repo_.get_file_at_commit(request.json.get("path"), request.json.get("hash"))
+        "file": repo_.get_file_at_commit(
+            request.json.get("path"), request.json.get("hash")
+        ),
     }
-
-

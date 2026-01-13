@@ -158,6 +158,7 @@ export default function Readme({ className = "" }) {
             />
           </div>
           <textarea
+            style={{ fontSize: ".875rem", fontFamily: "monospace" }}
             id="editor"
             onMouseUp={() => getSelection()}
             rows={25}

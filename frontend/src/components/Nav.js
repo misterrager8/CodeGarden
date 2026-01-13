@@ -25,6 +25,7 @@ export default function Nav({ className = "" }) {
     "pine",
     "winterfresh",
     "coffee",
+    "pumpkin",
   ];
 
   useEffect(() => {
@@ -80,11 +81,21 @@ export default function Nav({ className = "" }) {
           {multiCtx.currentRepo && (
             <div className="flex">
               <Button
+                className="abbreviate"
+                active={multiCtx.currentPage === "branches"}
+                onClick={() => multiCtx.setCurrentPage("branches")}
+                icon="bezier2"
+                text={multiCtx.currentRepo?.current_branch?.name}
+              />
+              <Button
                 className={
                   multiCtx.currentRepo?.diffs.length > 0 ? "orange" : ""
                 }
                 active={multiCtx.currentPage === "changes"}
-                onClick={() => multiCtx.setCurrentPage("changes")}
+                onClick={() => {
+                  multiCtx.setCurrentPage("changes");
+                  multiCtx.getRepo(multiCtx.currentRepo?.name);
+                }}
                 icon="pencil"
                 text={multiCtx.currentRepo?.diffs.length.toString()}
               />
@@ -110,7 +121,13 @@ export default function Nav({ className = "" }) {
                 onClick={() => multiCtx.setCurrentPage("history")}
                 icon="clock-history"
               />
-
+              <Button
+                className="abbreviate"
+                text="Files"
+                active={multiCtx.currentPage === "files"}
+                onClick={() => multiCtx.setCurrentPage("files")}
+                icon="folder"
+              />
               <Button
                 className="abbreviate"
                 text="README"
@@ -132,21 +149,7 @@ export default function Nav({ className = "" }) {
                 onClick={() => multiCtx.setCurrentPage("ignored")}
                 icon="eye-slash-fill"
               />
-              <Button
-                className="abbreviate"
-                text="Files"
-                active={multiCtx.currentPage === "files"}
-                onClick={() => multiCtx.setCurrentPage("files")}
-                icon="folder"
-              />
               <div className="divider"></div>
-              <Button
-                className="abbreviate"
-                active={multiCtx.currentPage === "branches"}
-                onClick={() => multiCtx.setCurrentPage("branches")}
-                icon="bezier2"
-                text={multiCtx.currentRepo?.current_branch?.name}
-              />
               <Button
                 className="abbreviate"
                 text="Push"

@@ -1,5 +1,9 @@
 @import "./colors.css";
 
+* {
+  font-family: "Roboto";
+}
+
 a,
 a:hover {
   color: inherit;
@@ -25,6 +29,7 @@ body {
 .dropdown-item {
   letter-spacing: 1.5px;
   font-size: small;
+  cursor: pointer;
 }
 
 .form-control:focus {
@@ -306,6 +311,12 @@ body {
   color: var(--btn-hover-txt);
 }
 
+.code-scroll {
+  height: 76vh;
+  overflow-y: auto;
+  /* border-bottom: 0.5px solid; */
+}
+
 @media screen and (max-width: 1427px) {
   .nav-custom {
     height: 100%;
@@ -353,7 +364,7 @@ body {
   }
 
   .col-25 {
-    height: 40%;
+    height: 31vh;
   }
 
   .col-50 {
@@ -361,7 +372,7 @@ body {
   }
 
   .col-75 {
-    height: 60%;
+    height: 60vh;
   }
 
   .col-33 {
@@ -378,5 +389,9 @@ body {
 
   .hide-on-mini {
     display: none !important;
+  }
+
+  .code-scroll {
+    height: 42vh;
   }
 }

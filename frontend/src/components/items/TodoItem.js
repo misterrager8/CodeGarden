@@ -11,6 +11,7 @@ export default function TodoItem({ item, className = "" }) {
   const multiCtx = useContext(MultiContext);
   const [deleting, setDeleting] = useState(false);
   const [committing, setCommitting] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
 
   const [name, setName] = useState("");
   const [branchName, setBranchName] = useState(
@@ -67,6 +68,7 @@ export default function TodoItem({ item, className = "" }) {
             </div>
           </ButtonGroup>
           <Input
+            title={name}
             required={true}
             className="border-0 fst-italic"
             value={name}
@@ -106,10 +108,17 @@ export default function TodoItem({ item, className = "" }) {
                 className="border-0"
               />
               {committing && (
-                <Button
-                  icon="question-lg"
-                  onClick={() => multiCtx.commitTodo(item.id)}
-                />
+                <>
+                  <Button
+                    active={inProgress}
+                    text="WIP"
+                    onClick={() => setInProgress(!inProgress)}
+                  />
+                  <Button
+                    icon="question-lg"
+                    onClick={() => multiCtx.commitTodo(item.id, inProgress)}
+                  />
+                </>
               )}
             </>
           )}

@@ -187,6 +187,7 @@ export default function Branches({ className = "" }) {
                   </div>
                 ) : (
                   <textarea
+                    style={{ fontSize: ".875rem", fontFamily: "monospace" }}
                     onChange={onChangeMergeMsg}
                     rows={20}
                     className="form-control"

@@ -1,130 +1,143 @@
 :root,
 html[data-theme="light"] {
-  --primary-bg: hsl(19 30 80);
+  --primary-bg: hsl(76 1 80);
   --primary-txt: #1a1a1a;
 
-  --secondary-bg: hsl(18, 16%, 69%);
+  --secondary-bg: hsl(84, 3%, 68%);
   --orange: #9a5500;
   --red: #a32919;
   --green: #20763d;
 
-  --btn-color: hsl(298 33 37);
+  --btn-color: hsl(75 1 29);
   --btn-hover-txt: #cccccc;
 }
 
 html[data-theme="orchard"] {
-  --primary-bg: hsl(195 7 80);
+  --primary-bg: hsl(41 44 80);
   --primary-txt: #1a1a1a;
 
-  --secondary-bg: hsl(197, 4%, 65%);
+  --secondary-bg: hsl(41, 27%, 71%);
   --orange: #9a5500;
   --red: #a32919;
   --green: #20763d;
 
-  --btn-color: hsl(334 83 27);
+  --btn-color: hsl(302 20 28);
   --btn-hover-txt: #cccccc;
 }
 
 html[data-theme="green-tea"] {
-  --primary-bg: hsl(3 39 80);
+  --primary-bg: hsl(196 5 80);
   --primary-txt: #1a1a1a;
 
-  --secondary-bg: hsl(4, 21%, 69%);
+  --secondary-bg: hsl(200, 4%, 70%);
   --orange: #9a5500;
   --red: #a32919;
   --green: #20763d;
 
-  --btn-color: hsl(112 13 36);
+  --btn-color: hsl(175 53 34);
   --btn-hover-txt: #cccccc;
 }
 
 html[data-theme="summer-blue"] {
-  --primary-bg: hsl(36 74 80);
+  --primary-bg: hsl(358 25 80);
   --primary-txt: #1a1a1a;
 
-  --secondary-bg: hsl(36, 40%, 67%);
+  --secondary-bg: hsl(358, 14%, 67%);
   --orange: #9a5500;
   --red: #a32919;
   --green: #20763d;
 
-  --btn-color: hsl(215 51 29);
+  --btn-color: hsl(215 26 39);
   --btn-hover-txt: #cccccc;
 }
 
 html[data-theme="sunrise"] {
-  --primary-bg: hsl(248 21 80);
+  --primary-bg: hsl(22 86 80);
   --primary-txt: #1a1a1a;
 
-  --secondary-bg: hsl(246, 12%, 70%);
+  --secondary-bg: hsl(22, 50%, 70%);
   --orange: #9a5500;
   --red: #a32919;
   --green: #20763d;
 
-  --btn-color: hsl(31 84 32);
+  --btn-color: hsl(10 73 31);
   --btn-hover-txt: #cccccc;
 }
 
 html[data-theme="dark"] {
-  --primary-bg: hsl(316 65 10);
+  --primary-bg: hsl(227 9 10);
   --primary-txt: #cccccc;
 
-  --secondary-bg: hsl(315, 64%, 14%);
+  --secondary-bg: hsl(231, 10%, 14%);
   --orange: #c97918;
   --red: #c94f3f;
   --green: #74b577;
 
-  --btn-color: hsl(320 58 79);
+  --btn-color: hsl(227 7 62);
   --btn-hover-txt: #1a1a1a;
 }
 
 html[data-theme="cranberry"] {
-  --primary-bg: hsl(340 9 10);
+  --primary-bg: hsl(318 22 10);
   --primary-txt: #cccccc;
 
-  --secondary-bg: hsl(338, 11%, 15%);
+  --secondary-bg: hsl(316, 21%, 14%);
   --orange: #c97918;
   --red: #c94f3f;
   --green: #74b577;
 
-  --btn-color: hsl(329 36 41);
+  --btn-color: hsl(271 15 48);
   --btn-hover-txt: #1a1a1a;
 }
 
 html[data-theme="pine"] {
-  --primary-bg: hsl(173 53 10);
+  --primary-bg: hsl(235 5 10);
   --primary-txt: #cccccc;
 
-  --secondary-bg: hsl(174, 52%, 15%);
+  --secondary-bg: hsl(240, 6%, 15%);
   --orange: #c97918;
   --red: #c94f3f;
   --green: #74b577;
 
-  --btn-color: hsl(113 6 47);
+  --btn-color: hsl(167 54 45);
   --btn-hover-txt: #1a1a1a;
 }
 
 html[data-theme="winterfresh"] {
-  --primary-bg: hsl(203 42 10);
+  --primary-bg: hsl(287 42 10);
   --primary-txt: #cccccc;
 
-  --secondary-bg: hsl(202, 43%, 15%);
+  --secondary-bg: hsl(288, 41%, 15%);
   --orange: #c97918;
   --red: #c94f3f;
   --green: #74b577;
 
-  --btn-color: hsl(189 39 68);
+  --btn-color: hsl(228 80 73);
   --btn-hover-txt: #1a1a1a;
 }
 
 html[data-theme="coffee"] {
-  --primary-bg: hsl(19 56 10);
+  --primary-bg: hsl(237 8 10);
   --primary-txt: #cccccc;
 
-  --secondary-bg: hsl(18, 57%, 14%);
+  --secondary-bg: hsl(230, 9%, 13%);
   --orange: #c97918;
   --red: #c94f3f;
   --green: #74b577;
 
-  --btn-color: hsl(39 78 66);
+  --btn-color: hsl(40 19 44);
+  --btn-hover-txt: #1a1a1a;
+}
+
+html[data-theme="pumpkin"] {
+  --primary-bg: hsl(284 56 10);
+  --primary-txt: #cccccc;
+
+  --secondary-bg: hsl(283, 56%, 16%);
+  --orange: #c97918;
+  --red: #c94f3f;
+  --green: #74b577;
+
+  --btn-color: hsl(13 69 52);
   --btn-hover-txt: #1a1a1a;
 }

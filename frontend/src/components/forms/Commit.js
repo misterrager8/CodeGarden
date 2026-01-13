@@ -51,20 +51,32 @@ export default function Commit({ className = "" }) {
         </Dropdown>
         <Input onChange={onChangeMsg} value={msg} placeholder="Commit" />
         <Dropdown
+          autoClose="outside"
           target="commit-todo"
           showCaret
           icon="check-all"
-          classNameBtn="border-0">
+          classNameBtn="border-0"
+          classNameMenu="w-100 overflow-auto">
           {multiCtx.currentRepo.todos
             .filter((w) => !w.done)
             .map((x) => (
-              <a
-                key={x.id}
-                onClick={() => multiCtx.commitTodo(x.id)}
-                className="dropdown-item">
-                <Icon name="check-all" className="me-2" />
-                {x.toStr}
-              </a>
+              <div key={x.id} className="d-flex mb-2">
+                <div className="d-flex mx-1">
+                  <Button
+                    onClick={() => multiCtx.commitTodo(x.id, false)}
+                    icon="file-earmark-diff"
+                  />
+                  <Button
+                    onClick={() => multiCtx.commitTodo(x.id, true)}
+                    text="WIP"
+                  />
+                </div>
+                <div className="text-truncate my-auto">
+                  <span title={x.toStr} className="">
+                    {x.toStr}
+                  </span>
+                </div>
+              </div>
             ))}
         </Dropdown>
         <Button

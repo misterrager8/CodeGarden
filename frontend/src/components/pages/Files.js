@@ -1,8 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../Context";
 import { api } from "../../util";
-import LogItem from "../items/LogItem";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+import Button from "../atoms/Button";
+import SearchFiles from "../forms/SearchFiles";
+import Dropdown from "../atoms/Dropdown";
+
+export const FileContext = createContext();
 
 export default function Files({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -13,11 +17,16 @@ export default function Files({ className = "" }) {
   const [selectedCommit, setSelectedCommit] = useState(null);
 
   const [pastFile, setPastFile] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [query, setQuery] = useState("");
 
   const getFiles = () => {
-    api("get_files", { repository: multiCtx.currentRepo?.name }, (data) =>
-      setFiles(data.files)
-    );
+    api("get_files", { repository: multiCtx.currentRepo?.name }, (data) => {
+      setFiles(data.files);
+      setSelectedFile(null);
+      setSelectedCommit(null);
+      setPastFile(null);
+    });
   };
 
   const getFileHistory = () => {
@@ -44,47 +53,64 @@ export default function Files({ className = "" }) {
 
   useEffect(() => {
     getFiles();
-  }, []);
+  }, [multiCtx.currentRepo]);
 
   useEffect(() => {
     selectedFile ? getFileHistory() : setHistory([]);
+    setSelectedCommit(null);
+    // setPastFile(null);
   }, [selectedFile]);
 
   useEffect(() => {
     selectedCommit ? getFileAtCommit() : setPastFile(null);
   }, [selectedCommit]);
 
+  const contextValue = {
+    query: query,
+    setQuery: setQuery,
+  };
+
   return (
-    <div className={className + " d-flex"}>
-      <div className="col-25" style={{ overflowY: "auto", height: "85vh" }}>
-        {files.map((x) => (
-          <div
-            className={
-              "file-item " + (selectedFile?.path === x.path ? "active" : "")
-            }>
-            <a
-              onClick={() =>
-                setSelectedFile(selectedFile?.path === x.path ? null : x)
-              }>
-              {x.name}
-            </a>
-          </div>
-        ))}
-      </div>
-      <div className="col-25" style={{ overflowY: "auto", height: "85vh" }}>
-        {history.map((item) => (
-          <div
-            className={
-              className +
-              " log-item" +
-              (selectedCommit?.abbrev_hash === item.abbrev_hash
-                ? " active"
-                : "")
-            }>
-            <div>
-              <div className="between mb-1">
-                <div className="fw-bold text-truncate">
+    <FileContext.Provider value={contextValue}>
+      <div className={className + " flex"}>
+        <div className="col-25">
+          <SearchFiles className="mb-3" />
+          <div style={{ overflowY: "auto", height: "77vh" }}>
+            {files
+              .filter((w) => w.name.toLowerCase().startsWith(query))
+              .map((x) => (
+                <div
+                  className={
+                    "file-item " +
+                    (selectedFile?.path === x.path ? "active" : "")
+                  }>
                   <a
+                    onClick={() =>
+                      setSelectedFile(selectedFile?.path === x.path ? null : x)
+                    }>
+                    {x.name}
+                  </a>
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="col-75">
+          {selectedFile && (
+            <>
+              {selectedCommit && (
+                <Button
+                  className="px-1"
+                  icon="x"
+                  onClick={() => setSelectedCommit(null)}
+                />
+              )}
+              <Dropdown
+                icon="clock-history"
+                classNameMenu="h-75 overflow-y-auto"
+                target="commits"
+                text={selectedCommit ? selectedCommit?.name : "Select Commit"}>
+                {history.map((item) => (
+                  <div
                     onClick={() =>
                       setSelectedCommit(
                         selectedCommit?.abbrev_hash === item.abbrev_hash
@@ -92,31 +118,43 @@ export default function Files({ className = "" }) {
                           : item
                       )
                     }
-                    title={item.name}>
+                    className={
+                      className +
+                      " between dropdown-item" +
+                      (selectedCommit?.abbrev_hash === item.abbrev_hash
+                        ? " active"
+                        : "")
+                    }>
                     {item.name}
-                  </a>
-                </div>
-                <span className="small font-monospace">{item.abbrev_hash}</span>
-              </div>
-              <div className="between small fw-light">
-                <span>{item.timestamp}</span>
-                <span>{item.author}</span>
-              </div>
-            </div>
+                    <span>{item.timestamp}</span>
+                  </div>
+                ))}
+              </Dropdown>
+              <Button
+                text="Copy"
+                icon={copied ? "check-lg" : "clipboard"}
+                onClick={() => {
+                  navigator.clipboard.writeText(pastFile);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1000);
+                }}
+              />
+            </>
+          )}
+          <div
+            className="mt-3 px-2"
+            style={{
+              overflowY: "auto",
+              height: "78vh",
+              fontFamily: "monospace",
+              whiteSpace: "pre-wrap",
+              fontSize: "small",
+            }}>
+            {pastFile && <div className="d-flex flex-row-reverse mb-2"></div>}
+            {pastFile}
           </div>
-        ))}
+        </div>
       </div>
-      <div
-        className="col-50 px-5"
-        style={{
-          overflowY: "auto",
-          height: "85vh",
-          fontFamily: "monospace",
-          whiteSpace: "pre-wrap",
-          fontSize: "small",
-        }}>
-        {pastFile}
-      </div>
-    </div>
+    </FileContext.Provider>
   );
 }

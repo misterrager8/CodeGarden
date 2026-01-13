@@ -1,5 +1,6 @@
 export default function Input({
   value,
+  title,
   onChange,
   required = false,
   size = "sm",
@@ -9,6 +10,7 @@ export default function Input({
 }) {
   return (
     <input
+      title={title}
       required={required}
       type={type_}
       autoComplete="off"

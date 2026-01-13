@@ -5,6 +5,8 @@ import { api } from "../../util";
 import HunkItem from "../items/HunkItem";
 import ButtonGroup from "../atoms/ButtonGroup";
 import Button from "../atoms/Button";
+import Input from "../atoms/Input";
+import Dropdown from "../atoms/Dropdown";
 
 export const LogContext = createContext();
 
@@ -16,6 +18,9 @@ export default function History({ className = "" }) {
   const [commitDetails, setCommitDetails] = useState(null);
   const [fileDetails, setFileDetails] = useState([]);
   const [mode, setMode] = useState("unified");
+
+  const [query, setQuery] = useState("");
+  const onChangeQuery = (e) => setQuery(e.target.value);
 
   const [before, setBefore] = useState(null);
   const [after, setAfter] = useState(null);
@@ -53,6 +58,7 @@ export default function History({ className = "" }) {
       setFileDetails([]);
       setSelectedFile(null);
       getCommit();
+      setQuery("");
     }
   }, [selectedCommit]);
 
@@ -75,49 +81,102 @@ export default function History({ className = "" }) {
           {selectedCommit ? (
             <div className="w-100">
               <div className="flex h-100">
-                <div className="col-25">
-                  {commitDetails?.files.map((file) => (
-                    <div
-                      className={
-                        "file-item " +
-                        (selectedFile?.path === file.path ? "active" : "")
-                      }>
-                      <a
-                        onClick={() => {
-                          selectedFile?.path !== file.path
-                            ? getFileAtCommit(file)
-                            : setSelectedFile(null);
-                        }}>
-                        {file.name}
-                      </a>
+                {/* <div className="col-25">
+                  <div className="mb-3 d-flex">
+                    {query !== "" && (
+                      <Button icon="eraser-fill" onClick={() => setQuery("")} />
+                    )}
+                    <Input
+                      value={query}
+                      onChange={onChangeQuery}
+                      placeholder="Search"
+                    />
+                  </div>
+                  {commitDetails?.files
+                    .filter((x) => x.name.toLowerCase().startsWith(query))
+                    .map((file) => (
+                      <div
+                        className={
+                          "file-item " +
+                          (selectedFile?.path === file.path ? "active" : "")
+                        }>
+                        <a
+                          onClick={() => {
+                            selectedFile?.path !== file.path
+                              ? getFileAtCommit(file)
+                              : setSelectedFile(null);
+                          }}>
+                          {file.name}
+                        </a>
+                      </div>
+                    ))}
+                </div> */}
+                {/* <div className="divider"></div> */}
+                <div className="w-100">
+                  <div className="between text-truncate">
+                    <div className="d-flex text-truncate">
+                      {selectedFile && (
+                        <Button
+                          className="px-0"
+                          icon="x"
+                          onClick={() => setSelectedFile(null)}
+                        />
+                      )}
+                      <Dropdown
+                        icon="file-earmark"
+                        classNameBtn="text-truncate"
+                        taget="history-files"
+                        text={
+                          !selectedFile ? "Select File" : selectedFile.name
+                        }>
+                        {commitDetails?.files
+                          .filter((x) => x.name.toLowerCase().startsWith(query))
+                          .map((file) => (
+                            <a
+                              className={
+                                "dropdown-item " +
+                                (selectedFile?.path === file.path
+                                  ? "active"
+                                  : "")
+                              }
+                              onClick={() => {
+                                selectedFile?.path !== file.path
+                                  ? getFileAtCommit(file)
+                                  : setSelectedFile(null);
+                              }}>
+                              {file.name}
+                            </a>
+                          ))}
+                      </Dropdown>
                     </div>
-                  ))}
-                </div>
-                <div className="divider"></div>
-                <div className="col-75">
-                  <div className="h-100 overflow-auto">
-                    {selectedFile ? (
-                      <div>
-                        <div className="d-flex mb-3">
-                          <Button
-                            active={mode === "before"}
-                            text="Before"
-                            icon="rewind-fill"
-                            onClick={() => setMode("before")}
-                          />
-                          <Button
-                            active={mode === "unified"}
-                            text="Unified"
-                            icon="record-fill"
-                            onClick={() => setMode("unified")}
-                          />
-                          <Button
-                            active={mode === "after"}
-                            text="After"
-                            icon="fast-forward-fill"
-                            onClick={() => setMode("after")}
-                          />
-                        </div>
+
+                    {selectedFile && (
+                      <div className="d-flex">
+                        <Button
+                          active={mode === "before"}
+                          text="Before"
+                          icon="rewind-fill"
+                          onClick={() => setMode("before")}
+                        />
+                        <Button
+                          active={mode === "unified"}
+                          text="Unified"
+                          icon="record-fill"
+                          onClick={() => setMode("unified")}
+                        />
+                        <Button
+                          active={mode === "after"}
+                          text="After"
+                          icon="fast-forward-fill"
+                          onClick={() => setMode("after")}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFile ? (
+                    <div className="mt-3">
+                      <div className="code-scroll">
                         {mode === "unified" && (
                           <>
                             {fileDetails.map((x) => (
@@ -154,12 +213,18 @@ export default function History({ className = "" }) {
                             : null}
                         </div>
                       </div>
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }} className="mb-3">
-                        {commitDetails?.commitInfo}
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        fontFamily: "monospace",
+                        fontSize: ".875rem",
+                      }}
+                      className="my-3">
+                      {commitDetails?.commitInfo}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
