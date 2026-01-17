@@ -8,13 +8,11 @@ import NewIgnored from "../forms/NewIgnore";
 export default function Ignored({ className = "" }) {
   const multiCtx = useContext(MultiContext);
 
-  const label = "ignred";
-
   return (
     <div className={className + ""}>
       <NewIgnored />
       {multiCtx.currentRepo?.ignored.length > 0 ? (
-        <div style={{ height: "78vh", overflowY: "auto" }}>
+        <div style={{ height: "32vh", overflowY: "auto" }}>
           {multiCtx.currentRepo?.ignored.map((x, idx) => (
             <IgnoreItem id={idx} key={uuidv4()} item={x} />
           ))}

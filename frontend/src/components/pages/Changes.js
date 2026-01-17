@@ -8,6 +8,8 @@ import NewStash from "../forms/NewStash";
 import Icon from "../atoms/Icon";
 import HunkItem from "../items/HunkItem";
 import { v4 as uuidv4 } from "uuid";
+import Stashes from "./Stashes";
+import Ignored from "./Ignored";
 
 export const DiffContext = createContext();
 
@@ -128,7 +130,7 @@ export default function Changes({ className = "" }) {
           </div>
         </div>
         <div className="divider"></div>
-        <div className="col-75 d-flex">
+        <div className="col-50 d-flex">
           {selectedDiff ? (
             <div className="px-5 diff-content">
               {diffDetails.map((x) => (
@@ -153,6 +155,11 @@ export default function Changes({ className = "" }) {
           ) : (
             <div className="muted-text">None</div>
           )}
+        </div>
+        <div className="divider"></div>
+        <div className="col-25">
+          <Stashes />
+          <Ignored />
         </div>
       </div>
     </DiffContext.Provider>

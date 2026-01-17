@@ -4,7 +4,6 @@ import { MultiContext } from "../Context";
 import Dropdown from "./atoms/Dropdown";
 import Spinner from "./atoms/Spinner";
 import RepoItem from "./items/RepoItem";
-import NewRepo from "./forms/NewRepo";
 
 export default function Nav({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -89,7 +88,8 @@ export default function Nav({ className = "" }) {
               />
               <Button
                 className={
-                  multiCtx.currentRepo?.diffs.length > 0 ? "orange" : ""
+                  "abbreviate " +
+                  (multiCtx.currentRepo?.diffs.length > 0 ? "orange" : "")
                 }
                 active={multiCtx.currentPage === "changes"}
                 onClick={() => {
@@ -97,22 +97,7 @@ export default function Nav({ className = "" }) {
                   multiCtx.getRepo(multiCtx.currentRepo?.name);
                 }}
                 icon="pencil"
-                text={multiCtx.currentRepo?.diffs.length.toString()}
-              />
-              <Button
-                className={
-                  multiCtx.currentRepo?.todos.filter(
-                    (todo) => todo.status !== "completed"
-                  ).length > 0
-                    ? "orange"
-                    : ""
-                }
-                active={multiCtx.currentPage === "kanban"}
-                onClick={() => multiCtx.setCurrentPage("kanban")}
-                icon="check-all"
-                text={multiCtx.currentRepo?.todos
-                  .filter((todo) => todo.status !== "completed")
-                  .length.toString()}
+                text={`Changes (${multiCtx.currentRepo?.diffs.length.toString()})`}
               />
               <Button
                 className="abbreviate"
@@ -122,11 +107,20 @@ export default function Nav({ className = "" }) {
                 icon="clock-history"
               />
               <Button
-                className="abbreviate"
-                text="Files"
-                active={multiCtx.currentPage === "files"}
-                onClick={() => multiCtx.setCurrentPage("files")}
-                icon="folder"
+                className={
+                  "abbreviate " +
+                  (multiCtx.currentRepo?.todos.filter(
+                    (todo) => todo.status !== "completed"
+                  ).length > 0
+                    ? "orange"
+                    : "")
+                }
+                active={multiCtx.currentPage === "kanban"}
+                onClick={() => multiCtx.setCurrentPage("kanban")}
+                icon="check-all"
+                text={`TODOs (${multiCtx.currentRepo?.todos
+                  .filter((todo) => todo.status !== "completed")
+                  .length.toString()})`}
               />
               <Button
                 className="abbreviate"
@@ -134,20 +128,6 @@ export default function Nav({ className = "" }) {
                 active={multiCtx.currentPage === "readme"}
                 onClick={() => multiCtx.setCurrentPage("readme")}
                 icon="book"
-              />
-              <Button
-                className="abbreviate"
-                text="Stashes"
-                active={multiCtx.currentPage === "stashes"}
-                onClick={() => multiCtx.setCurrentPage("stashes")}
-                icon="archive"
-              />
-              <Button
-                className="abbreviate"
-                text="Ignored"
-                active={multiCtx.currentPage === "ignored"}
-                onClick={() => multiCtx.setCurrentPage("ignored")}
-                icon="eye-slash-fill"
               />
               <div className="divider"></div>
               <Button

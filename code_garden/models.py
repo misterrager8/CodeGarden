@@ -369,6 +369,35 @@ class Repository(object):
     def get_file_at_commit(self, path, hash):
         return self.run_command(["git", "show", f"{hash}:{path}"])
 
+    def get_files_at_commit(self, hash):
+        files_ = []
+        summary = self.run_command(["git", "log", "-1", "--format=%B", hash])
+        changed = [
+            str(self.path / i)
+            for i in self.run_command(
+                ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", hash]
+            ).splitlines()
+        ]
+        for i in self.run_command(["git", "ls-tree", "-r", hash, "--name-only"]).split(
+            "\n"
+        ):
+            path_ = self.path / i
+            if not path_.is_dir():
+                files_.append(
+                    {
+                        "path": str(path_),
+                        "name": path_.name,
+                        "relativePath": i,
+                        "changed": str(path_) in changed,
+                    }
+                )
+        return {
+            "summary": summary,
+            "files": sorted(
+                files_, key=lambda x: (-x.get("changed"), x.get("name").casefold())
+            ),
+        }
+
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
         return dict(

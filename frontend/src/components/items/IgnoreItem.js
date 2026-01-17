@@ -8,7 +8,7 @@ export default function IgnoreItem({ id, item, className = "" }) {
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <div className={className + " d-flex"}>
+    <div className={className + " between"}>
       <div className="small my-auto">{item.name}</div>
       <div>
         <ButtonGroup size="sm">

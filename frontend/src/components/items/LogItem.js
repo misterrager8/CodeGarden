@@ -27,15 +27,7 @@ export default function LogItem({ item, id, className = "" }) {
                 onClick={() => multiCtx.undoCommit()}
               />
             )}
-            <a
-              onClick={() =>
-                logCtx.setSelectedCommit(
-                  logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
-                    ? null
-                    : item
-                )
-              }
-              title={item.name}>
+            <a onClick={() => logCtx.setSelectedCommit(item)} title={item.name}>
               {item.name}
             </a>
           </div>

@@ -571,3 +571,13 @@ def get_file_at_point():
             request.json.get("path"), request.json.get("hash")
         ),
     }
+
+
+@current_app.post("/get_files_at_point")
+def get_files_at_point():
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "files": repo_.get_files_at_commit(request.json.get("hash")),
+    }

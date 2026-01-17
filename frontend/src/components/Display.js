@@ -9,7 +9,6 @@ import Stashes from "./pages/Stashes";
 import Ignored from "./pages/Ignored";
 import Branches from "./pages/Branches";
 import Icon from "./atoms/Icon";
-import Files from "./pages/Files";
 import RepoItem from "./items/RepoItem";
 import NewRepo from "./forms/NewRepo";
 
@@ -34,20 +33,8 @@ export default function Display({ className = "" }) {
       component: <Readme />,
     },
     {
-      value: "stashes",
-      component: <Stashes />,
-    },
-    {
-      value: "ignored",
-      component: <Ignored />,
-    },
-    {
       value: "branches",
       component: <Branches />,
-    },
-    {
-      value: "files",
-      component: <Files />,
     },
   ];
 
@@ -77,7 +64,7 @@ export default function Display({ className = "" }) {
         </>
       ) : (
         <div className="body d-flex">
-          <div className="inner d-flex">
+          <div className="inner flex">
             <div className="col-75">
               <div className="repo-items">
                 {multiCtx.repos.map((item) => (
@@ -89,14 +76,18 @@ export default function Display({ className = "" }) {
                         ? " active"
                         : "")
                     }>
-                    <div className="col">{item.name}</div>
-                    <div className="col d-flex">
+                    <div className="col-4 text-truncate">{item.name}</div>
+                    <div className="col d-flex text-truncate">
                       <Icon name="clock" />
-                      <div className="ms-2">{item.log?.[0]?.timestamp}</div>
+                      <div className="ms-2 text-truncate">
+                        {item.log?.[0]?.timestamp}
+                      </div>
                     </div>
-                    <div className="col d-flex">
+                    <div className="col d-flex text-truncate">
                       <Icon name="bezier2" />
-                      <div className="ms-2">{item.current_branch.name}</div>
+                      <div className="ms-2 text-truncate">
+                        {item.current_branch.name}
+                      </div>
                     </div>
                     <div className="col">
                       {item.diffs.length > 0 && (

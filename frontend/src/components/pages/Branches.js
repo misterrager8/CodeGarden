@@ -174,13 +174,17 @@ export default function Branches({ className = "" }) {
                     {comparison?.map((x) => (
                       <div className="comparison-item">
                         <div className="between w-100">
-                          <div className="d-flex">
-                            <div className="purple small me-2 my-auto">
+                          <div className="d-flex text-truncate">
+                            <div className="small me-2 my-auto">
                               {x.abbrev_hash}
                             </div>
-                            <div>{x.name}</div>
+                            <div title={x.name} className="text-truncate">
+                              {x.name}
+                            </div>
                           </div>
-                          <div className="small my-auto">{x.timestamp}</div>
+                          <div className="small my-auto text-truncate">
+                            {x.timestamp}
+                          </div>
                         </div>
                       </div>
                     ))}

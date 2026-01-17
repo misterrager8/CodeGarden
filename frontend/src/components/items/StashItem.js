@@ -42,7 +42,7 @@ export default function StashItem({ item, id, className = "" }) {
 
   return (
     <div className={className + " stash-item between"}>
-      <div className="d-flex text-truncate ">
+      <div className="d-flex text-truncate">
         <Button
           border={false}
           icon="chevron-double-up"

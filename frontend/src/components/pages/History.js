@@ -2,11 +2,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../Context";
 import LogItem from "../items/LogItem";
 import { api } from "../../util";
-import HunkItem from "../items/HunkItem";
-import ButtonGroup from "../atoms/ButtonGroup";
+import SearchFiles from "../forms/SearchFiles";
 import Button from "../atoms/Button";
-import Input from "../atoms/Input";
-import Dropdown from "../atoms/Dropdown";
+import Icon from "../atoms/Icon";
+import LineItem from "../items/LineItem";
 
 export const LogContext = createContext();
 
@@ -15,57 +14,62 @@ export default function History({ className = "" }) {
 
   const [selectedCommit, setSelectedCommit] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [commitDetails, setCommitDetails] = useState(null);
-  const [fileDetails, setFileDetails] = useState([]);
-  const [mode, setMode] = useState("unified");
+
+  const [summary, setSummary] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [fileContents, setFileContents] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const [query, setQuery] = useState("");
-  const onChangeQuery = (e) => setQuery(e.target.value);
+  const [fontSize, setFontSize] = useState(0.875);
+  const onChangeFontSize = (e) => setFontSize(e.target.value);
 
-  const [before, setBefore] = useState(null);
-  const [after, setAfter] = useState(null);
-
-  const getCommit = () => {
+  const getFileAtCommit = () => {
     api(
-      "get_commit",
+      "get_file_at_point",
       {
-        name: multiCtx.currentRepo.name,
-        abbrev_hash: selectedCommit?.abbrev_hash,
+        repository: multiCtx.currentRepo?.name,
+        path: selectedFile?.relativePath,
+        hash: selectedCommit?.abbrev_hash,
       },
-      (data) => setCommitDetails(data.details)
+      (data) => {
+        setFileContents(data.file);
+      }
     );
   };
 
-  const getFileAtCommit = (file) => {
+  const getFilesAtCommit = () => {
     api(
-      "get_file_at_commit",
+      "get_files_at_point",
       {
-        name: multiCtx.currentRepo?.name,
-        path: file.path,
-        abbrevHash: selectedCommit?.abbrev_hash,
+        repository: multiCtx.currentRepo?.name,
+        hash: selectedCommit?.abbrev_hash,
       },
       (data) => {
-        setFileDetails(data.info);
-        setBefore(data.before);
-        setAfter(data.after);
-        setSelectedFile(file);
+        setFiles(data.files.files);
+        setSummary(data.files.summary);
       }
     );
   };
 
   useEffect(() => {
-    if (selectedCommit) {
-      setFileDetails([]);
-      setSelectedFile(null);
-      getCommit();
-      setQuery("");
-    }
+    setSelectedFile(null);
+    selectedCommit && getFilesAtCommit();
   }, [selectedCommit]);
+
+  useEffect(() => {
+    selectedFile ? getFileAtCommit() : setFileContents(null);
+  }, [selectedFile]);
+
+  useEffect(() => {
+    multiCtx.currentRepo && setSelectedCommit(multiCtx.currentRepo?.log?.[0]);
+  }, [multiCtx.currentRepo]);
 
   const contextValue = {
     selectedCommit: selectedCommit,
     setSelectedCommit: setSelectedCommit,
-    getCommit: getCommit,
+    query: query,
+    setQuery: setQuery,
   };
 
   return (
@@ -76,160 +80,77 @@ export default function History({ className = "" }) {
             <LogItem id={idx} item={item} />
           ))}
         </div>
-        <div className="divider"></div>
-        <div className="col-75 d-flex">
-          {selectedCommit ? (
-            <div className="w-100">
-              <div className="flex h-100">
-                {/* <div className="col-25">
-                  <div className="mb-3 d-flex">
-                    {query !== "" && (
-                      <Button icon="eraser-fill" onClick={() => setQuery("")} />
-                    )}
-                    <Input
-                      value={query}
-                      onChange={onChangeQuery}
-                      placeholder="Search"
-                    />
-                  </div>
-                  {commitDetails?.files
-                    .filter((x) => x.name.toLowerCase().startsWith(query))
-                    .map((file) => (
-                      <div
-                        className={
-                          "file-item " +
-                          (selectedFile?.path === file.path ? "active" : "")
-                        }>
-                        <a
-                          onClick={() => {
-                            selectedFile?.path !== file.path
-                              ? getFileAtCommit(file)
-                              : setSelectedFile(null);
-                          }}>
-                          {file.name}
-                        </a>
-                      </div>
-                    ))}
-                </div> */}
-                {/* <div className="divider"></div> */}
-                <div className="w-100">
-                  <div className="between text-truncate">
-                    <div className="d-flex text-truncate">
-                      {selectedFile && (
-                        <Button
-                          className="px-0"
-                          icon="x"
-                          onClick={() => setSelectedFile(null)}
-                        />
-                      )}
-                      <Dropdown
-                        icon="file-earmark"
-                        classNameBtn="text-truncate"
-                        taget="history-files"
-                        text={
-                          !selectedFile ? "Select File" : selectedFile.name
-                        }>
-                        {commitDetails?.files
-                          .filter((x) => x.name.toLowerCase().startsWith(query))
-                          .map((file) => (
-                            <a
-                              className={
-                                "dropdown-item " +
-                                (selectedFile?.path === file.path
-                                  ? "active"
-                                  : "")
-                              }
-                              onClick={() => {
-                                selectedFile?.path !== file.path
-                                  ? getFileAtCommit(file)
-                                  : setSelectedFile(null);
-                              }}>
-                              {file.name}
-                            </a>
-                          ))}
-                      </Dropdown>
-                    </div>
-
-                    {selectedFile && (
-                      <div className="d-flex">
-                        <Button
-                          active={mode === "before"}
-                          text="Before"
-                          icon="rewind-fill"
-                          onClick={() => setMode("before")}
-                        />
-                        <Button
-                          active={mode === "unified"}
-                          text="Unified"
-                          icon="record-fill"
-                          onClick={() => setMode("unified")}
-                        />
-                        <Button
-                          active={mode === "after"}
-                          text="After"
-                          icon="fast-forward-fill"
-                          onClick={() => setMode("after")}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {selectedFile ? (
-                    <div className="mt-3">
-                      <div className="code-scroll">
-                        {mode === "unified" && (
-                          <>
-                            {fileDetails.map((x) => (
-                              <div className="pb-4">
-                                {/* {x.id} */}
-                                <HunkItem
-                                  added={false}
-                                  item={x.lines
-                                    .filter((y) => !y.added)
-                                    .map((z) => z.content)
-                                    .join("\n")}
-                                />
-                                <HunkItem
-                                  added={true}
-                                  item={x.lines
-                                    .filter((y) => y.added)
-                                    .map((z) => z.content)
-                                    .join("\n")}
-                                />
-                              </div>
-                            ))}
-                          </>
-                        )}
-                        <div
-                          style={{
-                            whiteSpace: "pre-wrap",
-                            fontFamily: "monospace",
-                            fontSize: "small",
-                          }}>
-                          {mode === "before"
-                            ? before
-                            : mode === "after"
-                            ? after
-                            : null}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        whiteSpace: "pre-wrap",
-                        fontFamily: "monospace",
-                        fontSize: ".875rem",
-                      }}
-                      className="my-3">
-                      {commitDetails?.commitInfo}
-                    </div>
+        <div className="col-25">
+          <SearchFiles className="mb-3" />
+          <div className="mt-3" style={{ overflowY: "auto", height: "71vh" }}>
+            {files
+              .filter((w) => w.name.toLowerCase().startsWith(query))
+              .map((x) => (
+                <div
+                  key={x.path}
+                  className={
+                    "file-item " +
+                    (selectedFile?.path === x.path ? "active" : "")
+                  }>
+                  {x.changed && (
+                    <Icon name="record-fill" className="me-2 red" />
                   )}
+                  <a
+                    onClick={() => {
+                      if (selectedFile?.path !== x.path) {
+                        setSelectedFile(x);
+                        getFileAtCommit();
+                      } else {
+                        setSelectedFile(null);
+                      }
+                    }}>
+                    {x.name}
+                  </a>
                 </div>
+              ))}
+          </div>
+        </div>
+        <div className="divider"></div>
+        <div className="col-50 d-flex">
+          {selectedFile ? (
+            <div className="w-100">
+              <div>
+                <Button
+                  text="Copy"
+                  icon={copied ? "check-lg" : "clipboard"}
+                  onClick={() => {
+                    navigator.clipboard.writeText(fileContents);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1000);
+                  }}
+                />
+                <div className="code-scroll my-3">
+                  <div
+                    style={{
+                      fontSize: `${fontSize}rem`,
+                    }}>
+                    {fileContents?.split("\n").map((x, idx) => (
+                      <LineItem item={x} idx={idx} />
+                    ))}
+                  </div>
+                </div>
+                <input
+                  className="form-range"
+                  type="range"
+                  min={0.875}
+                  max={10}
+                  value={fontSize}
+                  onChange={onChangeFontSize}
+                  step={0.025}
+                  autoComplete="off"
+                />
+                <span>
+                  <Icon name="type" className="me-2" /> {fontSize} rem
+                </span>
               </div>
             </div>
           ) : (
-            <div className="muted-text">None</div>
+            <div className="muted-text">{summary}</div>
           )}
         </div>
       </div>
