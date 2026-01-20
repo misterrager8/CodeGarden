@@ -3,6 +3,7 @@ export default function Input({
   title,
   onChange,
   required = false,
+  disabled = false,
   size = "sm",
   placeholder,
   type_ = "text",
@@ -10,6 +11,7 @@ export default function Input({
 }) {
   return (
     <input
+      disabled={disabled}
       title={title}
       required={required}
       type={type_}

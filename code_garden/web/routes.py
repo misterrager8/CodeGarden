@@ -37,7 +37,9 @@ def about():
 
 @current_app.post("/settings")
 def settings():
-    return config.get()
+    settings_ = {"home_dir": str(config.HOME_DIR), "port": config.PORT}
+
+    return settings_
 
 
 @current_app.post("/repositories")
@@ -61,68 +63,6 @@ def commit():
         "repo": repository_.to_dict(),
         "repos": [i.to_dict() for i in Repository.all()],
     }
-
-
-@current_app.post("/get_commit")
-def get_commit():
-    return {
-        "details": LogItem.get(
-            request.json.get("name"), request.json.get("abbrev_hash")
-        )
-    }
-
-
-@current_app.post("/get_file_at_commit")
-def get_file_at_commit():
-    "git show abc1234^:src/main.py"
-
-    repository_ = Repository(request.json.get("name"))
-    diff_ = repository_.run_command(
-        [
-            "git",
-            "show",
-            request.json.get("abbrevHash"),
-            "--",
-            request.json.get("path"),
-        ]
-    ).splitlines()
-
-    before = repository_.run_command(
-        [
-            "git",
-            "show",
-            f"{request.json.get("abbrevHash")}^:{request.json.get("path")}",
-        ]
-    )
-
-    after = repository_.run_command(
-        [
-            "git",
-            "show",
-            f"{request.json.get("abbrevHash")}:{request.json.get("path")}",
-        ]
-    )
-
-    hunks = []
-    current_hunk = None
-
-    for line in diff_:
-        if line.startswith("@@"):
-            if current_hunk:
-                hunks.append(current_hunk)
-            current_hunk = {
-                "id": line,
-                "lines": [],
-            }
-        elif re.match(r"^\+[^+]", line):
-            current_hunk["lines"].append({"added": True, "content": line[1:]})
-        elif re.match(r"^-[^-]", line):
-            current_hunk["lines"].append({"added": False, "content": line[1:]})
-
-    if current_hunk:
-        hunks.append(current_hunk)
-
-    return {"info": hunks, "before": before, "after": after}
 
 
 @current_app.post("/create_repository")
@@ -539,28 +479,6 @@ def run_command():
     }
 
 
-@current_app.post("/get_files")
-def get_files():
-    repo_ = Repository(request.json.get("repository"))
-
-    return {
-        "status": "done",
-        "files": repo_.get_files(),
-    }
-
-
-@current_app.post("/get_file_history")
-def get_file_history():
-    repo_ = Repository(request.json.get("repository"))
-
-    return {
-        "status": "done",
-        "commits": [
-            i.to_dict() for i in repo_.get_file_history(request.json.get("path"))
-        ],
-    }
-
-
 @current_app.post("/get_file_at_point")
 def get_file_at_point():
     repo_ = Repository(request.json.get("repository"))
@@ -580,4 +498,18 @@ def get_files_at_point():
     return {
         "status": "done",
         "files": repo_.get_files_at_commit(request.json.get("hash")),
+    }
+
+
+@current_app.post("/blame")
+def blame():
+    repo_ = Repository(request.json.get("repository"))
+
+    return {
+        "status": "done",
+        "blame": repo_.blame(
+            request.json.get("hash"),
+            request.json.get("line_number"),
+            request.json.get("path"),
+        ),
     }

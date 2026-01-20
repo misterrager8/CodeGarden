@@ -24,6 +24,8 @@ export default function History({ className = "" }) {
   const [fontSize, setFontSize] = useState(0.875);
   const onChangeFontSize = (e) => setFontSize(e.target.value);
 
+  const [showPastVersion, setShowPastVersion] = useState(false);
+
   const getFileAtCommit = () => {
     api(
       "get_file_at_point",
@@ -34,7 +36,7 @@ export default function History({ className = "" }) {
       },
       (data) => {
         setFileContents(data.file);
-      }
+      },
     );
   };
 
@@ -48,7 +50,7 @@ export default function History({ className = "" }) {
       (data) => {
         setFiles(data.files.files);
         setSummary(data.files.summary);
-      }
+      },
     );
   };
 
@@ -59,6 +61,7 @@ export default function History({ className = "" }) {
 
   useEffect(() => {
     selectedFile ? getFileAtCommit() : setFileContents(null);
+    setShowPastVersion(false);
   }, [selectedFile]);
 
   useEffect(() => {
@@ -68,6 +71,8 @@ export default function History({ className = "" }) {
   const contextValue = {
     selectedCommit: selectedCommit,
     setSelectedCommit: setSelectedCommit,
+    selectedFile: selectedFile,
+    setSelectedFile: setSelectedFile,
     query: query,
     setQuery: setQuery,
   };
@@ -124,14 +129,36 @@ export default function History({ className = "" }) {
                     setTimeout(() => setCopied(false), 1000);
                   }}
                 />
+                {selectedFile?.changed && (
+                  <Button
+                    active={showPastVersion}
+                    onClick={() => setShowPastVersion(!showPastVersion)}
+                    text={
+                      "Show " +
+                      (showPastVersion ? "Current" : "Previous") +
+                      " Version"
+                    }
+                    icon={(showPastVersion ? "play" : "rewind") + "-fill"}
+                  />
+                )}
                 <div className="code-scroll my-3">
                   <div
                     style={{
                       fontSize: `${fontSize}rem`,
                     }}>
-                    {fileContents?.split("\n").map((x, idx) => (
-                      <LineItem item={x} idx={idx} />
-                    ))}
+                    {showPastVersion ? (
+                      <>
+                        {fileContents?.before?.split("\n").map((x, idx) => (
+                          <LineItem item={x} idx={idx} />
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {fileContents?.after?.split("\n").map((x, idx) => (
+                          <LineItem item={x} idx={idx} />
+                        ))}
+                      </>
+                    )}
                   </div>
                 </div>
                 <input

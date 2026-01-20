@@ -1,3 +1,5 @@
-export default function Icon({ name, className = "" }) {
-  return <span className={className + " bi bi-" + name}></span>;
+export default function Icon({ name, onClick, className = "" }) {
+  return (
+    <span onClick={onClick} className={className + " bi bi-" + name}></span>
+  );
 }

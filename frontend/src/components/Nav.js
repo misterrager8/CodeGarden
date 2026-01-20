@@ -8,29 +8,9 @@ import RepoItem from "./items/RepoItem";
 export default function Nav({ className = "" }) {
   const multiCtx = useContext(MultiContext);
 
-  const [theme, setTheme] = useState(localStorage.getItem("garden-theme"));
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [exported, setExported] = useState(false);
-
-  const themes = [
-    "light",
-    "orchard",
-    "green-tea",
-    "summer-blue",
-    "sunrise",
-    "dark",
-    "cranberry",
-    "pine",
-    "winterfresh",
-    "coffee",
-    "pumpkin",
-  ];
-
-  useEffect(() => {
-    localStorage.setItem("garden-theme", theme);
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     multiCtx.getRepos();
@@ -54,7 +34,10 @@ export default function Nav({ className = "" }) {
             ) : (
               <Button
                 className="abbreviate"
-                onClick={() => multiCtx.setCurrentRepo(null)}
+                onClick={() => {
+                  multiCtx.setCurrentRepo(null);
+                  multiCtx.setShowSettings(false);
+                }}
                 text="code-garden"
                 icon="flower2"
               />
@@ -110,7 +93,7 @@ export default function Nav({ className = "" }) {
                 className={
                   "abbreviate " +
                   (multiCtx.currentRepo?.todos.filter(
-                    (todo) => todo.status !== "completed"
+                    (todo) => todo.status !== "completed",
                   ).length > 0
                     ? "orange"
                     : "")
@@ -198,21 +181,14 @@ export default function Nav({ className = "" }) {
             className="btn btn-sm border-0">
             <i className="bi bi-info-circle" />
           </a>
-          <Dropdown
-            classNameBtn="abbreviate"
-            showCaret={false}
-            icon="paint-bucket">
-            {themes.map((x) => (
-              <a
-                className={
-                  "dropdown-item text-capitalize text-center" +
-                  (theme === x ? " active" : "")
-                }
-                onClick={() => setTheme(x)}>
-                {x}
-              </a>
-            ))}
-          </Dropdown>
+          <Button
+            active={!multiCtx.currentRepo && multiCtx.showSettings}
+            icon="gear-fill"
+            onClick={() => {
+              multiCtx.setCurrentRepo(null);
+              multiCtx.setShowSettings(true);
+            }}
+          />
         </div>
       </div>
     </div>

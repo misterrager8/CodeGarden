@@ -189,14 +189,14 @@ class Repository(object):
         Args:
             brief_descrip (str): Short description of what the Repository contains.
         """
-        files = ["LICENSE.md", ".gitignore", "todos.json"]
+        files = ["LICENSE.md", ".gitignore"]
         self.path.mkdir()
         Readme(self.name, brief_descrip).write(self.path)
         for i in files:
             (self.path / i).touch()
 
         self.run_command(["git", "init"])
-        self.commit("Initial commit")
+        self.commit("Initial commit", add_all=True)
 
     @classmethod
     def clone(cls, url: str):
@@ -317,57 +317,58 @@ class Repository(object):
         if delete_head:
             self.run_command(["git", "branch", "-D", child_branch])
 
-    def get_files(self):
-        files_ = []
-        for i in self.run_command(["git", "ls-files"]).split("\n"):
-            file_ = self.path / i
-            if not file_.is_dir():
-                files_.append(
-                    {"path": str(file_), "name": file_.name, "relativePath": i}
-                )
+    # def get_file_history(self, path):
+    #     _ = []
+    #     try:
+    #         for i in self.run_command(
+    #             [
+    #                 "git",
+    #                 "log",
+    #                 "--oneline",
+    #                 "-1000",
+    #                 "--pretty=format:%s\t%at\t%h\t%an",
+    #                 path,
+    #             ]
+    #         ).split("\n"):
+    #             if len(i.strip().split("\t")) == 2:
+    #                 _.append(
+    #                     LogItem(
+    #                         self.name,
+    #                         "[No Commit Message]",
+    #                         datetime.datetime.min,
+    #                         i.strip().split("\t")[0],
+    #                         i.strip().split("\t")[1],
+    #                     )
+    #                 )
+    #             else:
+    #                 _.append(
+    #                     LogItem(
+    #                         self.name,
+    #                         i.strip().split("\t")[0],
+    #                         datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+    #                         i.strip().split("\t")[2],
+    #                         i.strip().split("\t")[3],
+    #                     )
+    #                 )
 
-        return files_
-
-    def get_file_history(self, path):
-        _ = []
-        try:
-            for i in self.run_command(
-                [
-                    "git",
-                    "log",
-                    "--oneline",
-                    "-1000",
-                    "--pretty=format:%s\t%at\t%h\t%an",
-                    path,
-                ]
-            ).split("\n"):
-                if len(i.strip().split("\t")) == 2:
-                    _.append(
-                        LogItem(
-                            self.name,
-                            "[No Commit Message]",
-                            datetime.datetime.min,
-                            i.strip().split("\t")[0],
-                            i.strip().split("\t")[1],
-                        )
-                    )
-                else:
-                    _.append(
-                        LogItem(
-                            self.name,
-                            i.strip().split("\t")[0],
-                            datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
-                            i.strip().split("\t")[2],
-                            i.strip().split("\t")[3],
-                        )
-                    )
-
-            return _
-        except:
-            return []
+    #         return _
+    #     except:
+    #         return []
 
     def get_file_at_commit(self, path, hash):
-        return self.run_command(["git", "show", f"{hash}:{path}"])
+        before = self.run_command(
+            [
+                "git",
+                "show",
+                f"{hash}^:{path}",
+            ]
+        )
+        after = self.run_command(["git", "show", f"{hash}:{path}"])
+
+        return {
+            "before": before,
+            "after": after,
+        }
 
     def get_files_at_commit(self, hash):
         files_ = []
@@ -398,6 +399,12 @@ class Repository(object):
             ),
         }
 
+    def blame(self, hash, line_number, path):
+        "git blame 8c150e8 -L 1,1 -- README.md"
+        return self.run_command(
+            ["git", "blame", hash, "-L", f"{line_number},{line_number}", "--", path]
+        )
+
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
         return dict(
@@ -415,7 +422,7 @@ class Repository(object):
         )
 
     def __str__(self):
-        return f"{self.name.ljust(20)} (current branch: {self.current_branch.name} (+{self.current_branch.compare_with_master}), last updated: {self.log[0].timestamp.strftime('%B %-d, %Y @ %-I:%M %p')})"
+        return f"{self.name.ljust(20)} (current branch: {self.current_branch.name}, last updated: {self.log[0].timestamp.strftime('%B %-d, %Y @ %-I:%M %p')})"
 
 
 class Branch(object):

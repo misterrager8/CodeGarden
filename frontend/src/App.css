@@ -32,7 +32,8 @@ body {
   cursor: pointer;
 }
 
-.form-control:focus {
+.form-control:focus,
+.form-control:disabled {
   background-color: transparent;
   color: var(--primary-txt);
 }
@@ -344,6 +345,14 @@ body {
   margin-top: auto;
   margin-bottom: auto;
   user-select: none;
+}
+
+.blame {
+  font-size: small;
+  opacity: 50%;
+  font-style: italic;
+  text-align: center;
+  margin: 20px 0px;
 }
 
 @media screen and (max-width: 1427px) {

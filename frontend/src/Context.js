@@ -9,8 +9,9 @@ export default function MultiProvider({ children }) {
   const [repos, setRepos] = useState([]);
   const [currentRepo, setCurrentRepo] = useState(null);
   const [currentPage, setCurrentPage] = useState(
-    localStorage.getItem("code-garden-section") || "changes"
+    localStorage.getItem("code-garden-section") || "changes",
   );
+  const [showSettings, setShowSettings] = useState(false);
 
   const [tags, setTags] = useState(
     JSON.parse(localStorage.getItem("code-garden-tags")) ||
@@ -22,7 +23,7 @@ export default function MultiProvider({ children }) {
         "feature",
         "tweak",
         "ui",
-      ].map((x) => ({ label: x, id: uuidv4() }))
+      ].map((x) => ({ label: x, id: uuidv4() })),
   );
 
   const getRepos = () => {
@@ -59,7 +60,7 @@ export default function MultiProvider({ children }) {
       (data) => {
         setCurrentRepo(data);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -73,7 +74,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -94,7 +95,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -149,7 +150,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -165,7 +166,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -181,7 +182,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -198,7 +199,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -214,7 +215,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -230,7 +231,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -246,7 +247,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -264,7 +265,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -279,7 +280,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -294,7 +295,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -309,7 +310,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -325,7 +326,7 @@ export default function MultiProvider({ children }) {
       (data) => {
         setCurrentRepo(data);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -355,7 +356,7 @@ export default function MultiProvider({ children }) {
         setCurrentRepo(data.repo);
         setRepos(data.repos);
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -379,7 +380,7 @@ export default function MultiProvider({ children }) {
 
   useEffect(() => {
     getRepo(localStorage.getItem("code-garden-last-opened"), (data) =>
-      setCurrentRepo(data)
+      setCurrentRepo(data),
     );
   }, []);
 
@@ -440,6 +441,8 @@ export default function MultiProvider({ children }) {
 
     currentPage: currentPage,
     setCurrentPage: setCurrentPage,
+    showSettings: showSettings,
+    setShowSettings: setShowSettings,
   };
 
   return (
