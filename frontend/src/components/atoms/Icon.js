@@ -1,5 +1,5 @@
+import { Icon as Icon_ } from "@iconify/react";
+
 export default function Icon({ name, onClick, className = "" }) {
-  return (
-    <span onClick={onClick} className={className + " bi bi-" + name}></span>
-  );
+  return <Icon_ onClick={onClick} inline className={className} icon={name} />;
 }

@@ -1,3 +1,5 @@
+import { Icon } from "@iconify/react";
+
 export default function Button({
   text,
   onClick,
@@ -20,7 +22,7 @@ export default function Button({
         (border ? "" : " border-0") +
         (size ? ` btn-${size}` : "")
       }>
-      {icon && <i className={" bi bi-" + icon}></i>}
+      {icon && <Icon inline icon={icon} />}
       {text && <span className={icon ? "ms-2" : ""}>{text}</span>}
       {children}
     </button>

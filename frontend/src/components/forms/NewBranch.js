@@ -24,7 +24,7 @@ export default function NewBranch({ className = "" }) {
       <Dropdown
         showCaret={!prefix}
         classNameBtn="border-0"
-        icon={prefix ? "bezier2" : "tags"}
+        icon="famicons:git-branch-sharp"
         text={prefix ? `${prefix}/` : null}>
         <a
           onClick={() => setPrefix(null)}

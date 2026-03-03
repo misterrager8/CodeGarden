@@ -14,13 +14,13 @@ export default function IgnoreItem({ id, item, className = "" }) {
         <ButtonGroup size="sm">
           {deleting && (
             <Button
-              icon="question-lg"
+              icon="fluent:question-32-filled"
               onClick={() => multiCtx.deleteIgnore(id)}
               className="border-0 red"
             />
           )}
           <Button
-            icon="x-lg"
+            icon="iwwa:delete"
             className="border-0 red"
             onClick={() => setDeleting(!deleting)}
           />

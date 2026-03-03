@@ -38,7 +38,7 @@ export default function NewRepo({ className = "" }) {
         <Button
           onClick={() => generateName()}
           text="Generate Name"
-          icon="shuffle"
+          icon="ix:rename"
         />
       </div>
       <textarea
@@ -52,7 +52,7 @@ export default function NewRepo({ className = "" }) {
         type_="submit"
         className="mt-3 w-100"
         text="Create New Repo"
-        icon="plus-lg"
+        icon="mynaui:plus-solid"
       />
     </form>
   );

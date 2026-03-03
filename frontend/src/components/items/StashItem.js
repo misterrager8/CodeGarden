@@ -20,7 +20,7 @@ export default function StashItem({ item, id, className = "" }) {
         multiCtx.setCurrentRepo(data.repo);
         multiCtx.setRepos(data.repos);
         multiCtx.setLoading(false);
-      }
+      },
     );
   };
 
@@ -36,7 +36,7 @@ export default function StashItem({ item, id, className = "" }) {
         multiCtx.setCurrentRepo(data.repo);
         multiCtx.setRepos(data.repos);
         multiCtx.setLoading(false);
-      }
+      },
     );
   };
 
@@ -45,7 +45,7 @@ export default function StashItem({ item, id, className = "" }) {
       <div className="d-flex text-truncate">
         <Button
           border={false}
-          icon="chevron-double-up"
+          icon="codicon:git-stash-pop"
           className="purple me-1"
           onClick={() => unstash()}
         />
@@ -55,14 +55,14 @@ export default function StashItem({ item, id, className = "" }) {
         {deleting && (
           <Button
             border={false}
-            icon="question-lg"
+            icon="fluent:question-32-filled"
             className="red"
             onClick={() => dropStash()}
           />
         )}
         <Button
           border={false}
-          icon="x-lg"
+          icon="iwwa:delete"
           className="red"
           onClick={() => setDeleting(!deleting)}
         />

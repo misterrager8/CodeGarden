@@ -22,7 +22,7 @@ export default function LogItem({ item, id, className = "" }) {
             {id === 0 && (
               <Button
                 text="Undo"
-                icon="arrow-return-left"
+                icon="ic:baseline-undo"
                 className="border-0 purple"
                 onClick={() => multiCtx.undoCommit()}
               />

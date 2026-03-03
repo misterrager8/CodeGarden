@@ -20,15 +20,15 @@ export default function BranchItem({ item, className = "" }) {
         className="small my-auto"
         onClick={() =>
           branchCtx.setSelectedBranch(
-            branchCtx.selectedBranch === item ? null : item
+            branchCtx.selectedBranch === item ? null : item,
           )
         }>
-        <Icon className="me-2" name="bezier" />
+        <Icon className="me-2" name="famicons:git-branch-sharp" />
         {item.name}
       </a>
       <div>
         <Button
-          icon="basket2-fill"
+          icon="ic:outline-shopping-cart-checkout"
           border={false}
           onClick={() => multiCtx.checkout(item.name)}
         />
@@ -38,7 +38,7 @@ export default function BranchItem({ item, className = "" }) {
             className="red"
             size="sm"
             border={false}
-            icon="question-lg"
+            icon="fluent:question-32-filled"
           />
         )}
         <Button
@@ -46,7 +46,7 @@ export default function BranchItem({ item, className = "" }) {
           size="sm"
           border={false}
           onClick={() => setDeleting(!deleting)}
-          icon="x-lg"
+          icon="iwwa:delete"
         />
       </div>
     </div>

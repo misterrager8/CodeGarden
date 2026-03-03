@@ -43,14 +43,14 @@ export default function LineItem({ item, idx }) {
             </span>
             <Icon
               onClick={() => copyLine()}
-              name={copied ? "check-lg" : "clipboard"}
+              name={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
               className={"me-3" + (hovered ? "" : " invisible")}
             />
             <Icon
               onClick={() => {
                 blame ? setBlame(null) : getBlame();
               }}
-              name="git"
+              name="picon:blame"
               className={"" + (hovered ? "" : " invisible")}
             />
           </span>

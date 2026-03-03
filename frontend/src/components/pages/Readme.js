@@ -154,7 +154,7 @@ export default function Readme({ className = "" }) {
                 setTimeout(() => setSaved(false), 1500);
               }}
               className="orange mb-1"
-              icon="record2-fill"
+              icon="bxs:save"
             />
           </div>
           <textarea

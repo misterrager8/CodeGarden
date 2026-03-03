@@ -42,7 +42,7 @@ export default function Branches({ className = "" }) {
         multiCtx.setLoading(false);
         setMerging(false);
         setSelectedBranch(null);
-      }
+      },
     );
   };
 
@@ -56,7 +56,7 @@ export default function Branches({ className = "" }) {
           childBranch: multiCtx.currentRepo.current_branch.name,
         },
         (data) =>
-          setComparison(multiCtx.currentRepo.log.slice(0, data.comparison))
+          setComparison(multiCtx.currentRepo.log.slice(0, data.comparison)),
       );
   }, [selectedBranch, multiCtx.currentRepo]);
 
@@ -69,11 +69,11 @@ export default function Branches({ className = "" }) {
     let comparison_;
     if (sort === "newest") {
       comparison_ = comparison.sort(
-        (x, y) => new Date(y.iso_timestamp) - new Date(x.iso_timestamp)
+        (x, y) => new Date(y.iso_timestamp) - new Date(x.iso_timestamp),
       );
     } else if (sort === "oldest") {
       comparison_ = comparison.sort(
-        (x, y) => new Date(x.iso_timestamp) - new Date(y.iso_timestamp)
+        (x, y) => new Date(x.iso_timestamp) - new Date(y.iso_timestamp),
       );
     } else {
       comparison_ = comparison.map((x) => x.name).sort();
@@ -126,7 +126,7 @@ export default function Branches({ className = "" }) {
                 <div className="flex w-100 mb-3">
                   <div>
                     <Button
-                      icon="sign-intersection-y-fill"
+                      icon="fluent:merge-16-filled"
                       active={merging}
                       onClick={() => setMerging(!merging)}
                       text="Squash + Merge"
@@ -134,7 +134,7 @@ export default function Branches({ className = "" }) {
                     {merging && (
                       <>
                         <Button
-                          icon="filter-right"
+                          icon="material-symbols:sort-rounded"
                           className="non-btn"
                           text="Sort By"
                         />
@@ -153,7 +153,7 @@ export default function Branches({ className = "" }) {
                       <Button
                         active={deleteHead}
                         className="red"
-                        icon={deleteHead ? "check-circle-fill" : "circle"}
+                        icon="iconoir:trash-solid"
                         text={`Delete ${
                           multiCtx.currentRepo.current_branch?.name
                         }${!deleteHead ? "?" : ""}`}
@@ -161,7 +161,7 @@ export default function Branches({ className = "" }) {
                       />
                       <Button
                         className="green"
-                        icon="chevron-double-right"
+                        icon="fluent:merge-16-filled"
                         text="Confirm Merge"
                         border={false}
                         onClick={() => merge()}

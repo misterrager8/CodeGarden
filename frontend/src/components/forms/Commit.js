@@ -33,10 +33,10 @@ export default function Commit({ className = "" }) {
         <Dropdown
           target="pick-tag"
           showCaret
-          icon="tag-fill"
+          icon="tabler:tag-filled"
           classNameBtn="border-0">
           <a onClick={() => setTag(null)} className="dropdown-item">
-            <Icon name="dash-lg" className="me-2" />
+            <Icon name="ri:checkbox-blank-circle-line" className="me-2" />
             No Tag
           </a>
           {multiCtx.tags.map((x) => (
@@ -44,7 +44,7 @@ export default function Commit({ className = "" }) {
               key={x.id}
               onClick={() => setTag(x.label)}
               className="dropdown-item">
-              <Icon name="tags-fill" className="me-2" />
+              <Icon name="tabler:tag-filled" className="me-2" />
               {x.label}
             </a>
           ))}
@@ -54,7 +54,7 @@ export default function Commit({ className = "" }) {
           autoClose="outside"
           target="commit-todo"
           showCaret
-          icon="check-all"
+          icon="mdi:check-bold"
           classNameBtn="border-0"
           classNameMenu="w-100 overflow-auto">
           {multiCtx.currentRepo.todos
@@ -64,11 +64,12 @@ export default function Commit({ className = "" }) {
                 <div className="d-flex mx-1">
                   <Button
                     onClick={() => multiCtx.commitTodo(x.id, false)}
-                    icon="file-earmark-diff"
+                    icon="tdesign:git-commit-filled"
                   />
                   <Button
+                    icon="streamline-plump:business-progress-bar-2-solid"
                     onClick={() => multiCtx.commitTodo(x.id, true)}
-                    text="WIP"
+                    // text="WIP"
                   />
                 </div>
                 <div className="text-truncate my-auto">
@@ -82,12 +83,12 @@ export default function Commit({ className = "" }) {
         <Button
           active={showTextarea}
           onClick={() => setShowTextarea(!showTextarea)}
-          icon="chat-square-text"
+          icon="fluent:textbox-16-regular"
           border={false}></Button>
         <Button
           active={addAll}
           onClick={() => setAddAll(!addAll)}
-          icon="lightning-charge-fill"
+          icon="fluent:fast-mode-24-filled"
           border={false}></Button>
       </div>
       {showTextarea && (

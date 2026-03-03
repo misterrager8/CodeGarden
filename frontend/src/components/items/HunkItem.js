@@ -17,7 +17,7 @@ export default function HunkItem({ item, added, className = "" }) {
         <div className={"hunk-item" + (added ? " green" : " red")}>
           <Icon
             className={"me-3 " + (hovered || copied ? "" : "invisible")}
-            name={"clipboard" + (copied ? "-check" : "")}
+            name={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
           />
           <div
             onMouseEnter={() => setHovered(true)}

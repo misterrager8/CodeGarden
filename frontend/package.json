@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:9995/",
   "dependencies": {
+    "@iconify/react": "^6.0.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

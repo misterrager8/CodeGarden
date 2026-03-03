@@ -30,7 +30,7 @@ export default function Changes({ className = "" }) {
     api(
       "get_diff",
       { repository: multiCtx.currentRepo.name, path: selectedDiff.path },
-      (data) => setDiffDetails(data.details)
+      (data) => setDiffDetails(data.details),
     );
   };
 
@@ -65,19 +65,19 @@ export default function Changes({ className = "" }) {
               <div className="text-center mb-2">
                 <Button
                   text="Amend"
-                  icon="vector-pen"
+                  icon="material-symbols:amend-rounded"
                   onClick={() => multiCtx.amendCommit()}
                   className="border-0"
                 />
                 <Button
                   onClick={() => setStashing(!stashing)}
                   text="Stash"
-                  icon="archive"
+                  icon="codicon:git-stash"
                   active={stashing}
                   className="border-0"
                 />
                 <Button
-                  icon="eraser-fill"
+                  icon="radix-icons:reset"
                   className="red"
                   text="Reset All"
                   border={false}
@@ -86,7 +86,7 @@ export default function Changes({ className = "" }) {
                 {resetting && (
                   <Button
                     className="red"
-                    icon="question-lg"
+                    icon="fluent:question-32-filled"
                     border={false}
                     onClick={() => multiCtx.resetAll()}
                   />
@@ -106,7 +106,7 @@ export default function Changes({ className = "" }) {
                   onClick={() => multiCtx.unstageAll()}
                   className="px-1 red"
                   style={{ fontSize: ".7rem", cursor: "pointer" }}>
-                  <Icon className="me-1" name="dash-lg" />
+                  <Icon className="me-1" name="octicon:dash-16" />
                   Unstage All
                 </span>
               </div>
@@ -122,7 +122,7 @@ export default function Changes({ className = "" }) {
                   onClick={() => multiCtx.stageAll()}
                   className="px-1 green"
                   style={{ fontSize: ".7rem", cursor: "pointer" }}>
-                  <Icon className="me-1" name="plus-lg" />
+                  <Icon className="me-1" name="mynaui:plus-solid" />
                   Stage All
                 </span>
               </div>

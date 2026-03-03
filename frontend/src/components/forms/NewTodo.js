@@ -31,13 +31,13 @@ export default function NewTodo({ className = "" }) {
           multiCtx.addTodo(e, name, tag);
           setName("");
         }}>
-        <Dropdown icon="tag-fill" text={tag} classNameBtn="border-0">
+        <Dropdown icon="tabler:tag-filled" text={tag} classNameBtn="border-0">
           {multiCtx.tags.map((x) => (
             <a
               key={x.id}
               onClick={() => setTag(x.label)}
               className="dropdown-item">
-              <Icon name="tags-fill" className="me-2" />
+              <Icon name="tabler:tag-filled" className="me-2" />
               {x.label}
             </a>
           ))}
@@ -52,7 +52,7 @@ export default function NewTodo({ className = "" }) {
           <Button
             border={false}
             size="sm"
-            icon="eraser-fill"
+            icon="mingcute:eraser-fill"
             text={`${
               multiCtx.currentRepo.todos.filter((x) => x.done).length
             } Done`}

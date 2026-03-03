@@ -15,7 +15,7 @@ export default function TodoItem({ item, className = "" }) {
 
   const [name, setName] = useState("");
   const [branchName, setBranchName] = useState(
-    `develop/${item.tag}/${item.id}`
+    `develop/${item.tag}/${item.id}`,
   );
   const [description, setDescription] = useState("");
   const [saved, setSaved] = useState(false);
@@ -51,7 +51,7 @@ export default function TodoItem({ item, className = "" }) {
             name,
             item.tag,
             item.status,
-            description
+            description,
           );
           setSaved(true);
           setTimeout(() => setSaved(false), 1500);
@@ -77,7 +77,7 @@ export default function TodoItem({ item, className = "" }) {
           <Dropdown
             target="edit-tags"
             classNameBtn="btn border-0"
-            icon="tag-fill"
+            icon="tabler:tag-filled"
             text={item.tag}>
             {multiCtx.tags.map((x) => (
               <a
@@ -89,11 +89,11 @@ export default function TodoItem({ item, className = "" }) {
                     name,
                     x.label,
                     item.status,
-                    description
+                    description,
                   )
                 }
                 className="dropdown-item">
-                <Icon name="tags-fill" className="me-2" />
+                <Icon name="tabler:tag-filled" className="me-2" />
                 {x.label}
               </a>
             ))}
@@ -103,19 +103,19 @@ export default function TodoItem({ item, className = "" }) {
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>
               <Button
-                icon="file-earmark-diff"
+                icon="tdesign:git-commit-filled"
                 onClick={() => setCommitting(!committing)}
                 className="border-0"
               />
               {committing && (
                 <>
                   <Button
+                    icon="streamline-plump:business-progress-bar-2-solid"
                     active={inProgress}
-                    text="WIP"
                     onClick={() => setInProgress(!inProgress)}
                   />
                   <Button
-                    icon="question-lg"
+                    icon="fluent:question-32-filled"
                     onClick={() => multiCtx.commitTodo(item.id, inProgress)}
                   />
                 </>
@@ -123,7 +123,7 @@ export default function TodoItem({ item, className = "" }) {
             </>
           )}
           <Button
-            icon="check-lg"
+            icon="mdi:check-bold"
             onClick={() => multiCtx.toggleTodo(item.id)}
             className="border-0"
           />
@@ -138,19 +138,19 @@ export default function TodoItem({ item, className = "" }) {
                 item.status === "open"
                   ? "active"
                   : item.status === "completed"
-                  ? "active"
-                  : "open",
-                description
+                    ? "active"
+                    : "open",
+                description,
               )
             }
             className={"border-0" + (item.status === "active" ? " red" : " ")}
             icon={
-              "bi bi-pin-angle" + (item.status === "active" ? "-fill" : "")
+              "ix:pin" + (item.status === "active" ? "-filled" : "")
             }></Button>
           <Button
             border={branching}
             onClick={() => setBranching(!branching)}
-            icon="bezier2"></Button>
+            icon="famicons:git-branch-sharp"></Button>
           <Button
             className={
               (showDescription ? "" : " border-0") +
@@ -158,23 +158,24 @@ export default function TodoItem({ item, className = "" }) {
             }
             onClick={() => setShowDescription(!showDescription)}
             icon={
-              "chat-left-text" + (description?.length > 0 ? "-fill" : "")
+              "fluent:textbox-16" +
+              (description?.length > 0 ? "-filled" : "-regular")
             }></Button>
           <Button
-            icon={copied ? "hand-thumbs-up-fill" : "copy"}
+            icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
             border={false}
             onClick={() => copyToClipboard()}
           />
           <Button
             className="red"
-            icon="x-lg"
+            icon="iwwa:delete"
             border={false}
             onClick={() => setDeleting(!deleting)}
           />
           {deleting && (
             <Button
               className="red"
-              icon="question-lg"
+              icon="fluent:question-32-filled"
               border={false}
               onClick={() => multiCtx.deleteTodo(item.id)}
             />
@@ -198,7 +199,11 @@ export default function TodoItem({ item, className = "" }) {
           }}
           className="input-group p-3">
           <Input value={branchName} onChange={onChangeBranchName} />
-          <Button type_="submit" text="Create Branch" icon="bezier2" />
+          <Button
+            type_="submit"
+            text="Create Branch"
+            icon="famicons:git-branch-sharp"
+          />
         </form>
       )}
     </div>

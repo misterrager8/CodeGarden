@@ -15,7 +15,6 @@ import { api } from "../util";
 
 export default function Display({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const [theme, setTheme] = useState(localStorage.getItem("garden-theme"));
   const [settings, setSettings] = useState(null);
 
   const getSettings = () => {
@@ -45,25 +44,6 @@ export default function Display({ className = "" }) {
     },
   ];
 
-  const themes = [
-    "light",
-    "orchard",
-    "green-tea",
-    "summer-blue",
-    "sunrise",
-    "dark",
-    "cranberry",
-    "pine",
-    "winterfresh",
-    "coffee",
-    "pumpkin",
-  ];
-
-  useEffect(() => {
-    localStorage.setItem("garden-theme", theme);
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
   useEffect(() => {
     getSettings();
   }, []);
@@ -75,11 +55,11 @@ export default function Display({ className = "" }) {
         <>
           <div className="mini-top">
             <div className="fw-bold">
-              <Icon name="git" className="me-2" />
+              <Icon name="bi:git" className="me-2" />
               {multiCtx.currentRepo?.name}
             </div>
             <div>
-              <Icon name="bezier2" className="me-2" />
+              <Icon name="famicons:git-branch-sharp" className="me-2" />
               {multiCtx.currentRepo?.current_branch.name}
             </div>
           </div>
@@ -100,33 +80,20 @@ export default function Display({ className = "" }) {
                 <div className="mx-auto">
                   <Button
                     text="Repositories"
-                    icon="chevron-left"
+                    icon="lets-icons:back"
                     onClick={() => {
                       multiCtx.setShowSettings(false);
                     }}
                   />
+
                   <div className="my-3 p-2">
-                    <Icon name="paint-bucket" className="me-2" /> UI Theme
-                  </div>
-                  <div className="">
-                    {themes.map((x) => (
-                      <Button
-                        text={x}
-                        className={
-                          "text-capitalize" + (theme === x ? " active" : "")
-                        }
-                        onClick={() => setTheme(x)}
-                      />
-                    ))}
-                  </div>
-                  <div className="my-3 p-2">
-                    <Icon name="house-fill" className="me-2" />
+                    <Icon name="mdi:seed-outline" className="me-2" />
                     Home Directory
                   </div>
                   <Input disabled={true} value={settings?.home_dir} />
 
                   <div className="my-3 p-2">
-                    <Icon name="paint-bucket" className="me-2" />
+                    <Icon name="fluent:usb-port-20-filled" className="me-2" />
                     Port #
                   </div>
                   <Input disabled={true} value={settings?.port} />
@@ -147,13 +114,13 @@ export default function Display({ className = "" }) {
                         }>
                         <div className="col-4 text-truncate">{item.name}</div>
                         <div className="col d-flex text-truncate">
-                          <Icon name="clock" />
+                          <Icon name="mingcute:history-fill" />
                           <div className="ms-2 text-truncate">
                             {item.log?.[0]?.timestamp}
                           </div>
                         </div>
                         <div className="col d-flex text-truncate">
-                          <Icon name="bezier2" />
+                          <Icon name="famicons:git-branch-sharp" />
                           <div className="ms-2 text-truncate">
                             {item.current_branch.name}
                           </div>
@@ -161,7 +128,10 @@ export default function Display({ className = "" }) {
                         <div className="col">
                           {item.diffs.length > 0 && (
                             <span className="ps-2 orange">
-                              <i className="me-1 bi bi-record-fill"></i>
+                              <Icon
+                                name="material-symbols-light:change-history-rounded"
+                                className="me-1"
+                              />
                               {item.diffs.length}
                             </span>
                           )}
@@ -169,7 +139,7 @@ export default function Display({ className = "" }) {
                             (todo) => todo.status !== "completed",
                           ).length > 0 && (
                             <span className="ps-2 orange">
-                              <i className="me-1 bi bi-check-all"></i>
+                              <Icon name="mdi:check-bold" className="me-1" />
                               {
                                 item.todos.filter(
                                   (todo) => todo.status !== "completed",

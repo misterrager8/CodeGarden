@@ -20,7 +20,7 @@ export default function DiffItem({ item, className = "" }) {
         className="my-auto flex-grow-1"
         onClick={() =>
           diffCtx.setSelectedDiff(
-            diffCtx.selectedDiff?.path === item.path ? null : item
+            diffCtx.selectedDiff?.path === item.path ? null : item,
           )
         }>
         <i
@@ -31,7 +31,11 @@ export default function DiffItem({ item, className = "" }) {
 
       <ButtonGroup size="sm">
         <Button
-          icon={(item.staged ? "dash" : "plus") + "-lg"}
+          icon={
+            item.staged
+              ? "material-symbols:remove-rounded"
+              : "mynaui:plus-solid"
+          }
           border={false}
           className={item.staged ? "orange" : "green"}
           onClick={() =>
@@ -39,20 +43,20 @@ export default function DiffItem({ item, className = "" }) {
           }
         />
         <Button
-          icon="eye-slash"
+          icon="bx:hide"
           border={false}
           onClick={() => multiCtx.addIgnore(null, item.name)}
         />
         {deleting && (
           <Button
-            icon="question-lg"
+            icon="fluent:question-32-filled"
             border={false}
             className="red"
             onClick={() => multiCtx.resetFile(item.path)}
           />
         )}
         <Button
-          icon="x-lg"
+          icon="iwwa:delete"
           border={false}
           className="red"
           onClick={() => setDeleting(!deleting)}

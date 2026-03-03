@@ -98,7 +98,10 @@ export default function History({ className = "" }) {
                     (selectedFile?.path === x.path ? "active" : "")
                   }>
                   {x.changed && (
-                    <Icon name="record-fill" className="me-2 red" />
+                    <Icon
+                      name="material-symbols-light:change-history-rounded"
+                      className="me-2 red"
+                    />
                   )}
                   <a
                     onClick={() => {
@@ -122,9 +125,13 @@ export default function History({ className = "" }) {
               <div>
                 <Button
                   text="Copy"
-                  icon={copied ? "check-lg" : "clipboard"}
+                  icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
                   onClick={() => {
-                    navigator.clipboard.writeText(fileContents);
+                    navigator.clipboard.writeText(
+                      showPastVersion
+                        ? fileContents?.before
+                        : fileContents?.after,
+                    );
                     setCopied(true);
                     setTimeout(() => setCopied(false), 1000);
                   }}
@@ -138,7 +145,11 @@ export default function History({ className = "" }) {
                       (showPastVersion ? "Current" : "Previous") +
                       " Version"
                     }
-                    icon={(showPastVersion ? "play" : "rewind") + "-fill"}
+                    icon={
+                      showPastVersion
+                        ? "tabler:current-location-filled"
+                        : "mage:previous-fill"
+                    }
                   />
                 )}
                 <div className="code-scroll my-3">
@@ -172,7 +183,7 @@ export default function History({ className = "" }) {
                   autoComplete="off"
                 />
                 <span>
-                  <Icon name="type" className="me-2" /> {fontSize} rem
+                  <Icon name="fe:text-size" className="me-2" /> {fontSize} rem
                 </span>
               </div>
             </div>

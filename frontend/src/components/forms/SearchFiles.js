@@ -11,7 +11,10 @@ export default function SearchFiles({ className = "" }) {
   return (
     <div className={className + " d-flex"}>
       {logCtx.query !== "" && (
-        <Button icon="eraser-fill" onClick={() => logCtx.setQuery("")} />
+        <Button
+          icon="mingcute:eraser-fill"
+          onClick={() => logCtx.setQuery("")}
+        />
       )}
       <Input
         value={logCtx.query}

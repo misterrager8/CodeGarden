@@ -31,14 +31,14 @@ export default function TagItem({ item, className = "" }) {
 
   const filteredTodos = () =>
     multiCtx.currentRepo.todos.filter(
-      (x) => x.tag === item.label && x.status !== "completed"
+      (x) => x.tag === item.label && x.status !== "completed",
     ).length;
 
   return (
     <div className={className + " tag-item"}>
       <form className="input-group" onSubmit={(e) => editTag(e)}>
         {saved && (
-          <Button className="non-btn green" icon="floppy2" border={false} />
+          <Button className="non-btn green" icon="bxs:save" border={false} />
         )}
         <Input className="border-0" onChange={onChangeName} value={name} />
         {filteredTodos() > 0 && (
@@ -46,10 +46,10 @@ export default function TagItem({ item, className = "" }) {
             active={item.label === filterCtx.filter}
             onClick={() =>
               filterCtx.setFilter(
-                item.label === filterCtx.filter ? null : item.label
+                item.label === filterCtx.filter ? null : item.label,
               )
             }
-            icon="tags-fill"
+            icon="tabler:tag-filled"
             border={false}
             text={filteredTodos().toString()}
           />
@@ -58,14 +58,14 @@ export default function TagItem({ item, className = "" }) {
           <Button
             onClick={() => deleteTag()}
             className="red"
-            icon="question-lg"
+            icon="fluent:question-32-filled"
             border={false}
           />
         )}
         <Button
           onClick={() => setDeleting(!deleting)}
           className="red"
-          icon="x-lg"
+          icon="iwwa:delete"
           border={false}
         />
       </form>

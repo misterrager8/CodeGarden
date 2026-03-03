@@ -4,6 +4,7 @@ import { MultiContext } from "../Context";
 import Dropdown from "./atoms/Dropdown";
 import Spinner from "./atoms/Spinner";
 import RepoItem from "./items/RepoItem";
+import Icon from "./atoms/Icon";
 
 export default function Nav({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -11,6 +12,32 @@ export default function Nav({ className = "" }) {
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [exported, setExported] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("garden-theme"));
+
+  const themes = [
+    "light",
+    "ocean-eggplant",
+    "ketchup-blueberry",
+    "ketchup-butter",
+    "eggplant-regal",
+    "ocean-emerald",
+    "carrot-firetruck",
+    "pumpkin-sunset",
+    "concord-ocean",
+    "raven-evergreen",
+    "tangy-sky",
+    "dark",
+    "ruby-tulip",
+    "eggplant-concord",
+    "marigold-sapphire",
+    "tulip-aqua",
+    "pineapple-plum",
+    "sunrise-strawberry",
+    "corn-denim",
+    "lavender-denim",
+    "moss-sapphire",
+    "ice-emerald",
+  ];
 
   useEffect(() => {
     multiCtx.getRepos();
@@ -21,6 +48,11 @@ export default function Nav({ className = "" }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
+  useEffect(() => {
+    localStorage.setItem("garden-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   return (
     <div className={className + " nav-custom"}>
@@ -39,13 +71,13 @@ export default function Nav({ className = "" }) {
                   multiCtx.setShowSettings(false);
                 }}
                 text="code-garden"
-                icon="flower2"
+                icon="bi:flower2"
               />
             )}
             {multiCtx.currentRepo && (
               <Button
                 onClick={() => multiCtx.getRepo(multiCtx.currentRepo?.name)}
-                icon="arrow-clockwise"
+                icon="icon-park-outline:refresh"
               />
             )}
             <Dropdown
@@ -53,7 +85,7 @@ export default function Nav({ className = "" }) {
               active={multiCtx.currentRepo}
               showCaret={false}
               text={multiCtx.currentRepo?.name || "Select Repo"}
-              icon="git">
+              icon="bi:git">
               {multiCtx.repos.map((repo) => (
                 <RepoItem item={repo} />
               ))}
@@ -66,7 +98,7 @@ export default function Nav({ className = "" }) {
                 className="abbreviate"
                 active={multiCtx.currentPage === "branches"}
                 onClick={() => multiCtx.setCurrentPage("branches")}
-                icon="bezier2"
+                icon="famicons:git-branch-sharp"
                 text={multiCtx.currentRepo?.current_branch?.name}
               />
               <Button
@@ -79,7 +111,7 @@ export default function Nav({ className = "" }) {
                   multiCtx.setCurrentPage("changes");
                   multiCtx.getRepo(multiCtx.currentRepo?.name);
                 }}
-                icon="pencil"
+                icon="material-symbols-light:change-history-rounded"
                 text={`Changes (${multiCtx.currentRepo?.diffs.length.toString()})`}
               />
               <Button
@@ -87,7 +119,7 @@ export default function Nav({ className = "" }) {
                 text="History"
                 active={multiCtx.currentPage === "history"}
                 onClick={() => multiCtx.setCurrentPage("history")}
-                icon="clock-history"
+                icon="mingcute:history-fill"
               />
               <Button
                 className={
@@ -100,7 +132,7 @@ export default function Nav({ className = "" }) {
                 }
                 active={multiCtx.currentPage === "kanban"}
                 onClick={() => multiCtx.setCurrentPage("kanban")}
-                icon="check-all"
+                icon="mdi:check-bold"
                 text={`TODOs (${multiCtx.currentRepo?.todos
                   .filter((todo) => todo.status !== "completed")
                   .length.toString()})`}
@@ -110,27 +142,30 @@ export default function Nav({ className = "" }) {
                 text="README"
                 active={multiCtx.currentPage === "readme"}
                 onClick={() => multiCtx.setCurrentPage("readme")}
-                icon="book"
+                icon="la:readme"
               />
               <div className="divider"></div>
               <Button
                 className="abbreviate"
                 text="Push"
                 onClick={() => multiCtx.push()}
-                icon="arrow-up"
+                icon="game-icons:push"
               />
               <Button
                 className="abbreviate"
                 text="Pull"
                 onClick={() => multiCtx.pull()}
-                icon="arrow-down"
+                icon="game-icons:pull"
               />
             </div>
           )}
         </div>
         <div className="flex">
           {multiCtx.currentRepo && (
-            <Dropdown classNameMenu="" icon="three-dots" autoClose="false">
+            <Dropdown
+              showCaret={false}
+              icon="grommet-icons:more"
+              autoClose="false">
               <a
                 className="dropdown-item"
                 onClick={() => {
@@ -138,30 +173,30 @@ export default function Nav({ className = "" }) {
                   setExported(true);
                   setTimeout(() => setExported(false), 1500);
                 }}>
-                <i
-                  className={
-                    "me-2 bi bi-" + (!exported ? "save2" : "check-lg")
-                  }></i>
+                <Icon
+                  className="me-2"
+                  name={!exported ? "solar:export-bold" : "mdi:check-bold"}
+                />
                 <span>Export Todos</span>
               </a>
               <a className="dropdown-item" onClick={() => copyPath()}>
-                <i
-                  className={
-                    "me-2 bi bi-" + (copied ? "check-lg" : "clipboard")
-                  }></i>
+                <Icon
+                  name={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
+                  className="me-2"
+                />
                 <span>Copy Path</span>
               </a>
               <a
                 target="_blank"
                 className="dropdown-item"
                 href={multiCtx.currentRepo?.remote_url}>
-                <i className="me-2 bi bi-github"></i>
+                <Icon name="jam:github" className="me-2" />
                 <span>View GitHub</span>
               </a>
               <a
                 className="dropdown-item red"
                 onClick={() => setDeleting(!deleting)}>
-                <i className="me-2 bi bi-trash2"></i>
+                <Icon name="iwwa:delete" className="me-2" />
                 <span>Delete Repo</span>
               </a>
               {deleting && (
@@ -169,7 +204,7 @@ export default function Nav({ className = "" }) {
                   className="dropdown-item red text-center"
                   onClick={() => multiCtx.deleteRepo()}>
                   Delete
-                  <i className="ms-2 bi bi-question-lg"></i>
+                  <Icon name="fluent:question-32-filled" className="ms-2" />
                 </a>
               )}
             </Dropdown>
@@ -179,11 +214,26 @@ export default function Nav({ className = "" }) {
             target="_blank"
             href="https://github.com/misterrager8/CodeGarden"
             className="btn btn-sm border-0">
-            <i className="bi bi-info-circle" />
+            <Icon name="ep:info-filled" />
           </a>
+          <Dropdown
+            classNameBtn="abbreviate"
+            showCaret={false}
+            icon="oui:color">
+            {themes.map((x) => (
+              <a
+                className={
+                  "dropdown-item text-capitalize text-center" +
+                  (theme === x ? " active" : "")
+                }
+                onClick={() => setTheme(x)}>
+                {x}
+              </a>
+            ))}
+          </Dropdown>
           <Button
             active={!multiCtx.currentRepo && multiCtx.showSettings}
-            icon="gear-fill"
+            icon="ic:round-settings"
             onClick={() => {
               multiCtx.setCurrentRepo(null);
               multiCtx.setShowSettings(true);
