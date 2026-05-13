@@ -319,10 +319,21 @@ body {
 }
 
 .repo-item {
-  padding: 1px 15px;
-  border-radius: 5px;
   display: flex;
-  font-size: 0.875rem;
+  gap: 1.5rem;
+  padding: 1px 20px;
+  margin-bottom: 1px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.repo-item > div {
+  flex: 1 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .repo-items {
@@ -374,6 +385,12 @@ body {
   text-align: center;
   margin: 20px 0px;
 }
+
+/* .col {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+} */
 
 @media screen and (max-width: 1427px) {
   .nav-custom {

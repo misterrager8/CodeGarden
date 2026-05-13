@@ -12,6 +12,7 @@ import Dropdown from "./atoms/Dropdown";
 import Button from "./atoms/Button";
 import Input from "./atoms/Input";
 import { api } from "../util";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Display({ className = "" }) {
   const multiCtx = useContext(MultiContext);
@@ -43,6 +44,15 @@ export default function Display({ className = "" }) {
       component: <Branches />,
     },
   ];
+
+  useHotkeys(
+    "meta+d",
+    () => multiCtx.setTheme(multiCtx.theme === "light" ? "dark" : "light"),
+    {
+      preventDefault: true,
+      enableOnFormTags: true,
+    },
+  );
 
   useEffect(() => {
     getSettings();
@@ -104,51 +114,46 @@ export default function Display({ className = "" }) {
                 <div className="col-75">
                   <div className="repo-items">
                     {multiCtx.repos.map((item) => (
-                      <a
+                      <div
                         onClick={() => multiCtx.getRepo(item.name)}
-                        className={
-                          "repo-item " +
-                          (multiCtx.currentRepo?.name === item.name
-                            ? " active"
-                            : "")
-                        }>
-                        <div className="col-4 text-truncate">{item.name}</div>
-                        <div className="col d-flex text-truncate">
-                          <Icon name="mingcute:history-fill" />
-                          <div className="ms-2 text-truncate">
-                            {item.log?.[0]?.timestamp}
-                          </div>
-                        </div>
-                        <div className="col d-flex text-truncate">
+                        className="repo-item">
+                        <div className="fw-bold">{item.name}</div>
+                        <div className="small">{item.log?.[0]?.timestamp}</div>
+                        <div>
                           <Icon name="famicons:git-branch-sharp" />
-                          <div className="ms-2 text-truncate">
+                          <span className="ms-2">
                             {item.current_branch.name}
-                          </div>
+                          </span>
                         </div>
-                        <div className="col">
-                          {item.diffs.length > 0 && (
-                            <span className="ps-2 orange">
-                              <Icon
-                                name="material-symbols-light:change-history-rounded"
-                                className="me-1"
-                              />
-                              {item.diffs.length}
-                            </span>
+                        <div className="orange">
+                          {item.diffs.length > 0 ? (
+                            <>
+                              <Icon name="material-symbols-light:change-history-rounded" />
+                              <span className="ms-2">{item.diffs.length}</span>
+                            </>
+                          ) : (
+                            ""
                           )}
+                        </div>
+                        <div className="orange">
                           {item.todos.filter(
                             (todo) => todo.status !== "completed",
-                          ).length > 0 && (
-                            <span className="ps-2 orange">
-                              <Icon name="mdi:check-bold" className="me-1" />
-                              {
-                                item.todos.filter(
-                                  (todo) => todo.status !== "completed",
-                                ).length
-                              }
-                            </span>
+                          ).length > 0 ? (
+                            <>
+                              <Icon name="mdi:check-bold" />
+                              <span className="ms-2">
+                                {
+                                  item.todos.filter(
+                                    (todo) => todo.status !== "completed",
+                                  ).length
+                                }
+                              </span>
+                            </>
+                          ) : (
+                            ""
                           )}
                         </div>
-                      </a>
+                      </div>
                     ))}
                   </div>
                 </div>

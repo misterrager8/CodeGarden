@@ -12,7 +12,6 @@ export default function Nav({ className = "" }) {
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [exported, setExported] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem("garden-theme"));
 
   const themes = [
     "light",
@@ -50,9 +49,9 @@ export default function Nav({ className = "" }) {
   };
 
   useEffect(() => {
-    localStorage.setItem("garden-theme", theme);
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
+    localStorage.setItem("garden-theme", multiCtx.theme);
+    document.documentElement.setAttribute("data-theme", multiCtx.theme);
+  }, [multiCtx.theme]);
 
   return (
     <div className={className + " nav-custom"}>
@@ -224,9 +223,9 @@ export default function Nav({ className = "" }) {
               <a
                 className={
                   "dropdown-item text-capitalize text-center" +
-                  (theme === x ? " active" : "")
+                  (multiCtx.theme === x ? " active" : "")
                 }
-                onClick={() => setTheme(x)}>
+                onClick={() => multiCtx.setTheme(x)}>
                 {x}
               </a>
             ))}

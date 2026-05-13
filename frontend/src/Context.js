@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 export const MultiContext = createContext();
 
 export default function MultiProvider({ children }) {
+  const [theme, setTheme] = useState(localStorage.getItem("garden-theme"));
+
   const [loading, setLoading] = useState(false);
   const [repos, setRepos] = useState([]);
   const [currentRepo, setCurrentRepo] = useState(null);
@@ -398,6 +400,9 @@ export default function MultiProvider({ children }) {
   }, [currentPage]);
 
   const contextValue = {
+    theme: theme,
+    setTheme: setTheme,
+
     repos: repos,
     setRepos: setRepos,
     currentRepo: currentRepo,
