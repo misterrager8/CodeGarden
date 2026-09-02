@@ -7,6 +7,7 @@ import subprocess
 
 import click
 import requests
+import time
 
 from code_garden.readme import Readme
 from code_garden.todos import Todo
@@ -44,7 +45,16 @@ class Repository(object):
         Args:
             cmd (list): List of arguments in the command. (splitting whitespace on text is recommended)
         """
-        return subprocess.run(cmd, cwd=self.path, text=True, capture_output=True).stdout
+
+        # start_time = time.perf_counter()
+
+        op = subprocess.run(cmd, cwd=self.path, text=True, capture_output=True).stdout
+
+        # end_time = time.perf_counter()
+        # execution_time = (end_time - start_time) * 1000
+        # click.secho(f"{self.name},{" ".join(cmd)},{execution_time:.1f}", fg="blue")
+
+        return op
 
     @property
     def branches(self):
@@ -64,9 +74,10 @@ class Repository(object):
 
     @property
     def current_branch(self):
-        for i in self.run_command(["git", "branch"]).split("\n"):
-            if i.startswith("* "):
-                return Branch(self.name, i.replace("* ", ""))
+        return Branch(
+            self.name,
+            self.run_command(["git", "branch", "--show-current"]).split("\n")[0],
+        )
 
     def compare_branches(self, base_branch, child_branch):
         return self.run_command(
@@ -78,7 +89,7 @@ class Repository(object):
         _ = []
         try:
             for i in self.run_command(
-                ["git", "log", "--oneline", "-1000", "--pretty=format:%s\t%at\t%h\t%an"]
+                ["git", "log", "-50", "--pretty=format:%s\t%at\t%h\t%an"]
             ).split("\n"):
                 if len(i.strip().split("\t")) == 2:
                     _.append(
