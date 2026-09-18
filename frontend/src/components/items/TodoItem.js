@@ -56,7 +56,14 @@ export default function TodoItem({ item, className = "" }) {
           setSaved(true);
           setTimeout(() => setSaved(false), 1500);
         }}>
-        <InputGroup size="sm" className="mb-1">
+        <Input
+          title={name}
+          required={true}
+          className="border-0 fst-italic"
+          value={name}
+          onChange={onChangeName}
+        />
+        <div className="between flex-row-reverse my-1">
           <ButtonGroup size="sm">
             {saved && (
               <span className="btn border-0">
@@ -67,13 +74,6 @@ export default function TodoItem({ item, className = "" }) {
               <span className="badge">#{item.id}</span>
             </div>
           </ButtonGroup>
-          <Input
-            title={name}
-            required={true}
-            className="border-0 fst-italic"
-            value={name}
-            onChange={onChangeName}
-          />
           <Dropdown
             target="edit-tags"
             classNameBtn="btn border-0"
@@ -98,7 +98,7 @@ export default function TodoItem({ item, className = "" }) {
               </a>
             ))}
           </Dropdown>
-        </InputGroup>
+        </div>
         <InputGroup size="sm">
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>
@@ -189,6 +189,7 @@ export default function TodoItem({ item, className = "" }) {
             placeholder="Description"
             className="form-control form-control-sm my-3 desc"></textarea>
         )}
+
         <button className="d-none" type="submit"></button>
       </form>
       {branching && (
