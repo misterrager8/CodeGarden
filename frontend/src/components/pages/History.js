@@ -186,7 +186,9 @@ export default function History({ className = "" }) {
               </div>
             </div>
           ) : (
-            <div className="muted-text">{summary}</div>
+            <div className="flex h-100">
+              <div className="muted-text">{summary}</div>
+            </div>
           )}
         </div>
       </div>

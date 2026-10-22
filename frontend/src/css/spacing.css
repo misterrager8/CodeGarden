@@ -6,6 +6,14 @@
   --space-5: 3rem;
 }
 
+.m-auto {
+  margin: auto;
+}
+
+.my-auto {
+  margin-block: auto;
+}
+
 .m-1 {
   margin: var(--space-1);
 }

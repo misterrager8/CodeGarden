@@ -35,3 +35,27 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.muted-text {
+  margin: auto;
+  opacity: 50%;
+  font-size: small;
+  white-space: pre-wrap;
+  letter-spacing: 1px;
+}
+
+.line-number {
+  user-select: none;
+  font-size: small;
+  opacity: 50%;
+  margin-right: 30px;
+  margin-block: auto;
+}
+
+.blame {
+  font-size: small;
+  opacity: 50%;
+  font-style: italic;
+  text-align: center;
+  margin: 20px 0px;
+}

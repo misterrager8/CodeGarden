@@ -172,7 +172,7 @@ export default function Branches({ className = "" }) {
                 {!merging ? (
                   <div>
                     {comparison?.map((x) => (
-                      <div className="item">
+                      <div className="item commit">
                         <div className="flex between w-100">
                           <div className="flex text-truncate">
                             <div className="small me-2 my-auto">

@@ -21,7 +21,7 @@
 
 .item.line {
   border: none;
-  padding: 3px;
+  padding: 3px 25px;
 }
 
 .item.hunk {
@@ -50,5 +50,10 @@
 
 .item.tag {
   padding: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.item.commit {
+  padding: var(--space-2) var(--space-3);
   margin-bottom: var(--space-1);
 }

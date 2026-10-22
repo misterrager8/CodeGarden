@@ -131,7 +131,7 @@ export default function Changes({ className = "" }) {
           </div>
         </div>
         <div className="divider"></div>
-        <div className="col-50 d-flex">
+        <div className="col-50">
           {selectedDiff ? (
             <div className="px-5 diff-content">
               {diffDetails.map((x) => (
@@ -154,7 +154,9 @@ export default function Changes({ className = "" }) {
               ))}
             </div>
           ) : (
-            <div className="muted-text">None</div>
+            <div className="flex h-100">
+              <div className="muted-text">None</div>
+            </div>
           )}
         </div>
         <div className="divider"></div>
