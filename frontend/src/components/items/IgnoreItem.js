@@ -8,7 +8,7 @@ export default function IgnoreItem({ id, item, className = "" }) {
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <div className={className + " between"}>
+    <div className={className + " item flex ignored center between"}>
       <div className="small my-auto">{item.name}</div>
       <div>
         <ButtonGroup size="sm">

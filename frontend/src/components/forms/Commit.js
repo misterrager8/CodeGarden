@@ -29,7 +29,7 @@ export default function Commit({ className = "" }) {
         setMsg("");
         setMsgDetails("");
       }}>
-      <div className="input-group">
+      <div className="flex center">
         <Dropdown
           target="pick-tag"
           showCaret
@@ -60,8 +60,8 @@ export default function Commit({ className = "" }) {
           {multiCtx.currentRepo.todos
             .filter((w) => !w.done)
             .map((x) => (
-              <div key={x.id} className="d-flex mb-2">
-                <div className="d-flex mx-1">
+              <div key={x.id} className="item center flex mb-2">
+                <div className="flex mx-1">
                   <Button
                     onClick={() => multiCtx.commitTodo(x.id, false)}
                     icon="tdesign:git-commit-filled"

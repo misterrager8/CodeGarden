@@ -1,6 +1,8 @@
-@import "./colors.css";
-@import "./spacing.css";
-@import "./buttons.css";
+@import "./css/colors.css";
+@import "./css/spacing.css";
+@import "./css/buttons.css";
+@import "./css/item.css";
+@import "./css/font.css";
 
 * {
   font-family: "Roboto";
@@ -17,9 +19,10 @@ body {
   color: var(--primary-txt);
   border: 0.5px solid transparent;
   outline: none;
-  padding: 5px;
+  padding: 1.5px 5px;
 }
 
+.input:hover,
 .input:focus {
   border-bottom-color: var(--primary-txt);
   font-style: italic;
@@ -35,23 +38,6 @@ body {
   color: var(--btn-color);
   padding: 1px 10px;
   border-radius: 10px;
-}
-
-.item {
-  padding: 15px 25px;
-  border-bottom: 0.5px solid var(--primary-txt);
-  cursor: pointer;
-}
-
-.item:hover,
-.item.active {
-  background-color: var(--secondary-color);
-  border-radius: 5px;
-}
-
-.item.line {
-  border: none;
-  padding: 3px;
 }
 
 .flex {
@@ -107,10 +93,6 @@ body {
   align-items: center;
 }
 
-.dropdown-menu {
-  display: none;
-}
-
 .w-100 {
   width: 100%;
 }
@@ -118,6 +100,10 @@ body {
 .show-on-mini,
 .mini-top {
   display: none;
+}
+
+.divider {
+  border: 1px;
 }
 
 @media screen and (max-width: 1000px) {
@@ -164,5 +150,9 @@ body {
     overflow-y: auto;
     width: 100%;
     border-bottom: 0.5px solid var(--primary-txt);
+  }
+
+  .nav {
+    display: none;
   }
 }

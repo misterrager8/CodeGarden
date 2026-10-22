@@ -102,7 +102,7 @@ export default function History({ className = "" }) {
                   }}
                   key={x.path}
                   className={
-                    "item flex" +
+                    "item file flex" +
                     (selectedFile?.path === x.path ? " active" : "")
                   }>
                   {x.changed && (

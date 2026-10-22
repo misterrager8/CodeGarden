@@ -41,7 +41,7 @@ export default function TodoItem({ item, className = "" }) {
   };
 
   return (
-    <div className={className + "item" + (item.done ? " opacity-25" : "")}>
+    <div className={className + "item todo" + (item.done ? " opacity-25" : "")}>
       <form
         onSubmit={(e) => {
           multiCtx.editTodo(
@@ -104,7 +104,7 @@ export default function TodoItem({ item, className = "" }) {
               <Button
                 icon="tdesign:git-commit-filled"
                 onClick={() => setCommitting(!committing)}
-                className="border-0"
+                active={committing}
               />
               {committing && (
                 <>
@@ -147,14 +147,12 @@ export default function TodoItem({ item, className = "" }) {
               "ix:pin" + (item.status === "active" ? "-filled" : "")
             }></Button>
           <Button
-            border={branching}
+            active={branching}
             onClick={() => setBranching(!branching)}
             icon="famicons:git-branch-sharp"></Button>
           <Button
-            className={
-              (showDescription ? "" : " border-0") +
-              (description?.length > 0 ? " purple" : "")
-            }
+            active={showDescription}
+            className={description?.length > 0 ? " purple" : ""}
             onClick={() => setShowDescription(!showDescription)}
             icon={
               "fluent:textbox-16" +
@@ -197,7 +195,7 @@ export default function TodoItem({ item, className = "" }) {
             multiCtx.addBranch(e, branchName);
             setBranching(false);
           }}
-          className="input-group p-3">
+          className="flex center py-3">
           <Input value={branchName} onChange={onChangeBranchName} />
           <Button
             type_="submit"

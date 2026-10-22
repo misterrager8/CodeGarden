@@ -123,8 +123,8 @@ export default function Branches({ className = "" }) {
                   {" ahead of "}
                   <span className="purple">{selectedBranch?.name}.</span>
                 </div>
-                <div className="flex w-100 mb-3">
-                  <div>
+                <div className="flex center between column-sm w-100 mb-3">
+                  <div className="flex">
                     <Button
                       icon="fluent:merge-16-filled"
                       active={merging}

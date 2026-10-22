@@ -31,7 +31,7 @@ export default function NewTodo({ className = "" }) {
           multiCtx.addTodo(e, name, tag);
           setName("");
         }}>
-        <div>
+        <div className="flex">
           <Dropdown icon="tabler:tag-filled" text={tag} classNameBtn="border-0">
             {multiCtx.tags.map((x) => (
               <a

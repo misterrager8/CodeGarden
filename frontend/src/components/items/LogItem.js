@@ -12,13 +12,13 @@ export default function LogItem({ item, id, className = "" }) {
       onClick={() => logCtx.setSelectedCommit(item)}
       className={
         className +
-        " item" +
+        " item log" +
         (logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
           ? " active"
           : "")
       }>
       <div>
-        <div className="between mb-1">
+        <div className="flex center between mb-1">
           <div className="fw-bold text-truncate">
             {id === 0 && (
               <Button
@@ -32,7 +32,7 @@ export default function LogItem({ item, id, className = "" }) {
           </div>
           <span className="small font-monospace">{item.abbrev_hash}</span>
         </div>
-        <div className="between small fw-light">
+        <div className="flex center between small fw-light mt-3">
           <span>{item.timestamp}</span>
           <span>{item.author}</span>
         </div>

@@ -14,7 +14,7 @@ export default function Dropdown({
   showCaret = true,
 }) {
   return (
-    <>
+    <div className="dropdown">
       <a
         className={
           classNameBtn +
@@ -33,6 +33,6 @@ export default function Dropdown({
       <div id={target} className={"dropdown-menu " + classNameMenu}>
         {children}
       </div>
-    </>
+    </div>
   );
 }

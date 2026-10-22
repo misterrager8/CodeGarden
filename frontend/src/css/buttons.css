@@ -2,7 +2,7 @@
   background-color: transparent;
   color: var(--btn-color);
   border: none;
-  border-bottom: 0.5px solid var(--primary-txt);
+  border-bottom: 0.5px solid var(--btn-color);
   letter-spacing: 1px;
   display: inline-flex;
   align-items: center;
@@ -10,6 +10,7 @@
   padding: 5px 10px;
   cursor: pointer;
   transition: background-color 0.25s;
+  line-height: 1;
 }
 
 .btn.active,
@@ -18,6 +19,10 @@
   color: var(--btn-hover-txt);
   border-radius: 5px;
 }
+
+/* .btn.border-0 {
+  border: none;
+} */
 
 /* red */
 
@@ -107,4 +112,46 @@
 .btn.violet:hover {
   background-color: var(--violet);
   color: var(--btn-hover-txt);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 99;
+  min-width: 200px;
+  max-height: 300px;
+  border: 0.5px solid var(--secondary-color);
+  background-color: var(--primary-bg);
+  /* padding: var(--space-3); */
+  overflow-y: auto;
+  border-radius: 5px;
+  margin: 2px;
+  padding: 10px 1px;
+  /* top: 100%;
+  right: 0;
+  left: auto; */
+}
+
+.dropdown-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: var(--space-1) var(--space-3);
+  letter-spacing: 1px;
+  margin-bottom: 1px;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-txt);
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
 }

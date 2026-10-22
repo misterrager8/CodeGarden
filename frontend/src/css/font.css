@@ -1,0 +1,37 @@
+.red {
+  color: var(--red);
+}
+
+.orange {
+  color: var(--orange);
+}
+
+.yellow {
+  color: var(--yellow);
+}
+
+.green {
+  color: var(--green);
+}
+
+.blue {
+  color: var(--blue);
+}
+
+.indigo {
+  color: var(--indigo);
+}
+
+.violet {
+  color: var(--violet);
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.text-truncate {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

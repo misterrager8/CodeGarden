@@ -1,0 +1,54 @@
+.item {
+  /* padding: 15px 25px; */
+  border-bottom: 1px solid var(--secondary-color);
+  cursor: pointer;
+}
+
+.item:hover,
+.item.active {
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+}
+
+.item.todo {
+  padding: var(--space-3) var(--space-4);
+}
+
+.item.diff {
+  padding: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.item.line {
+  border: none;
+  padding: 3px;
+}
+
+.item.hunk {
+  padding: var(--space-4);
+}
+
+.item.log {
+  padding: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.item.file {
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.item.branch {
+  padding: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.item.ignored {
+  padding: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.item.tag {
+  padding: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+}

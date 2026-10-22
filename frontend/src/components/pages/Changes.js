@@ -135,7 +135,7 @@ export default function Changes({ className = "" }) {
           {selectedDiff ? (
             <div className="px-5 diff-content">
               {diffDetails.map((x) => (
-                <div className="pb-4">
+                <div>
                   <HunkItem
                     added={false}
                     item={x.lines

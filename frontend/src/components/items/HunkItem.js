@@ -14,7 +14,7 @@ export default function HunkItem({ item, added, className = "" }) {
   return (
     <>
       {item && (
-        <div className={"hunk-item" + (added ? " green" : " red")}>
+        <div className={"item flex center hunk" + (added ? " green" : " red")}>
           <Icon
             className={"me-3 " + (hovered || copied ? "" : "invisible")}
             name={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
@@ -28,7 +28,7 @@ export default function HunkItem({ item, added, className = "" }) {
               fontFamily: "monospace",
             }}
             onClick={() => copyHunk()}
-            className={className + (added ? " green" : " red")}>
+            className={className + "mx-3 " + (added ? " green" : " red")}>
             {item}
           </div>
         </div>

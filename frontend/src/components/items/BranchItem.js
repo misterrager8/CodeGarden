@@ -13,7 +13,7 @@ export default function BranchItem({ item, className = "" }) {
     <div
       className={
         className +
-        " flex between item" +
+        " flex between branch item" +
         (item.name === branchCtx.selectedBranch?.name ? " active" : "")
       }>
       <a

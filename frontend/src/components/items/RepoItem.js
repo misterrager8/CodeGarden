@@ -10,7 +10,7 @@ export default function RepoItem({ item, className = "" }) {
       onClick={() => multiCtx.getRepo(item.name)}
       className={
         className +
-        " dropdown-item between" +
+        " dropdown-item flex between" +
         (multiCtx.currentRepo?.name === item.name ? " active" : "")
       }>
       <div>{item.name}</div>

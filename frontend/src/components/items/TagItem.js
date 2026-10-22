@@ -35,39 +35,41 @@ export default function TagItem({ item, className = "" }) {
     ).length;
 
   return (
-    <div className={className + " tag-item"}>
+    <div className={className + " tag item"}>
       <form className="flex center between" onSubmit={(e) => editTag(e)}>
         {saved && (
           <Button className="non-btn green" icon="bxs:save" border={false} />
         )}
         <Input className="border-0" onChange={onChangeName} value={name} />
-        {filteredTodos() > 0 && (
+        <div>
+          {filteredTodos() > 0 && (
+            <Button
+              active={item.label === filterCtx.filter}
+              onClick={() =>
+                filterCtx.setFilter(
+                  item.label === filterCtx.filter ? null : item.label,
+                )
+              }
+              icon="tabler:tag-filled"
+              border={false}
+              text={filteredTodos().toString()}
+            />
+          )}
+          {deleting && (
+            <Button
+              onClick={() => deleteTag()}
+              className="red"
+              icon="fluent:question-32-filled"
+              border={false}
+            />
+          )}
           <Button
-            active={item.label === filterCtx.filter}
-            onClick={() =>
-              filterCtx.setFilter(
-                item.label === filterCtx.filter ? null : item.label,
-              )
-            }
-            icon="tabler:tag-filled"
-            border={false}
-            text={filteredTodos().toString()}
-          />
-        )}
-        {deleting && (
-          <Button
-            onClick={() => deleteTag()}
+            onClick={() => setDeleting(!deleting)}
             className="red"
-            icon="fluent:question-32-filled"
+            icon="iwwa:delete"
             border={false}
           />
-        )}
-        <Button
-          onClick={() => setDeleting(!deleting)}
-          className="red"
-          icon="iwwa:delete"
-          border={false}
-        />
+        </div>
       </form>
     </div>
   );

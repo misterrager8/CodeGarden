@@ -54,7 +54,7 @@ export default function Nav({ className = "" }) {
   }, [multiCtx.theme]);
 
   return (
-    <div className={className + " flex between mb-4"}>
+    <div className={className + " nav flex between py-3"}>
       <div className="flex">
         <div className="flex">
           {multiCtx.loading ? (
