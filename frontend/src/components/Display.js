@@ -61,113 +61,121 @@ export default function Display({ className = "" }) {
   return (
     <div className={className}>
       <Nav />
-      {multiCtx.currentRepo ? (
-        <>
-          <div className="mini-x  x  ">
-            <div className="mini-top flex between">
-              <div className="fw-bold">
-                <Icon name="bi:git" className="me-2" />
-                {multiCtx.currentRepo?.name}
+      <div className="body">
+        {multiCtx.currentRepo ? (
+          <>
+            <div className="mini-x  x  ">
+              <div className="mini-top flex between">
+                <div className="fw-bold">
+                  <Icon name="bi:git" className="me-2" />
+                  {multiCtx.currentRepo?.name}
+                </div>
+                <div>
+                  <Icon name="famicons:git-branch-sharp" className="me-2" />
+                  {multiCtx.currentRepo?.current_branch.name}
+                </div>
               </div>
-              <div>
-                <Icon name="famicons:git-branch-sharp" className="me-2" />
-                {multiCtx.currentRepo?.current_branch.name}
+              <div className="body d-flex">
+                <div className="inner">
+                  {
+                    pages.find((page) => page.value === multiCtx.currentPage)
+                      ?.component
+                  }
+                </div>
               </div>
             </div>
-            <div className="body d-flex">
-              <div className="inner">
-                {
-                  pages.find((page) => page.value === multiCtx.currentPage)
-                    ?.component
-                }
-              </div>
+          </>
+        ) : (
+          <div className="body d-flex">
+            <div className="inner flex column-sm">
+              {multiCtx.showSettings ? (
+                <>
+                  <div className="mx-auto">
+                    <Button
+                      text="Repositories"
+                      icon="lets-icons:back"
+                      onClick={() => {
+                        multiCtx.setShowSettings(false);
+                      }}
+                    />
+
+                    <div className="my-3 p-2">
+                      <Icon name="mdi:seed-outline" className="me-2" />
+                      Home Directory
+                    </div>
+                    <Input disabled={true} value={settings?.home_dir} />
+
+                    <div className="my-3 p-2">
+                      <Icon name="fluent:usb-port-20-filled" className="me-2" />
+                      Port #
+                    </div>
+                    <Input disabled={true} value={settings?.port} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-75">
+                    <div className="repo-items">
+                      {multiCtx.repos.map((item) => (
+                        <div
+                          onClick={() => multiCtx.getRepo(item.name)}
+                          className="repo flex item">
+                          <div className="fw-bold">{item.name}</div>
+                          <div className="small">
+                            {item.log?.[0]?.timestamp}
+                          </div>
+                          <div>
+                            <Icon name="famicons:git-branch-sharp" />
+                            <span className="ms-2">
+                              {item.current_branch.name}
+                            </span>
+                          </div>
+                          <div className="flex between">
+                            <div className="orange">
+                              {item.diffs.length > 0 ? (
+                                <>
+                                  <Icon name="material-symbols-light:change-history-rounded" />
+                                  <span className="ms-2">
+                                    {item.diffs.length}
+                                  </span>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                            <div className="orange">
+                              {item.todos.filter(
+                                (todo) => todo.status !== "completed",
+                              ).length > 0 ? (
+                                <>
+                                  <Icon name="mdi:check-bold" />
+                                  <span className="ms-2">
+                                    {
+                                      item.todos.filter(
+                                        (todo) => todo.status !== "completed",
+                                      ).length
+                                    }
+                                  </span>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="divider"></div>
+                  <div className="col-25">
+                    <NewRepo />
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </>
-      ) : (
-        <div className="body d-flex">
-          <div className="inner flex">
-            {multiCtx.showSettings ? (
-              <>
-                <div className="mx-auto">
-                  <Button
-                    text="Repositories"
-                    icon="lets-icons:back"
-                    onClick={() => {
-                      multiCtx.setShowSettings(false);
-                    }}
-                  />
-
-                  <div className="my-3 p-2">
-                    <Icon name="mdi:seed-outline" className="me-2" />
-                    Home Directory
-                  </div>
-                  <Input disabled={true} value={settings?.home_dir} />
-
-                  <div className="my-3 p-2">
-                    <Icon name="fluent:usb-port-20-filled" className="me-2" />
-                    Port #
-                  </div>
-                  <Input disabled={true} value={settings?.port} />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="col-75">
-                  <div className="repo-items">
-                    {multiCtx.repos.map((item) => (
-                      <div
-                        onClick={() => multiCtx.getRepo(item.name)}
-                        className="repo-item">
-                        <div className="fw-bold">{item.name}</div>
-                        <div className="small">{item.log?.[0]?.timestamp}</div>
-                        <div>
-                          <Icon name="famicons:git-branch-sharp" />
-                          <span className="ms-2">
-                            {item.current_branch.name}
-                          </span>
-                        </div>
-                        <div className="orange">
-                          {item.diffs.length > 0 ? (
-                            <>
-                              <Icon name="material-symbols-light:change-history-rounded" />
-                              <span className="ms-2">{item.diffs.length}</span>
-                            </>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        <div className="orange">
-                          {item.todos.filter(
-                            (todo) => todo.status !== "completed",
-                          ).length > 0 ? (
-                            <>
-                              <Icon name="mdi:check-bold" />
-                              <span className="ms-2">
-                                {
-                                  item.todos.filter(
-                                    (todo) => todo.status !== "completed",
-                                  ).length
-                                }
-                              </span>
-                            </>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="divider"></div>
-                <div className="col-25">
-                  <NewRepo />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

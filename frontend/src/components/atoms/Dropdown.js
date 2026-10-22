@@ -28,7 +28,7 @@ export default function Dropdown({
         data-bs-auto-close={autoClose}
         data-bs-toggle="dropdown">
         {icon && <Icon inline icon={icon} />}
-        {text && <span className={icon ? "ms-2" : ""}>{text}</span>}
+        {text && <span className={icon ? "" : ""}>{text}</span>}
       </a>
       <div id={target} className={"dropdown-menu " + classNameMenu}>
         {children}

@@ -23,7 +23,7 @@ export default function Button({
         (size ? ` btn-${size}` : "")
       }>
       {icon && <Icon inline icon={icon} />}
-      {text && <span className={icon ? "ms-2" : ""}>{text}</span>}
+      {text && <span className={icon ? "" : ""}>{text}</span>}
       {children}
     </button>
   );
