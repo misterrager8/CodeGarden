@@ -4,7 +4,6 @@ export default function Input({
   onChange,
   required = false,
   disabled = false,
-  size = "sm",
   placeholder,
   type_ = "text",
   className = "",
@@ -19,9 +18,7 @@ export default function Input({
       onChange={onChange}
       value={value}
       placeholder={placeholder}
-      className={
-        className + " form-control" + (size ? ` form-control-${size}` : "")
-      }
+      className={className + " input"}
     />
   );
 }

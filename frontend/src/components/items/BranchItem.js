@@ -13,11 +13,11 @@ export default function BranchItem({ item, className = "" }) {
     <div
       className={
         className +
-        " between branch-item" +
+        " flex between item" +
         (item.name === branchCtx.selectedBranch?.name ? " active" : "")
       }>
       <a
-        className="small my-auto"
+        className="small flex center"
         onClick={() =>
           branchCtx.setSelectedBranch(
             branchCtx.selectedBranch === item ? null : item,

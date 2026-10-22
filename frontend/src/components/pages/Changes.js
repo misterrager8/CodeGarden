@@ -53,7 +53,8 @@ export default function Changes({ className = "" }) {
 
   return (
     <DiffContext.Provider value={contextValue}>
-      <div className={className + " flex h-100"}>
+      <div className={className + " flex column-sm h-100"}>
+        {" "}
         <div className="col-25">
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>

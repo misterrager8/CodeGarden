@@ -63,22 +63,24 @@ export default function Display({ className = "" }) {
       <Nav />
       {multiCtx.currentRepo ? (
         <>
-          <div className="mini-top">
-            <div className="fw-bold">
-              <Icon name="bi:git" className="me-2" />
-              {multiCtx.currentRepo?.name}
+          <div className="mini-x  x  ">
+            <div className="mini-top flex between">
+              <div className="fw-bold">
+                <Icon name="bi:git" className="me-2" />
+                {multiCtx.currentRepo?.name}
+              </div>
+              <div>
+                <Icon name="famicons:git-branch-sharp" className="me-2" />
+                {multiCtx.currentRepo?.current_branch.name}
+              </div>
             </div>
-            <div>
-              <Icon name="famicons:git-branch-sharp" className="me-2" />
-              {multiCtx.currentRepo?.current_branch.name}
-            </div>
-          </div>
-          <div className="body d-flex">
-            <div className="inner">
-              {
-                pages.find((page) => page.value === multiCtx.currentPage)
-                  ?.component
-              }
+            <div className="body d-flex">
+              <div className="inner">
+                {
+                  pages.find((page) => page.value === multiCtx.currentPage)
+                    ?.component
+                }
+              </div>
             </div>
           </div>
         </>

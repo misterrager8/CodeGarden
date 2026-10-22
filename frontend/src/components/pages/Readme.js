@@ -140,7 +140,7 @@ export default function Readme({ className = "" }) {
 
   return (
     <div className={className}>
-      <div className="flex">
+      <div className="flex column-sm">
         <div className="col-50">
           <div
             className={
@@ -164,7 +164,7 @@ export default function Readme({ className = "" }) {
             rows={25}
             onChange={onChangeContent}
             value={content}
-            className="form-control "></textarea>
+            className="input w-100 "></textarea>
         </div>
         <div className="divider"></div>
         <div

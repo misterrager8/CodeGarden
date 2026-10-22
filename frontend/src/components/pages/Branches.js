@@ -97,7 +97,7 @@ export default function Branches({ className = "" }) {
   return (
     <div className={className + " h-100"}>
       <BranchContext.Provider value={contextValue}>
-        <div className="flex h-100">
+        <div className="flex column-sm h-100">
           <div className="col-25">
             <NewBranch className="mb-3" />
             {multiCtx.currentRepo.branches.map((branch) => (
@@ -172,9 +172,9 @@ export default function Branches({ className = "" }) {
                 {!merging ? (
                   <div>
                     {comparison?.map((x) => (
-                      <div className="comparison-item">
-                        <div className="between w-100">
-                          <div className="d-flex text-truncate">
+                      <div className="item">
+                        <div className="flex between w-100">
+                          <div className="flex text-truncate">
                             <div className="small me-2 my-auto">
                               {x.abbrev_hash}
                             </div>
@@ -194,7 +194,7 @@ export default function Branches({ className = "" }) {
                     style={{ fontSize: ".875rem", fontFamily: "monospace" }}
                     onChange={onChangeMergeMsg}
                     rows={20}
-                    className="form-control"
+                    className="input w-100"
                     value={mergeMsg}></textarea>
                 )}
               </div>

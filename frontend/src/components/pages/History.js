@@ -79,7 +79,7 @@ export default function History({ className = "" }) {
 
   return (
     <LogContext.Provider value={contextValue}>
-      <div className={className + " flex h-100"}>
+      <div className={className + " flex column-sm h-100"}>
         <div className="col-25">
           {multiCtx.currentRepo?.log.map((item, idx) => (
             <LogItem id={idx} item={item} />
@@ -92,10 +92,18 @@ export default function History({ className = "" }) {
               .filter((w) => w.name.toLowerCase().startsWith(query))
               .map((x) => (
                 <div
+                  onClick={() => {
+                    if (selectedFile?.path !== x.path) {
+                      setSelectedFile(x);
+                      getFileAtCommit();
+                    } else {
+                      setSelectedFile(null);
+                    }
+                  }}
                   key={x.path}
                   className={
-                    "file-item " +
-                    (selectedFile?.path === x.path ? "active" : "")
+                    "item flex" +
+                    (selectedFile?.path === x.path ? " active" : "")
                   }>
                   {x.changed && (
                     <Icon
@@ -103,17 +111,7 @@ export default function History({ className = "" }) {
                       className="me-2 red"
                     />
                   )}
-                  <a
-                    onClick={() => {
-                      if (selectedFile?.path !== x.path) {
-                        setSelectedFile(x);
-                        getFileAtCommit();
-                      } else {
-                        setSelectedFile(null);
-                      }
-                    }}>
-                    {x.name}
-                  </a>
+                  <a>{x.name}</a>
                 </div>
               ))}
           </div>

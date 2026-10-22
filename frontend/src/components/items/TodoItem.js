@@ -41,8 +41,7 @@ export default function TodoItem({ item, className = "" }) {
   };
 
   return (
-    <div
-      className={className + " todo-item" + (item.done ? " opacity-25" : "")}>
+    <div className={className + "item" + (item.done ? " opacity-25" : "")}>
       <form
         onSubmit={(e) => {
           multiCtx.editTodo(
@@ -59,18 +58,18 @@ export default function TodoItem({ item, className = "" }) {
         <Input
           title={name}
           required={true}
-          className="border-0 fst-italic"
+          className="border-0 fst-italic w-100"
           value={name}
           onChange={onChangeName}
         />
-        <div className="between flex-row-reverse my-1">
+        <div className="flex center between my-3">
           <ButtonGroup size="sm">
             {saved && (
               <span className="btn border-0">
                 <i className="bi bi-floppy2"></i>
               </span>
             )}
-            <div className="my-auto me-1">
+            <div className="me-1">
               <span className="badge">#{item.id}</span>
             </div>
           </ButtonGroup>
@@ -99,7 +98,7 @@ export default function TodoItem({ item, className = "" }) {
             ))}
           </Dropdown>
         </div>
-        <InputGroup size="sm">
+        <div className="flex">
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>
               <Button
@@ -180,17 +179,17 @@ export default function TodoItem({ item, className = "" }) {
               onClick={() => multiCtx.deleteTodo(item.id)}
             />
           )}
-        </InputGroup>
+        </div>
         {showDescription && (
           <textarea
             rows={description.split("\n")?.length + 1}
             value={description}
             onChange={onChangeDescription}
             placeholder="Description"
-            className="form-control form-control-sm my-3 desc"></textarea>
+            className="input my-3 w-100 desc"></textarea>
         )}
 
-        <button className="d-none" type="submit"></button>
+        <button className="hide" type="submit"></button>
       </form>
       {branching && (
         <form

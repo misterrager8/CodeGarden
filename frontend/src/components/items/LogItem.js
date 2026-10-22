@@ -9,9 +9,10 @@ export default function LogItem({ item, id, className = "" }) {
 
   return (
     <div
+      onClick={() => logCtx.setSelectedCommit(item)}
       className={
         className +
-        " log-item" +
+        " item" +
         (logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
           ? " active"
           : "")
@@ -27,9 +28,7 @@ export default function LogItem({ item, id, className = "" }) {
                 onClick={() => multiCtx.undoCommit()}
               />
             )}
-            <a onClick={() => logCtx.setSelectedCommit(item)} title={item.name}>
-              {item.name}
-            </a>
+            <a title={item.name}>{item.name}</a>
           </div>
           <span className="small font-monospace">{item.abbrev_hash}</span>
         </div>

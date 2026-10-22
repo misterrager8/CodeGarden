@@ -37,8 +37,8 @@ export default function Kanban({ className = "" }) {
 
   return (
     <FilterContext.Provider value={contextValue}>
-      <div className={className + " flex h-100"}>
-        <div className="col-75 flex">
+      <div className={className + " flex column-sm"}>
+        <div className="col-75 flex column-sm">
           <div className="col-33 show-on-mini">
             <div className="heading">ACTIVE</div>
             {doing.map((todo) => (

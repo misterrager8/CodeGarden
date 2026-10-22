@@ -1,0 +1,110 @@
+.btn {
+  background-color: transparent;
+  color: var(--btn-color);
+  border: none;
+  border-bottom: 0.5px solid var(--primary-txt);
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.btn.active,
+.btn:hover {
+  background-color: var(--btn-color);
+  color: var(--btn-hover-txt);
+  border-radius: 5px;
+}
+
+/* red */
+
+.btn.red {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.btn.red.active,
+.btn.red:hover {
+  background-color: var(--red);
+  color: var(--btn-hover-txt);
+}
+
+/* orange */
+
+.btn.orange {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.btn.orange.active,
+.btn.orange:hover {
+  background-color: var(--orange);
+  color: var(--btn-hover-txt);
+}
+
+/* yellow */
+
+.btn.yellow {
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.btn.yellow.active,
+.btn.yellow:hover {
+  background-color: var(--yellow);
+  color: var(--btn-hover-txt);
+}
+
+/* green */
+
+.btn.green {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.btn.green.active,
+.btn.green:hover {
+  background-color: var(--green);
+  color: var(--btn-hover-txt);
+}
+
+/* blue */
+
+.btn.blue {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+
+.btn.blue.active,
+.btn.blue:hover {
+  background-color: var(--blue);
+  color: var(--btn-hover-txt);
+}
+/* indigo */
+
+.btn.indigo {
+  color: var(--indigo);
+  border-color: var(--indigo);
+}
+
+.btn.indigo.active,
+.btn.indigo:hover {
+  background-color: var(--indigo);
+  color: var(--btn-hover-txt);
+}
+
+/* violet */
+
+.btn.violet {
+  color: var(--violet);
+  border-color: var(--violet);
+}
+
+.btn.violet.active,
+.btn.violet:hover {
+  background-color: var(--violet);
+  color: var(--btn-hover-txt);
+}

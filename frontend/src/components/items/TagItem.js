@@ -36,7 +36,7 @@ export default function TagItem({ item, className = "" }) {
 
   return (
     <div className={className + " tag-item"}>
-      <form className="input-group" onSubmit={(e) => editTag(e)}>
+      <form className="flex center between" onSubmit={(e) => editTag(e)}>
         {saved && (
           <Button className="non-btn green" icon="bxs:save" border={false} />
         )}

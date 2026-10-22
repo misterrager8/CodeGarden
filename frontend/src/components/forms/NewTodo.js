@@ -26,28 +26,30 @@ export default function NewTodo({ className = "" }) {
   return (
     <div>
       <form
-        className={className + " input-group input-group-sm mt-3"}
+        className={className + " flex between mt-3"}
         onSubmit={(e) => {
           multiCtx.addTodo(e, name, tag);
           setName("");
         }}>
-        <Dropdown icon="tabler:tag-filled" text={tag} classNameBtn="border-0">
-          {multiCtx.tags.map((x) => (
-            <a
-              key={x.id}
-              onClick={() => setTag(x.label)}
-              className="dropdown-item">
-              <Icon name="tabler:tag-filled" className="me-2" />
-              {x.label}
-            </a>
-          ))}
-        </Dropdown>
-        <Input
-          value={name}
-          onChange={onChangeName}
-          required={true}
-          placeholder="New TODO"
-        />
+        <div>
+          <Dropdown icon="tabler:tag-filled" text={tag} classNameBtn="border-0">
+            {multiCtx.tags.map((x) => (
+              <a
+                key={x.id}
+                onClick={() => setTag(x.label)}
+                className="dropdown-item">
+                <Icon name="tabler:tag-filled" className="me-2" />
+                {x.label}
+              </a>
+            ))}
+          </Dropdown>
+          <Input
+            value={name}
+            onChange={onChangeName}
+            required={true}
+            placeholder="New TODO"
+          />
+        </div>
         {multiCtx.currentRepo.todos.filter((x) => x.done).length !== 0 && (
           <Button
             border={false}

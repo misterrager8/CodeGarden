@@ -33,10 +33,10 @@ export default function LineItem({ item, idx }) {
   return (
     <>
       <div
-        className="line-item between"
+        className="item flex between line"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}>
-        <div className="d-flex">
+        <div className="flex">
           <span className="line-number">
             <span className="me-3">
               {(idx + 1).toString().padStart(2, " ")}
@@ -44,7 +44,7 @@ export default function LineItem({ item, idx }) {
             <Icon
               onClick={() => copyLine()}
               name={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
-              className={"me-3" + (hovered ? "" : " invisible")}
+              className={"mx-2" + (hovered ? "" : " invisible")}
             />
             <Icon
               onClick={() => {
@@ -54,7 +54,9 @@ export default function LineItem({ item, idx }) {
               className={"" + (hovered ? "" : " invisible")}
             />
           </span>
-          <div style={{ fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
+          <div
+            className="mx-3"
+            style={{ fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
             {item}
           </div>
         </div>

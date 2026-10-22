@@ -13,7 +13,7 @@ export default function DiffItem({ item, className = "" }) {
     <div
       className={
         className +
-        " between diff-item" +
+        " flex between item center" +
         (diffCtx.selectedDiff?.path === item.path ? " active" : "")
       }>
       <a

@@ -46,7 +46,7 @@ export default function NewRepo({ className = "" }) {
         placeholder="Description"
         value={description}
         onChange={onChangeDescription}
-        className="form-control form-control-sm mt-3"
+        className="input mt-3"
         autoComplete="off"></textarea>
       <Button
         type_="submit"
