@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { MultiContext } from "../../Context";
-import ButtonGroup from "../atoms/ButtonGroup";
 import Button from "../atoms/Button";
 
 export default function IgnoreItem({ id, item, className = "" }) {
@@ -11,7 +10,7 @@ export default function IgnoreItem({ id, item, className = "" }) {
     <div className={className + " between"}>
       <div className="small my-auto">{item.name}</div>
       <div>
-        <ButtonGroup size="sm">
+        <div>
           {deleting && (
             <Button
               icon="fluent:question-32-filled"
@@ -24,7 +23,7 @@ export default function IgnoreItem({ id, item, className = "" }) {
             className="border-0 red"
             onClick={() => setDeleting(!deleting)}
           />
-        </ButtonGroup>
+        </div>
       </div>
     </div>
   );

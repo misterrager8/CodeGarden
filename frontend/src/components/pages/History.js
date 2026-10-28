@@ -87,14 +87,24 @@ export default function History({ className = "" }) {
         </div>
         <div className="col-25">
           <SearchFiles className="mb-3" />
-          <div className="mt-3" style={{ overflowY: "auto", height: "71vh" }}>
+          <div
+            className="mt-3"
+            style={{ overflowY: "auto", height: "71vh", padding: "5px" }}>
             {files
-              .filter((w) => w.name.toLowerCase().startsWith(query))
+              .filter((w) => w.name.toLowerCase().includes(query.toLowerCase()))
               .map((x) => (
                 <div
+                  onClick={() => {
+                    if (selectedFile?.path !== x.path) {
+                      setSelectedFile(x);
+                      getFileAtCommit();
+                    } else {
+                      setSelectedFile(null);
+                    }
+                  }}
                   key={x.path}
                   className={
-                    "file-item " +
+                    "file-item text-truncate " +
                     (selectedFile?.path === x.path ? "active" : "")
                   }>
                   {x.changed && (
@@ -103,17 +113,7 @@ export default function History({ className = "" }) {
                       className="me-2 red"
                     />
                   )}
-                  <a
-                    onClick={() => {
-                      if (selectedFile?.path !== x.path) {
-                        setSelectedFile(x);
-                        getFileAtCommit();
-                      } else {
-                        setSelectedFile(null);
-                      }
-                    }}>
-                    {x.name}
-                  </a>
+                  <span>{x.name}</span>
                 </div>
               ))}
           </div>

@@ -28,17 +28,17 @@ export default function NewRepo({ className = "" }) {
         multiCtx.addRepo(e, name);
         setName("");
       }}>
-      <div className="input-group input-group-sm">
+      <div className="">
+        <Button
+          onClick={() => generateName()}
+          text="Generate Name"
+          icon="ix:rename"
+        />
         <Input
           required={true}
           value={name}
           onChange={onChangeName}
           placeholder="New Repo"
-        />
-        <Button
-          onClick={() => generateName()}
-          text="Generate Name"
-          icon="ix:rename"
         />
       </div>
       <textarea
@@ -46,7 +46,7 @@ export default function NewRepo({ className = "" }) {
         placeholder="Description"
         value={description}
         onChange={onChangeDescription}
-        className="form-control form-control-sm mt-3"
+        className="form-control mt-3"
         autoComplete="off"></textarea>
       <Button
         type_="submit"

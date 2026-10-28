@@ -8,34 +8,36 @@ export default function LogItem({ item, id, className = "" }) {
   const logCtx = useContext(LogContext);
 
   return (
-    <div
-      className={
-        className +
-        " log-item" +
-        (logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
-          ? " active"
-          : "")
-      }>
-      <div>
-        <div className="between mb-1">
-          <div className="fw-bold text-truncate">
-            {id === 0 && (
-              <Button
-                text="Undo"
-                icon="ic:baseline-undo"
-                className="border-0 purple"
-                onClick={() => multiCtx.undoCommit()}
-              />
-            )}
-            <a onClick={() => logCtx.setSelectedCommit(item)} title={item.name}>
-              {item.name}
-            </a>
+    <div className="d-flex">
+      {id === 0 && (
+        <Button
+          tooltip="Undo Commit"
+          // text="Undo"
+          icon="ic:baseline-undo"
+          className="border-0 purple px-1"
+          onClick={() => multiCtx.undoCommit()}
+        />
+      )}
+      <div
+        onClick={() => logCtx.setSelectedCommit(item)}
+        className={
+          className +
+          " log-item w-100" +
+          (logCtx.selectedCommit?.abbrev_hash === item.abbrev_hash
+            ? " active"
+            : "")
+        }>
+        <div>
+          <div className="between mb-1">
+            <div className="fw-bold text-truncate">
+              <a title={item.name}>{item.name}</a>
+            </div>
+            <span className="small font-monospace">{item.abbrev_hash}</span>
           </div>
-          <span className="small font-monospace">{item.abbrev_hash}</span>
-        </div>
-        <div className="between small fw-light">
-          <span>{item.timestamp}</span>
-          <span>{item.author}</span>
+          <div className="between small fw-light">
+            <span>{item.timestamp}</span>
+            <span>{item.author}</span>
+          </div>
         </div>
       </div>
     </div>

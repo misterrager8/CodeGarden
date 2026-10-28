@@ -35,7 +35,12 @@ export default function TagItem({ item, className = "" }) {
     ).length;
 
   return (
-    <div className={className + " tag-item"}>
+    <div
+      className={
+        className +
+        " tag-item" +
+        (item.label === filterCtx.filter ? " active" : "")
+      }>
       <form className="input-group" onSubmit={(e) => editTag(e)}>
         {saved && (
           <Button className="non-btn green" icon="bxs:save" border={false} />
@@ -43,7 +48,7 @@ export default function TagItem({ item, className = "" }) {
         <Input className="border-0" onChange={onChangeName} value={name} />
         {filteredTodos() > 0 && (
           <Button
-            active={item.label === filterCtx.filter}
+            // active={item.label === filterCtx.filter}
             onClick={() =>
               filterCtx.setFilter(
                 item.label === filterCtx.filter ? null : item.label,

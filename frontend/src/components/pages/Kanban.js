@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../Context";
 import TodoItem from "../items/TodoItem";
-import Input from "../atoms/Input";
 import TagItem from "../items/TagItem";
 import NewTodo from "../forms/NewTodo";
 import NewTag from "../forms/NewTag";
@@ -39,14 +38,14 @@ export default function Kanban({ className = "" }) {
     <FilterContext.Provider value={contextValue}>
       <div className={className + " flex h-100"}>
         <div className="col-75 flex">
-          <div className="col-33 show-on-mini">
+          <div className="col-33 show-on-mini" style={{ padding: "5px" }}>
             <div className="heading">ACTIVE</div>
             {doing.map((todo) => (
               <TodoItem key={todo.id} item={todo} />
             ))}
           </div>
 
-          <div className="col-33">
+          <div style={{ padding: "5px" }} className="col-33">
             <div className="heading">TODO</div>
             <NewTodo />
             <div className="mt-3" style={{ height: "69vh", overflowY: "auto" }}>
@@ -56,14 +55,14 @@ export default function Kanban({ className = "" }) {
             </div>
           </div>
 
-          <div className="col-33 hide-on-mini">
+          <div style={{ padding: "5px" }} className="col-33 hide-on-mini">
             <div className="heading">ACTIVE</div>
             {doing.map((todo) => (
               <TodoItem key={todo.id} item={todo} />
             ))}
           </div>
 
-          <div className="col-33">
+          <div style={{ padding: "5px" }} className="col-33">
             <div className="heading">DONE</div>
             <div style={{ height: "76vh", overflowY: "auto" }}>
               {done.map((todo) => (

@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { MultiContext } from "../../Context";
-import ButtonGroup from "../atoms/ButtonGroup";
 import Button from "../atoms/Button";
 import { api } from "../../util";
 
@@ -51,7 +50,7 @@ export default function StashItem({ item, id, className = "" }) {
         />
         <div className="small py-1">{item}</div>
       </div>
-      <ButtonGroup>
+      <div>
         {deleting && (
           <Button
             border={false}
@@ -66,7 +65,7 @@ export default function StashItem({ item, id, className = "" }) {
           className="red"
           onClick={() => setDeleting(!deleting)}
         />
-      </ButtonGroup>
+      </div>
     </div>
   );
 }

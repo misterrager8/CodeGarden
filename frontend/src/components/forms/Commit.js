@@ -95,7 +95,7 @@ export default function Commit({ className = "" }) {
         <textarea
           value={msgDetails}
           onChange={onChangeMsgDetails}
-          className="form-control form-control-sm mt-2"
+          className="form-control mt-2"
           placeholder="Description"
           rows={3}></textarea>
       )}

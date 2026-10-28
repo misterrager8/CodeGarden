@@ -61,7 +61,6 @@ def commit():
     return {
         "status": "done",
         "repo": repository_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -100,8 +99,6 @@ def export_repository():
     repository_.export()
     return {
         "status": "done",
-        # "repo": repository_.to_dict(),
-        # "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -124,7 +121,6 @@ def edit_readme():
     return {
         "status": "done",
         "repo": repository_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -138,7 +134,6 @@ def create_branch():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -152,7 +147,6 @@ def delete_branch():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -176,7 +170,6 @@ def checkout_branch():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -188,7 +181,6 @@ def push_stash():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -200,7 +192,6 @@ def unstash():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -212,7 +203,6 @@ def drop_stash():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -245,7 +235,6 @@ def create_todo():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -264,7 +253,6 @@ def edit_todo():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -277,7 +265,6 @@ def delete_todo():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -291,7 +278,6 @@ def clear_completed():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -307,7 +293,6 @@ def toggle_todo():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -337,12 +322,10 @@ def commit_todo():
         f"({todo_.tag or datetime.date.today().strftime('%d/%m/%Y')}) {todo_.title}",
         True,
     )
-    repos = [i.to_dict() for i in Repository.all()]
 
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": repos,
     }
 
 
@@ -356,7 +339,6 @@ def create_ignore():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -369,7 +351,6 @@ def delete_ignore():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -382,7 +363,6 @@ def reset_file():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -400,7 +380,6 @@ def toggle_stage():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -422,7 +401,6 @@ def reset_all():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -434,7 +412,6 @@ def unstage_all():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 
@@ -446,7 +423,6 @@ def stage_all():
     return {
         "status": "done",
         "repo": repo_.to_dict(),
-        "repos": [i.to_dict() for i in Repository.all()],
     }
 
 

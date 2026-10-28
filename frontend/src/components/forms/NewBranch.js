@@ -16,7 +16,7 @@ export default function NewBranch({ className = "" }) {
 
   return (
     <form
-      className={className + " input-group input-group-sm"}
+      className={className + " d-flex"}
       onSubmit={(e) => {
         multiCtx.addBranch(e, !prefix ? name : `${prefix}/${name}`);
         setName("");

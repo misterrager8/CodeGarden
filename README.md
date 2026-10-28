@@ -4,13 +4,7 @@ CodeGarden is an open source Python-based web and command-line app made to simpl
 
 CodeGarden can make it easier to perform common Git operations such as cloning, committing, and pushing changes to a repository. It also allows developers to integrate Git functionality into their applications without having to interact with Git directly, which can be helpful for automating tasks and reducing errors.
 
-![](/docs/screenshot1.png)
-
-![](/docs/screenshot2.png)
-
-![](/docs/screenshot3.png)
-
-![](/docs/screenshot4.png)
+![](/docs/screenshots/v2026.10.28/Screenshot 2026-10-28 at 6.08.21 AM.png)
 
 ### Features
 

@@ -1,11 +1,9 @@
 import { useContext, useState } from "react";
 import Input from "../atoms/Input";
 import { MultiContext } from "../../Context";
-import Button from "../atoms/Button";
 
 export default function NewIgnored({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const label = "ignored";
 
   const [name, setName] = useState("");
 
@@ -13,7 +11,7 @@ export default function NewIgnored({ className = "" }) {
 
   return (
     <form
-      className={className + " input-group input-group-sm my-3"}
+      className={className + " input-group my-3"}
       onSubmit={(e) => {
         multiCtx.addIgnore(e, name);
         setName("");

@@ -5,6 +5,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./App.css";
 import Display from "./components/Display";
 import MultiProvider from "./Context";
+import Button from "./components/atoms/Button";
+import Dropdown from "./components/atoms/Dropdown";
 
 function App() {
   return (

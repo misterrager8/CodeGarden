@@ -5,7 +5,6 @@ export default function Dropdown({
   target,
   icon,
   active = false,
-  size = "sm",
   border = false,
   children,
   autoClose = true,
@@ -21,8 +20,7 @@ export default function Dropdown({
           " btn" +
           (showCaret ? " dropdown-toggle" : "") +
           (!border ? " border-0" : "") +
-          (active ? " active" : "") +
-          (size ? ` btn-${size}` : "")
+          (active ? " active" : "")
         }
         data-bs-target={"#" + target}
         data-bs-auto-close={autoClose}

@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { MultiContext } from "../../Context";
-import InputGroup from "../atoms/InputGroup";
-import ButtonGroup from "../atoms/ButtonGroup";
 import Input from "../atoms/Input";
 import Dropdown from "../atoms/Dropdown";
 import Button from "../atoms/Button";
@@ -56,8 +54,15 @@ export default function TodoItem({ item, className = "" }) {
           setSaved(true);
           setTimeout(() => setSaved(false), 1500);
         }}>
-        <InputGroup size="sm" className="mb-1">
-          <ButtonGroup size="sm">
+        <Input
+          title={name}
+          required={true}
+          className="border-0 fst-italic"
+          value={name}
+          onChange={onChangeName}
+        />
+        <div className="between flex-row-reverse my-1">
+          <div>
             {saved && (
               <span className="btn border-0">
                 <i className="bi bi-floppy2"></i>
@@ -66,14 +71,7 @@ export default function TodoItem({ item, className = "" }) {
             <div className="my-auto me-1">
               <span className="badge">#{item.id}</span>
             </div>
-          </ButtonGroup>
-          <Input
-            title={name}
-            required={true}
-            className="border-0 fst-italic"
-            value={name}
-            onChange={onChangeName}
-          />
+          </div>
           <Dropdown
             target="edit-tags"
             classNameBtn="btn border-0"
@@ -98,8 +96,8 @@ export default function TodoItem({ item, className = "" }) {
               </a>
             ))}
           </Dropdown>
-        </InputGroup>
-        <InputGroup size="sm">
+        </div>
+        <div>
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>
               <Button
@@ -152,6 +150,7 @@ export default function TodoItem({ item, className = "" }) {
             onClick={() => setBranching(!branching)}
             icon="famicons:git-branch-sharp"></Button>
           <Button
+            active={showDescription}
             className={
               (showDescription ? "" : " border-0") +
               (description?.length > 0 ? " purple" : "")
@@ -180,15 +179,16 @@ export default function TodoItem({ item, className = "" }) {
               onClick={() => multiCtx.deleteTodo(item.id)}
             />
           )}
-        </InputGroup>
+        </div>
         {showDescription && (
           <textarea
             rows={description.split("\n")?.length + 1}
             value={description}
             onChange={onChangeDescription}
             placeholder="Description"
-            className="form-control form-control-sm my-3 desc"></textarea>
+            className="form-control my-3 desc"></textarea>
         )}
+
         <button className="d-none" type="submit"></button>
       </form>
       {branching && (

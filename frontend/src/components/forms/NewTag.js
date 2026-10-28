@@ -19,9 +19,7 @@ export default function NewTag({ className = "" }) {
   };
 
   return (
-    <form
-      className={className + " input-group input-group-sm"}
-      onSubmit={(e) => addTag(e)}>
+    <form className={className} onSubmit={(e) => addTag(e)}>
       <Input
         value={name}
         onChange={onChangeName}

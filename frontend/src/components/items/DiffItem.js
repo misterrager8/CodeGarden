@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { MultiContext } from "../../Context";
-import ButtonGroup from "../atoms/ButtonGroup";
 import Button from "../atoms/Button";
 import { DiffContext } from "../pages/Changes";
 
@@ -13,11 +12,11 @@ export default function DiffItem({ item, className = "" }) {
     <div
       className={
         className +
-        " between diff-item" +
+        " between diff-item text-truncate" +
         (diffCtx.selectedDiff?.path === item.path ? " active" : "")
       }>
       <a
-        className="my-auto flex-grow-1"
+        className="my-auto flex-grow-1 text-truncate"
         onClick={() =>
           diffCtx.setSelectedDiff(
             diffCtx.selectedDiff?.path === item.path ? null : item,
@@ -29,7 +28,7 @@ export default function DiffItem({ item, className = "" }) {
         {item.name}
       </a>
 
-      <ButtonGroup size="sm">
+      <div>
         <Button
           icon={
             item.staged
@@ -61,7 +60,7 @@ export default function DiffItem({ item, className = "" }) {
           className="red"
           onClick={() => setDeleting(!deleting)}
         />
-      </ButtonGroup>
+      </div>
     </div>
   );
 }

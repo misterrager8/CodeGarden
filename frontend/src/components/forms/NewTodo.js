@@ -7,17 +7,11 @@ import Button from "../atoms/Button";
 
 export default function NewTodo({ className = "" }) {
   const multiCtx = useContext(MultiContext);
-  const label = "todos";
 
   const [name, setName] = useState("");
   const [tag, setTag] = useState(multiCtx.tags[0].label);
 
   const onChangeName = (e) => setName(e.target.value);
-
-  const contextValue = {
-    tag: tag,
-    setTag: setTag,
-  };
 
   useEffect(() => {
     setTag(multiCtx.tags[0].label);
@@ -26,7 +20,7 @@ export default function NewTodo({ className = "" }) {
   return (
     <div>
       <form
-        className={className + " input-group input-group-sm mt-3"}
+        className={className + " mt-3"}
         onSubmit={(e) => {
           multiCtx.addTodo(e, name, tag);
           setName("");

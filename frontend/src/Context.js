@@ -74,7 +74,6 @@ export default function MultiProvider({ children }) {
       { name: name, tag: tag, repository: currentRepo.name },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -95,7 +94,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -105,7 +103,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("delete_todo", { id: id, repository: currentRepo.name }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
@@ -114,7 +111,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("toggle_todo", { id: id, repository: currentRepo.name }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
@@ -123,7 +119,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("commit_todo", { id: id, inProgress: inProgress }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
@@ -132,7 +127,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("clear_completed", { repo: currentRepo.name }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
@@ -150,7 +144,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -166,7 +159,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -182,7 +174,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -199,7 +190,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -215,7 +205,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -231,7 +220,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -247,7 +235,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -265,7 +252,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -280,7 +266,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -295,7 +280,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -310,7 +294,6 @@ export default function MultiProvider({ children }) {
       },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -356,7 +339,6 @@ export default function MultiProvider({ children }) {
       { name: name, repository: currentRepo.name },
       (data) => {
         setCurrentRepo(data.repo);
-        setRepos(data.repos);
         setLoading(false);
       },
     );
@@ -366,7 +348,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("delete_ignore", { id: id, repository: currentRepo.name }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
@@ -375,7 +356,6 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("edit_readme", { name: currentRepo.name, content: content }, (data) => {
       setCurrentRepo(data.repo);
-      setRepos(data.repos);
       setLoading(false);
     });
   };
