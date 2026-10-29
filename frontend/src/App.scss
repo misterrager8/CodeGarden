@@ -1,4 +1,4 @@
-@import "./colors.css";
+@import "./colors.scss";
 
 * {
   font-family: "Roboto";
@@ -41,14 +41,14 @@ body {
 .form-control {
   background-color: transparent;
   color: var(--primary-txt);
-  border: 1px solid var(--secondary-color);
+  border: 0.5px solid var(--secondary-color);
   font-style: italic;
 }
 
 .nav-custom {
   width: 100%;
   height: 70px;
-  border-bottom: 1px solid var(--secondary-color);
+  border-bottom: 0.5px solid var(--secondary-color);
   display: flex;
   padding-inline: 20px;
 }
@@ -97,7 +97,7 @@ body {
 }
 
 .divider {
-  border: 1px solid var(--secondary-color);
+  border: 0.5px solid var(--secondary-color);
   margin: 0px 10px;
 }
 
@@ -226,7 +226,7 @@ body {
 
 .badge-custom {
   padding: 1px 5px;
-  border: 1px solid var(--btn-color);
+  border: 0.5px solid var(--btn-color);
   color: var(--btn-color);
   border-radius: 10px;
   font-size: small;
@@ -309,7 +309,7 @@ body {
 .mini-top {
   display: none;
   justify-content: space-between;
-  padding: 10px 5px;
+  padding: 10px;
   font-size: small;
 }
 
@@ -383,10 +383,18 @@ body {
 .line-item {
   display: flex;
   cursor: pointer;
+  margin-bottom: 1px;
+  padding-inline: 10px;
 }
 
 .line-item:hover {
-  border-bottom: 0.5px solid var(--btn-color);
+  background-color: var(--secondary-color);
+}
+
+.line-item.active {
+  background-color: #{$orange-400};
+  border-radius: 5px;
+  color: #{$gray-900};
 }
 
 .line-number {
@@ -399,18 +407,23 @@ body {
 }
 
 .blame {
-  font-size: small;
   opacity: 50%;
   font-style: italic;
-  text-align: center;
-  margin: 20px 0px;
+  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-left: 100px;
+  display: flex;
+}
+
+.blame * {
+  font-size: small;
 }
 
 @media screen and (max-width: 1427px) {
   .nav-custom {
     height: 100vh;
-    width: 100px;
-    border-right: 1px solid var(--secondary-color);
+    width: 90px;
+    border-right: 0.5px solid var(--secondary-color);
     padding-block: 20px;
   }
 
@@ -423,9 +436,9 @@ body {
   }
 
   .body {
-    width: calc(100% - 100px);
-    height: 100vh;
-    padding: 23px 20px;
+    width: calc(100% - 90px);
+    height: 93vh;
+    padding: 10px;
   }
 
   .nav-custom .btn span {
@@ -487,6 +500,6 @@ body {
   }
 
   .code-scroll {
-    height: 18vh;
+    height: 37vh;
   }
 }

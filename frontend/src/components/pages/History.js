@@ -6,6 +6,8 @@ import SearchFiles from "../forms/SearchFiles";
 import Button from "../atoms/Button";
 import Icon from "../atoms/Icon";
 import LineItem from "../items/LineItem";
+import Input from "../atoms/Input";
+import { v4 as uuidv4 } from "uuid";
 
 export const LogContext = createContext();
 
@@ -17,14 +19,18 @@ export default function History({ className = "" }) {
 
   const [summary, setSummary] = useState(null);
   const [files, setFiles] = useState([]);
-  const [fileContents, setFileContents] = useState(null);
+  const [fileContents, setFileContents] = useState([]);
   const [copied, setCopied] = useState(false);
 
   const [query, setQuery] = useState("");
+
+  const [lineFilter, setLineFilter] = useState("");
+  const onChangeLineFilter = (e) => setLineFilter(e.target.value);
+
   const [fontSize, setFontSize] = useState(0.875);
   const onChangeFontSize = (e) => setFontSize(e.target.value);
 
-  const [showPastVersion, setShowPastVersion] = useState(false);
+  const [filteredLinesOnly, setFilteredLinesOnly] = useState(false);
 
   const getFileAtCommit = () => {
     api(
@@ -35,7 +41,10 @@ export default function History({ className = "" }) {
         hash: selectedCommit?.abbrev_hash,
       },
       (data) => {
-        setFileContents(data.file);
+        let fileContents_ = data.file?.after.split("\n").map((x, idx) => {
+          return { content: x, id: idx };
+        });
+        setFileContents(fileContents_);
       },
     );
   };
@@ -60,8 +69,8 @@ export default function History({ className = "" }) {
   }, [selectedCommit]);
 
   useEffect(() => {
-    selectedFile ? getFileAtCommit() : setFileContents(null);
-    setShowPastVersion(false);
+    selectedFile ? getFileAtCommit() : setFileContents([]);
+    setLineFilter("");
   }, [selectedFile]);
 
   useEffect(() => {
@@ -75,16 +84,23 @@ export default function History({ className = "" }) {
     setSelectedFile: setSelectedFile,
     query: query,
     setQuery: setQuery,
+    lineFilter: lineFilter,
+    setFiles: setFiles,
+    setSummary: setSummary,
+    fileContents: fileContents,
+    setFileContents: setFileContents,
   };
 
   return (
     <LogContext.Provider value={contextValue}>
       <div className={className + " flex h-100"}>
-        <div className="col-25">
-          {multiCtx.currentRepo?.log.map((item, idx) => (
-            <LogItem id={idx} item={item} />
-          ))}
-        </div>
+        {!selectedFile && (
+          <div className="col-25">
+            {multiCtx.currentRepo?.log.map((item, idx) => (
+              <LogItem id={idx} item={item} />
+            ))}
+          </div>
+        )}
         <div className="col-25">
           <SearchFiles className="mb-3" />
           <div
@@ -98,8 +114,6 @@ export default function History({ className = "" }) {
                     if (selectedFile?.path !== x.path) {
                       setSelectedFile(x);
                       getFileAtCommit();
-                    } else {
-                      setSelectedFile(null);
                     }
                   }}
                   key={x.path}
@@ -119,57 +133,79 @@ export default function History({ className = "" }) {
           </div>
         </div>
         <div className="divider"></div>
-        <div className="col-50 d-flex">
+        <div className={"d-flex col-" + (selectedFile ? "75" : "50")}>
           {selectedFile ? (
             <div className="w-100">
               <div>
-                <Button
-                  text="Copy"
-                  icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      showPastVersion
-                        ? fileContents?.before
-                        : fileContents?.after,
-                    );
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 1000);
-                  }}
-                />
-                {selectedFile?.changed && (
+                <span
+                  onClick={() => setSelectedFile(null)}
+                  className="small"
+                  style={{ cursor: "pointer" }}>
+                  <Icon name="bi:caret-left-fill" className="me-1" />
+                  {selectedCommit?.name}
+                </span>
+                <div className="d-flex between w-100 mt-3">
                   <Button
-                    active={showPastVersion}
-                    onClick={() => setShowPastVersion(!showPastVersion)}
-                    text={
-                      "Show " +
-                      (showPastVersion ? "Current" : "Previous") +
-                      " Version"
-                    }
-                    icon={
-                      showPastVersion
-                        ? "tabler:current-location-filled"
-                        : "mage:previous-fill"
-                    }
+                    text="Copy"
+                    icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        fileContents?.map((x) => x.content).join("\n"),
+                      );
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1000);
+                    }}
                   />
-                )}
+                  <div className="d-flex flex-row-reverse w-75">
+                    <Input
+                      placeholder="Search Lines"
+                      className="w-75"
+                      value={lineFilter}
+                      onChange={onChangeLineFilter}
+                    />
+                    {lineFilter !== "" && (
+                      <div className="my-auto">
+                        <Button
+                          active={filteredLinesOnly}
+                          onClick={() =>
+                            setFilteredLinesOnly(!filteredLinesOnly)
+                          }
+                          icon="bi:search"
+                          text={
+                            fileContents
+                              ?.map((x) => x.content)
+                              .filter((x) =>
+                                x
+                                  .toLowerCase()
+                                  .includes(lineFilter.toLowerCase()),
+                              ).length
+                          }
+                        />
+                        <Button
+                          onClick={() => setLineFilter("")}
+                          icon="bi:eraser"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="code-scroll my-3">
                   <div
                     style={{
                       fontSize: `${fontSize}rem`,
                     }}>
-                    {showPastVersion ? (
-                      <>
-                        {fileContents?.before?.split("\n").map((x, idx) => (
-                          <LineItem item={x} idx={idx} />
-                        ))}
-                      </>
-                    ) : (
-                      <>
-                        {fileContents?.after?.split("\n").map((x, idx) => (
-                          <LineItem item={x} idx={idx} />
-                        ))}
-                      </>
-                    )}
+                    {fileContents
+                      // .map((x) => x.content)
+                      .filter((x) =>
+                        filteredLinesOnly
+                          ? x.content
+                              .toLowerCase()
+                              .includes(lineFilter.toLowerCase())
+                          : x !== null,
+                      )
+                      .map((x) => (
+                        <LineItem key={uuidv4()} item={x} />
+                      ))}
                   </div>
                 </div>
                 <input

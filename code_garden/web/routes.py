@@ -480,12 +480,16 @@ def get_files_at_point():
 @current_app.post("/blame")
 def blame():
     repo_ = Repository(request.json.get("repository"))
+    content = repo_.blame(
+        request.json.get("hash"),
+        request.json.get("line_number"),
+        request.json.get("path"),
+    )
 
     return {
         "status": "done",
-        "blame": repo_.blame(
-            request.json.get("hash"),
-            request.json.get("line_number"),
-            request.json.get("path"),
-        ),
+        "blame": {
+            "content": " ".join(content.split(" ")[1:]),
+            "hash": content.split(" ")[0],
+        },
     }

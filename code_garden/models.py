@@ -367,17 +367,9 @@ class Repository(object):
     #         return []
 
     def get_file_at_commit(self, path, hash):
-        before = self.run_command(
-            [
-                "git",
-                "show",
-                f"{hash}^:{path}",
-            ]
-        )
         after = self.run_command(["git", "show", f"{hash}:{path}"])
 
         return {
-            "before": before,
             "after": after,
         }
 

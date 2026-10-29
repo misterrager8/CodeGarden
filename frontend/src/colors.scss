@@ -1,37 +1,40 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
 :root,
 html[data-theme="light"] {
-  --primary-bg: #b5afaf;
-  --primary-txt: #1a1a1a;
+  --primary-bg: #{$gray-400};
+  --primary-txt: #{$gray-900};
 
-  --secondary-color: #979292;
+  --secondary-color: #{$gray-500};
 
-  --btn-color: #2b1180;
-  --btn-hover-txt: #cccccc;
+  --btn-color: #{$indigo-700};
+  --btn-hover-txt: #{$gray-400};
 
   --white: #cccccc;
   --black: #1a1a1a;
-  --red: #79061b;
-  --orange: #b46118;
+  --red: #{$red-500};
+  --orange: #{$orange-600};
   --yellow: #796406;
-  --green: #327906;
+  --green: #{$green-500};
   --blue: #067949;
   --indigo: #180679;
   --purple: #590679;
 }
 
 html[data-theme="dark"] {
-  --primary-bg: #282828;
-  --primary-txt: #cccccc;
+  --primary-bg: #{$gray-900};
+  --primary-txt: #{$gray-400};
 
-  --secondary-color: #393838;
+  --secondary-color: #{$gray-800};
 
-  --btn-color: #b69cff;
+  --btn-color: #{$indigo-300};
   --btn-hover-txt: #1a1a1a;
 
-  --red: #f98688;
-  --orange: #cd7613;
+  --red: #{$red-500};
+  --orange: #{$orange-500};
   --yellow: #f9f186;
-  --green: #bdf986;
+  --green: #{$green-400};
   --blue: #86f9ed;
   --indigo: #bb86f9;
   --purple: #e786f9;
