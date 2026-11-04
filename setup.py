@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="CodeGarden",
-    version="2026.10.28",
+    version="2026.11.05",
     py_modules=["code_garden"],
     long_description=open("README.md").read(),
     license=open("LICENSE.md").read(),

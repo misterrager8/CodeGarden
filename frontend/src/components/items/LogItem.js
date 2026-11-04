@@ -9,7 +9,7 @@ export default function LogItem({ item, id, className = "" }) {
 
   return (
     <div className="d-flex">
-      {id === 0 && (
+      {id === 0 && logCtx.page === 1 && (
         <Button
           tooltip="Undo Commit"
           // text="Undo"

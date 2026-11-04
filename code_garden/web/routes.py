@@ -443,6 +443,17 @@ def pull():
     return {"status": "done", "output": output}
 
 
+@current_app.post("/get_log")
+def get_log():
+    repo_ = Repository(request.json.get("name"))
+    log = [i.to_dict() for i in repo_.get_log(int(request.json.get("page")))]
+
+    repo_ = repo_.to_dict()
+    repo_.update({"log": log})
+
+    return {"status": "done", "repo": repo_}
+
+
 @current_app.post("/run_command")
 def run_command():
     repo_ = Repository(request.json.get("repository"))
@@ -480,12 +491,10 @@ def get_files_at_point():
 @current_app.post("/blame")
 def blame():
     repo_ = Repository(request.json.get("repository"))
+    content = repo_.blame(
+        request.json.get("hash"),
+        request.json.get("line_number"),
+        request.json.get("path"),
+    )
 
-    return {
-        "status": "done",
-        "blame": repo_.blame(
-            request.json.get("hash"),
-            request.json.get("line_number"),
-            request.json.get("path"),
-        ),
-    }
+    return {"status": "done", "blame": content}

@@ -146,7 +146,7 @@ export default function TodoItem({ item, className = "" }) {
               "ix:pin" + (item.status === "active" ? "-filled" : "")
             }></Button>
           <Button
-            border={branching}
+            active={branching}
             onClick={() => setBranching(!branching)}
             icon="famicons:git-branch-sharp"></Button>
           <Button

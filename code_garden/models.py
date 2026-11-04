@@ -1,13 +1,11 @@
 import datetime
 import json
-from pathlib import Path
 import re
 import shutil
 import subprocess
 
 import click
 import requests
-import time
 
 from code_garden.readme import Readme
 from code_garden.todos import Todo
@@ -45,14 +43,7 @@ class Repository(object):
         Args:
             cmd (list): List of arguments in the command. (splitting whitespace on text is recommended)
         """
-
-        # start_time = time.perf_counter()
-
         op = subprocess.run(cmd, cwd=self.path, text=True, capture_output=True).stdout
-
-        # end_time = time.perf_counter()
-        # execution_time = (end_time - start_time) * 1000
-        # click.secho(f"{self.name},{" ".join(cmd)},{execution_time:.1f}", fg="blue")
 
         return op
 
@@ -173,8 +164,6 @@ class Repository(object):
             else None
         )
 
-    # git rev-list --count PARENT..CHILD
-
     @classmethod
     def all(cls):
         """Get all Repositories in the home directory."""
@@ -289,6 +278,43 @@ class Repository(object):
         """Pull from remote."""
         return self.run_command(["git", "pull", "--all"])
 
+    def get_log(self, page: int):
+        _ = []
+        try:
+            for i in self.run_command(
+                [
+                    "git",
+                    "log",
+                    "-50",
+                    f"--skip={50*(page-1)}",
+                    "--pretty=format:%s\t%at\t%h\t%an",
+                ]
+            ).split("\n"):
+                if len(i.strip().split("\t")) == 2:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            "[No Commit Message]",
+                            datetime.datetime.min,
+                            i.strip().split("\t")[0],
+                            i.strip().split("\t")[1],
+                        )
+                    )
+                else:
+                    _.append(
+                        LogItem(
+                            self.name,
+                            i.strip().split("\t")[0],
+                            datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
+                            i.strip().split("\t")[2],
+                            i.strip().split("\t")[3],
+                        )
+                    )
+
+            return _
+        except:
+            return []
+
     def export(self):
         """Export all Repository info, such as todos, to single JSON file."""
         with open(config.HOME_DIR / f"{self.name}.json", "w") as f:
@@ -328,56 +354,10 @@ class Repository(object):
         if delete_head:
             self.run_command(["git", "branch", "-D", child_branch])
 
-    # def get_file_history(self, path):
-    #     _ = []
-    #     try:
-    #         for i in self.run_command(
-    #             [
-    #                 "git",
-    #                 "log",
-    #                 "--oneline",
-    #                 "-1000",
-    #                 "--pretty=format:%s\t%at\t%h\t%an",
-    #                 path,
-    #             ]
-    #         ).split("\n"):
-    #             if len(i.strip().split("\t")) == 2:
-    #                 _.append(
-    #                     LogItem(
-    #                         self.name,
-    #                         "[No Commit Message]",
-    #                         datetime.datetime.min,
-    #                         i.strip().split("\t")[0],
-    #                         i.strip().split("\t")[1],
-    #                     )
-    #                 )
-    #             else:
-    #                 _.append(
-    #                     LogItem(
-    #                         self.name,
-    #                         i.strip().split("\t")[0],
-    #                         datetime.datetime.fromtimestamp(int(i.split("\t")[1])),
-    #                         i.strip().split("\t")[2],
-    #                         i.strip().split("\t")[3],
-    #                     )
-    #                 )
-
-    #         return _
-    #     except:
-    #         return []
-
     def get_file_at_commit(self, path, hash):
-        before = self.run_command(
-            [
-                "git",
-                "show",
-                f"{hash}^:{path}",
-            ]
-        )
         after = self.run_command(["git", "show", f"{hash}:{path}"])
 
         return {
-            "before": before,
             "after": after,
         }
 
@@ -410,11 +390,36 @@ class Repository(object):
             ),
         }
 
-    def blame(self, hash, line_number, path):
-        "git blame 8c150e8 -L 1,1 -- README.md"
-        return self.run_command(
-            ["git", "blame", hash, "-L", f"{line_number},{line_number}", "--", path]
-        )
+    def blame(self, hash_, line_number, path):
+        x = self.run_command(
+            [
+                "git",
+                "blame",
+                "--line-porcelain",
+                hash_,
+                "-L",
+                f"{line_number},{line_number}",
+                "--",
+                path,
+            ]
+        ).splitlines()
+
+        hash = x[0].split()[0]
+        summary = self.run_command(["git", "log", "-1", "--format=%B", hash])
+        original_line = int(x[0].split()[1])
+        timestamp = datetime.datetime.fromtimestamp(int(x[7].split()[1]))
+        name = " ".join(x[9].split()[1:])
+
+        # click.secho(datetime.datetime.fromtimestamp(int(x[7].split()[1])), fg="blue")
+
+        return {
+            "hash": hash,
+            "hashShort": hash[:7],
+            "originalLine": original_line,
+            "timestamp": timestamp.strftime("%B %-d, %Y @ %-I:%M %p"),
+            "name": name,
+            "summary": summary,
+        }
 
     def to_dict(self):
         """Get a dict representation of the Repository object (for API usage)."""
