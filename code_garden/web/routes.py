@@ -430,9 +430,9 @@ def stage_all():
 def push():
     repo_ = Repository(request.json.get("name"))
     output = repo_.push()
-    click.secho(output, fg="blue")
+    # click.secho(output, fg="blue")
 
-    return {"status": "done", "output": output}
+    return {"status": "done", "output": output.get("msg")}
 
 
 @current_app.post("/pull")

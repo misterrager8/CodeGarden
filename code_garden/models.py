@@ -252,7 +252,19 @@ class Repository(object):
 
     def push(self):
         """Push to remote branch."""
-        return self.run_command(["git", "push", "origin"])
+        current_branch = self.current_branch.name
+        if self.run_command(["git", "ls-remote", "--head", "origin", current_branch]):
+            return {
+                "output": self.run_command(["git", "push", "origin"]),
+                "msg": f"{current_branch} pushed.",
+            }
+        else:
+            return {
+                "output": self.run_command(
+                    ["git", "push", "-u", "origin", current_branch]
+                ),
+                "msg": f"{current_branch} published.",
+            }
 
     def stash(self, name):
         """Stash changes."""
