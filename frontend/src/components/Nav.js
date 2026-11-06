@@ -158,7 +158,12 @@ export default function Nav() {
       <div className="flex">
         {currentRepo && (
           <>
-            <Button text="Push" onClick={() => push()} icon="bi:caret-up" />
+            <Button
+              className={currentRepo?.unpushed > 0 ? " orange" : ""}
+              text={`Push${currentRepo?.unpushed > 0 ? ` (${currentRepo?.unpushed})` : ""}`}
+              onClick={() => push()}
+              icon="bi:caret-up"
+            />
             <Button text="Pull" onClick={() => pull()} icon="bi:caret-down" />
             <Dropdown showCaret={false} icon="bi:three-dots" autoClose="false">
               <a

@@ -164,6 +164,12 @@ class Repository(object):
             else None
         )
 
+    @property
+    def unpushed_commits(self):
+        count = self.run_command(["git", "rev-list", "--count", "@{upstream}..HEAD"])
+
+        return int(count) if count != "" else 0
+
     @classmethod
     def all(cls):
         """Get all Repositories in the home directory."""
@@ -447,6 +453,7 @@ class Repository(object):
             readme=self.readme,
             ignored=[i.to_dict() for i in self.ignored],
             stashes=self.stashes,
+            unpushed=self.unpushed_commits,
         )
 
     def __str__(self):
