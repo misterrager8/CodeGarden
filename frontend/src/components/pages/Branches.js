@@ -4,6 +4,7 @@ import BranchItem from "../items/BranchItem";
 import Button from "../atoms/Button";
 import { api } from "../../util";
 import NewBranch from "../forms/NewBranch";
+import moment from "moment";
 
 export const BranchContext = createContext();
 
@@ -64,7 +65,7 @@ export default function Branches({ className = "" }) {
   }, [sort, comparison, multiCtx.currentRepo]);
 
   const sortCommits = () => {
-    let msg = "";
+    let msg = `v${moment().format("YYYY.MM.DD")}\n\n`;
     let comparison_;
     if (sort === "newest") {
       comparison_ = comparison.sort(
