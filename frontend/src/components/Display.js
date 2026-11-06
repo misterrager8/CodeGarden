@@ -12,6 +12,7 @@ import Icon from "./atoms/Icon";
 import Input from "./atoms/Input";
 import Button from "./atoms/Button";
 import NewRepo from "./forms/NewRepo";
+import Clone from "./forms/Clone";
 
 export default function Display() {
   const {
@@ -25,6 +26,7 @@ export default function Display() {
     getRepo,
   } = useContext(MultiContext);
   const [settings, setSettings] = useState(null);
+  const [cloning, setCloning] = useState(false);
 
   const getSettings = () => {
     api("settings", {}, (data) => setSettings(data));
@@ -163,7 +165,19 @@ export default function Display() {
                     </div>
                     <div className="divider"></div>
                     <div className="col-25">
-                      <NewRepo />
+                      <div className="d-flex justify-content-center mb-3 gap-1">
+                        <Button
+                          onClick={() => setCloning(false)}
+                          active={!cloning}
+                          text="Init"
+                        />
+                        <Button
+                          onClick={() => setCloning(true)}
+                          active={cloning}
+                          text="Clone"
+                        />
+                      </div>
+                      {cloning ? <Clone /> : <NewRepo />}
                     </div>
                   </>
                 )}

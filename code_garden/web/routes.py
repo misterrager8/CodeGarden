@@ -105,8 +105,9 @@ def export_repository():
 @current_app.post("/clone_repository")
 def clone_repository():
     Repository.clone(request.json.get("url"))
+    repo = Repository(request.json.get("name")).to_dict()
 
-    return {"status": "done"}
+    return {"status": "done", "repo": repo}
 
 
 @current_app.post("/git_config")
