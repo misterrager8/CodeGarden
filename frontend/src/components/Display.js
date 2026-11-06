@@ -66,21 +66,23 @@ export default function Display() {
     <div className="flex-mobile">
       <Nav />
       <div className="body">
-        <div className="mini-top">
-          <div className="fw-bold">
-            <Icon name="bi:git" className="me-2" />
-            {currentRepo?.name}
+        {currentRepo && (
+          <div className="mini-top">
+            <div className="fw-bold">
+              <Icon name="bi:git" className="me-2" />
+              {currentRepo?.name}
+            </div>
+            <div>
+              <Icon name="bi:bezier2" className="me-2" />
+              {currentRepo?.current_branch.name}
+            </div>
           </div>
-          <div>
-            <Icon name="bi:bezier2" className="me-2" />
-            {currentRepo?.current_branch.name}
-          </div>
-        </div>
+        )}
         {currentRepo ? (
           <>{pages.find((page) => page.value === currentPage)?.component}</>
         ) : (
           <>
-            <div className="body d-flex">
+            <div className="body d-flex w-100">
               <div className="inner flex">
                 {showSettings ? (
                   <>
@@ -109,7 +111,7 @@ export default function Display() {
                   </>
                 ) : (
                   <>
-                    <div className="col-75">
+                    <div className="col-75 overflow-hidden">
                       <div className="repo-items">
                         {repos.map((item) => (
                           <div
