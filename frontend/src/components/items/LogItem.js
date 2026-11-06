@@ -2,22 +2,14 @@ import { useContext } from "react";
 import { MultiContext } from "../../Context";
 import Button from "../atoms/Button";
 import { LogContext } from "../pages/History";
+import Icon from "../atoms/Icon";
 
 export default function LogItem({ item, id, className = "" }) {
   const multiCtx = useContext(MultiContext);
   const logCtx = useContext(LogContext);
 
   return (
-    <div className="d-flex">
-      {id === 0 && logCtx.page === 1 && (
-        <Button
-          tooltip="Undo Commit"
-          // text="Undo"
-          icon="ic:baseline-undo"
-          className="border-0 purple px-1"
-          onClick={() => multiCtx.undoCommit()}
-        />
-      )}
+    <>
       <div
         onClick={() => logCtx.setSelectedCommit(item)}
         className={
@@ -32,7 +24,12 @@ export default function LogItem({ item, id, className = "" }) {
             <div className="fw-bold text-truncate">
               <a title={item.name}>{item.name}</a>
             </div>
-            <span className="small font-monospace">{item.abbrev_hash}</span>
+            <div className="d-flex align-items-center gap-1">
+              <span className="small font-monospace">{item.abbrev_hash}</span>
+              {id < multiCtx.currentRepo?.unpushed && (
+                <Icon className="orange" name="bi:record-fill" />
+              )}
+            </div>
           </div>
           <div className="between small fw-light">
             <span>{item.timestamp}</span>
@@ -40,6 +37,18 @@ export default function LogItem({ item, id, className = "" }) {
           </div>
         </div>
       </div>
-    </div>
+
+      {id === 0 && logCtx.page === 1 && (
+        <div className="d-fle">
+          <Button
+            tooltip="Undo Commit"
+            text="Undo"
+            icon="bi:eraser-fill"
+            className="border-0 purple w-100"
+            onClick={() => multiCtx.undoCommit()}
+          />
+        </div>
+      )}
+    </>
   );
 }
