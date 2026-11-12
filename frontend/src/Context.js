@@ -40,6 +40,7 @@ export default function MultiProvider({ children }) {
     setLoading(true);
     api("push", { name: currentRepo.name }, (data) => {
       alert(data.output);
+      setCurrentRepo(data.repo);
       setLoading(false);
     });
   };

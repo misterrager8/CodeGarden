@@ -433,7 +433,11 @@ def push():
     output = repo_.push()
     # click.secho(output, fg="blue")
 
-    return {"status": "done", "output": output.get("msg")}
+    return {
+        "status": "done",
+        "output": output.get("msg"),
+        "repo": repo_.to_dict(),
+    }
 
 
 @current_app.post("/pull")
