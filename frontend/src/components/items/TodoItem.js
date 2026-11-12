@@ -16,11 +16,8 @@ export default function TodoItem({ item, className = "" }) {
     `develop/${item.tag}/${item.id}`,
   );
   const [description, setDescription] = useState("");
-  const [saved, setSaved] = useState(false);
 
   const [branching, setBranching] = useState(false);
-
-  const [showOptions, setShowOptions] = useState(false);
 
   const onChangeName = (e) => setName(e.target.value);
   const onChangeBranchName = (e) => setBranchName(e.target.value);
@@ -31,174 +28,6 @@ export default function TodoItem({ item, className = "" }) {
   }, []);
 
   return (
-    // <div
-    //   className={className + " todo-item" + (item.done ? " opacity-25" : "")}>
-    //   <form
-    //     onSubmit={(e) => {
-    //       multiCtx.editTodo(
-    //         e,
-    //         item.id,
-    //         name,
-    //         item.tag,
-    //         item.status,
-    //         description,
-    //       );
-    //       setSaved(true);
-    //       setTimeout(() => setSaved(false), 1500);
-    //     }}>
-    //     <Input
-    //       title={name}
-    //       required={true}
-    //       className="border-0 fst-italic"
-    //       value={name}
-    //       onChange={onChangeName}
-    //     />
-    //     <div className="between flex-row-reverse my-1">
-    //       <div>
-    //         {saved && (
-    //           <span className="btn border-0">
-    //             <i className="bi bi-floppy2"></i>
-    //           </span>
-    //         )}
-    //         <div className="my-auto me-1">
-    //           <span className="badge">#{item.id}</span>
-    //         </div>
-    //       </div>
-    //       <Dropdown
-    //         target="edit-tags"
-    //         classNameBtn="btn border-0"
-    //         icon="tabler:tag-filled"
-    //         text={item.tag}>
-    //         {multiCtx.tags.map((x) => (
-    //           <a
-    //             key={x.id}
-    //             onClick={() =>
-    //               multiCtx.editTodo(
-    //                 null,
-    //                 item.id,
-    //                 name,
-    //                 x.label,
-    //                 item.status,
-    //                 description,
-    //               )
-    //             }
-    //             className="dropdown-item">
-    //             <Icon name="tabler:tag-filled" className="me-2" />
-    //             {x.label}
-    //           </a>
-    //         ))}
-    //       </Dropdown>
-    //     </div>
-    //     <div>
-    //       {multiCtx.currentRepo?.diffs.length > 0 && (
-    //         <>
-    //           <Button
-    //             icon="tdesign:git-commit-filled"
-    //             onClick={() => setCommitting(!committing)}
-    //             className="border-0"
-    //           />
-    //           {committing && (
-    //             <>
-    //               <Button
-    //                 icon="streamline-plump:business-progress-bar-2-solid"
-    //                 active={inProgress}
-    //                 onClick={() => setInProgress(!inProgress)}
-    //               />
-    //               <Button
-    //                 icon="fluent:question-32-filled"
-    //                 onClick={() => multiCtx.commitTodo(item.id, inProgress)}
-    //               />
-    //             </>
-    //           )}
-    //         </>
-    //       )}
-    //       <Button
-    //         icon="mdi:check-bold"
-    //         onClick={() => multiCtx.toggleTodo(item.id)}
-    //         className="border-0"
-    //       />
-    //       <Button
-    //         title="Toggle whether this TODO is actively being worked on."
-    //         onClick={() =>
-    //           multiCtx.editTodo(
-    //             null,
-    //             item.id,
-    //             name,
-    //             item.tag,
-    //             item.status === "open"
-    //               ? "active"
-    //               : item.status === "completed"
-    //                 ? "active"
-    //                 : "open",
-    //             description,
-    //           )
-    //         }
-    //         className={"border-0" + (item.status === "active" ? " red" : " ")}
-    //         icon={
-    //           "ix:pin" + (item.status === "active" ? "-filled" : "")
-    //         }></Button>
-    //       <Button
-    //         active={branching}
-    //         onClick={() => setBranching(!branching)}
-    //         icon="famicons:git-branch-sharp"></Button>
-    //       <Button
-    //         active={showDescription}
-    //         className={
-    //           (showDescription ? "" : " border-0") +
-    //           (description?.length > 0 ? " purple" : "")
-    //         }
-    //         onClick={() => setShowDescription(!showDescription)}
-    //         icon={
-    //           "fluent:textbox-16" +
-    //           (description?.length > 0 ? "-filled" : "-regular")
-    //         }></Button>
-    //       <Button
-    //         icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
-    //         border={false}
-    //         onClick={() => copyToClipboard()}
-    //       />
-    //       <Button
-    //         className="red"
-    //         icon="iwwa:delete"
-    //         border={false}
-    //         onClick={() => setDeleting(!deleting)}
-    //       />
-    //       {deleting && (
-    //         <Button
-    //           className="red"
-    //           icon="fluent:question-32-filled"
-    //           border={false}
-    //           onClick={() => multiCtx.deleteTodo(item.id)}
-    //         />
-    //       )}
-    //     </div>
-    //     {showDescription && (
-    //       <textarea
-    //         rows={description.split("\n")?.length + 1}
-    //         value={description}
-    //         onChange={onChangeDescription}
-    //         placeholder="Description"
-    //         className="form-control my-3 desc"></textarea>
-    //     )}
-
-    //     <button className="d-none" type="submit"></button>
-    //   </form>
-    //   {branching && (
-    //     <form
-    //       onSubmit={(e) => {
-    //         multiCtx.addBranch(e, branchName);
-    //         setBranching(false);
-    //       }}
-    //       className="input-group p-3">
-    //       <Input value={branchName} onChange={onChangeBranchName} />
-    //       <Button
-    //         type_="submit"
-    //         text="Create Branch"
-    //         icon="famicons:git-branch-sharp"
-    //       />
-    //     </form>
-    //   )}
-    // </div>
     <div
       className={
         "todo-item2" + (item.status === "completed" ? " opacity-25" : "")
@@ -285,59 +114,53 @@ export default function TodoItem({ item, className = "" }) {
               icon="bi:floppy"
             />
           )}
-          <Button
-            onClick={() => setShowOptions(!showOptions)}
-            active={showOptions}
-            icon="bi:three-dots"
-          />
 
-          {multiCtx.currentRepo?.diffs.length > 0 && (
-            <>
-              <Button
-                active={committing}
-                icon="tdesign:git-commit-filled"
-                onClick={() => setCommitting(!committing)}
-                className="border-0"
-              />
-              {committing && (
-                <>
-                  <Button
-                    icon="streamline-plump:business-progress-bar-2-solid"
-                    active={inProgress}
-                    onClick={() => setInProgress(!inProgress)}
-                  />
-                  <Button
-                    icon="fluent:question-32-filled"
-                    onClick={() => multiCtx.commitTodo(item.id, inProgress)}
-                  />
-                </>
-              )}
-            </>
-          )}
-          {showOptions && (
-            <div className="d-flex gap-1">
-              <Button
-                active={branching}
-                onClick={() => setBranching(!branching)}
-                icon="famicons:git-branch-sharp"></Button>
+          {multiCtx.currentRepo?.diffs.length > 0 &&
+            item.status !== "completed" && (
+              <>
+                <Button
+                  active={committing}
+                  icon="at-icons:git-commit"
+                  onClick={() => setCommitting(!committing)}
+                  className="border-0 orange"
+                />
+                {committing && (
+                  <>
+                    <Button
+                      icon="streamline-plump:business-progress-bar-2-solid"
+                      active={inProgress}
+                      onClick={() => setInProgress(!inProgress)}
+                    />
+                    <Button
+                      icon="fluent:question-32-filled"
+                      onClick={() => multiCtx.commitTodo(item.id, inProgress)}
+                    />
+                  </>
+                )}
+              </>
+            )}
+          <div className="d-flex gap-1">
+            <Button
+              active={branching}
+              onClick={() => setBranching(!branching)}
+              icon="iconmind:branch-flow-outline-bold"></Button>
+            <Button
+              className="red"
+              icon="iwwa:delete"
+              border={false}
+              onClick={() => setDeleting(!deleting)}
+            />
+            {deleting && (
               <Button
                 className="red"
-                icon="iwwa:delete"
+                icon="fluent:question-32-filled"
                 border={false}
-                onClick={() => setDeleting(!deleting)}
+                onClick={() => multiCtx.deleteTodo(item.id)}
               />
-              {deleting && (
-                <Button
-                  className="red"
-                  icon="fluent:question-32-filled"
-                  border={false}
-                  onClick={() => multiCtx.deleteTodo(item.id)}
-                />
-              )}
+            )}
 
-              <button className="d-none" type="submit"></button>
-            </div>
-          )}
+            <button className="d-none" type="submit"></button>
+          </div>
         </div>
       </div>
       {branching && (
@@ -346,12 +169,12 @@ export default function TodoItem({ item, className = "" }) {
             multiCtx.addBranch(e, branchName);
             setBranching(false);
           }}
-          className="input-group p-3">
+          className="mt-3 d-flex flex-column gap-2">
           <Input value={branchName} onChange={onChangeBranchName} />
           <Button
             type_="submit"
             text="Create Branch"
-            icon="famicons:git-branch-sharp"
+            icon="iconmind:branch-flow-outline-bold"
           />
         </form>
       )}
