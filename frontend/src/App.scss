@@ -241,6 +241,30 @@ body {
   margin-bottom: 10px;
 }
 
+.todo-item2 {
+  // background-color: red;
+  // margin-bottom: 2px;
+  border-bottom: 0.5px solid var(--btn-color);
+  padding: 10px;
+  margin: 4px;
+}
+
+.todo-item2:hover {
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+}
+
+.todo-item2 textarea {
+  background-color: transparent;
+  color: inherit;
+  resize: none;
+  outline: none;
+  field-sizing: content;
+  width: 100%;
+  font-size: 1.5rem;
+  border: none;
+}
+
 .badge-custom {
   padding: 1px 5px;
   border: 0.5px solid var(--btn-color);

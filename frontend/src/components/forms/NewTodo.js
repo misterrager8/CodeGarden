@@ -20,7 +20,7 @@ export default function NewTodo({ className = "" }) {
   return (
     <div>
       <form
-        className={className + " mt-3"}
+        className={className + " d-flex mt-3"}
         onSubmit={(e) => {
           multiCtx.addTodo(e, name, tag);
           setName("");
@@ -47,9 +47,9 @@ export default function NewTodo({ className = "" }) {
             border={false}
             size="sm"
             icon="mingcute:eraser-fill"
-            text={`${
-              multiCtx.currentRepo.todos.filter((x) => x.done).length
-            } Done`}
+            // text={`${
+            //   multiCtx.currentRepo.todos.filter((x) => x.done).length
+            // } Done`}
             onClick={() => multiCtx.clearCompleted()}
             className="red"
           />

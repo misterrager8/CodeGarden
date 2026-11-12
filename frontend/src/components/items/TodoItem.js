@@ -17,90 +17,284 @@ export default function TodoItem({ item, className = "" }) {
   );
   const [description, setDescription] = useState("");
   const [saved, setSaved] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const [branching, setBranching] = useState(false);
 
-  const [showDescription, setShowDescription] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   const onChangeName = (e) => setName(e.target.value);
   const onChangeBranchName = (e) => setBranchName(e.target.value);
-  const onChangeDescription = (e) => setDescription(e.target.value);
 
   useEffect(() => {
     setName(item.name);
     setDescription(item.description || "");
   }, []);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(`(${item.tag}) ${item.name}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
-  };
-
   return (
+    // <div
+    //   className={className + " todo-item" + (item.done ? " opacity-25" : "")}>
+    //   <form
+    //     onSubmit={(e) => {
+    //       multiCtx.editTodo(
+    //         e,
+    //         item.id,
+    //         name,
+    //         item.tag,
+    //         item.status,
+    //         description,
+    //       );
+    //       setSaved(true);
+    //       setTimeout(() => setSaved(false), 1500);
+    //     }}>
+    //     <Input
+    //       title={name}
+    //       required={true}
+    //       className="border-0 fst-italic"
+    //       value={name}
+    //       onChange={onChangeName}
+    //     />
+    //     <div className="between flex-row-reverse my-1">
+    //       <div>
+    //         {saved && (
+    //           <span className="btn border-0">
+    //             <i className="bi bi-floppy2"></i>
+    //           </span>
+    //         )}
+    //         <div className="my-auto me-1">
+    //           <span className="badge">#{item.id}</span>
+    //         </div>
+    //       </div>
+    //       <Dropdown
+    //         target="edit-tags"
+    //         classNameBtn="btn border-0"
+    //         icon="tabler:tag-filled"
+    //         text={item.tag}>
+    //         {multiCtx.tags.map((x) => (
+    //           <a
+    //             key={x.id}
+    //             onClick={() =>
+    //               multiCtx.editTodo(
+    //                 null,
+    //                 item.id,
+    //                 name,
+    //                 x.label,
+    //                 item.status,
+    //                 description,
+    //               )
+    //             }
+    //             className="dropdown-item">
+    //             <Icon name="tabler:tag-filled" className="me-2" />
+    //             {x.label}
+    //           </a>
+    //         ))}
+    //       </Dropdown>
+    //     </div>
+    //     <div>
+    //       {multiCtx.currentRepo?.diffs.length > 0 && (
+    //         <>
+    //           <Button
+    //             icon="tdesign:git-commit-filled"
+    //             onClick={() => setCommitting(!committing)}
+    //             className="border-0"
+    //           />
+    //           {committing && (
+    //             <>
+    //               <Button
+    //                 icon="streamline-plump:business-progress-bar-2-solid"
+    //                 active={inProgress}
+    //                 onClick={() => setInProgress(!inProgress)}
+    //               />
+    //               <Button
+    //                 icon="fluent:question-32-filled"
+    //                 onClick={() => multiCtx.commitTodo(item.id, inProgress)}
+    //               />
+    //             </>
+    //           )}
+    //         </>
+    //       )}
+    //       <Button
+    //         icon="mdi:check-bold"
+    //         onClick={() => multiCtx.toggleTodo(item.id)}
+    //         className="border-0"
+    //       />
+    //       <Button
+    //         title="Toggle whether this TODO is actively being worked on."
+    //         onClick={() =>
+    //           multiCtx.editTodo(
+    //             null,
+    //             item.id,
+    //             name,
+    //             item.tag,
+    //             item.status === "open"
+    //               ? "active"
+    //               : item.status === "completed"
+    //                 ? "active"
+    //                 : "open",
+    //             description,
+    //           )
+    //         }
+    //         className={"border-0" + (item.status === "active" ? " red" : " ")}
+    //         icon={
+    //           "ix:pin" + (item.status === "active" ? "-filled" : "")
+    //         }></Button>
+    //       <Button
+    //         active={branching}
+    //         onClick={() => setBranching(!branching)}
+    //         icon="famicons:git-branch-sharp"></Button>
+    //       <Button
+    //         active={showDescription}
+    //         className={
+    //           (showDescription ? "" : " border-0") +
+    //           (description?.length > 0 ? " purple" : "")
+    //         }
+    //         onClick={() => setShowDescription(!showDescription)}
+    //         icon={
+    //           "fluent:textbox-16" +
+    //           (description?.length > 0 ? "-filled" : "-regular")
+    //         }></Button>
+    //       <Button
+    //         icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
+    //         border={false}
+    //         onClick={() => copyToClipboard()}
+    //       />
+    //       <Button
+    //         className="red"
+    //         icon="iwwa:delete"
+    //         border={false}
+    //         onClick={() => setDeleting(!deleting)}
+    //       />
+    //       {deleting && (
+    //         <Button
+    //           className="red"
+    //           icon="fluent:question-32-filled"
+    //           border={false}
+    //           onClick={() => multiCtx.deleteTodo(item.id)}
+    //         />
+    //       )}
+    //     </div>
+    //     {showDescription && (
+    //       <textarea
+    //         rows={description.split("\n")?.length + 1}
+    //         value={description}
+    //         onChange={onChangeDescription}
+    //         placeholder="Description"
+    //         className="form-control my-3 desc"></textarea>
+    //     )}
+
+    //     <button className="d-none" type="submit"></button>
+    //   </form>
+    //   {branching && (
+    //     <form
+    //       onSubmit={(e) => {
+    //         multiCtx.addBranch(e, branchName);
+    //         setBranching(false);
+    //       }}
+    //       className="input-group p-3">
+    //       <Input value={branchName} onChange={onChangeBranchName} />
+    //       <Button
+    //         type_="submit"
+    //         text="Create Branch"
+    //         icon="famicons:git-branch-sharp"
+    //       />
+    //     </form>
+    //   )}
+    // </div>
     <div
-      className={className + " todo-item" + (item.done ? " opacity-25" : "")}>
-      <form
-        onSubmit={(e) => {
-          multiCtx.editTodo(
-            e,
-            item.id,
-            name,
-            item.tag,
-            item.status,
-            description,
-          );
-          setSaved(true);
-          setTimeout(() => setSaved(false), 1500);
-        }}>
-        <Input
-          title={name}
-          required={true}
-          className="border-0 fst-italic"
-          value={name}
-          onChange={onChangeName}
-        />
-        <div className="between flex-row-reverse my-1">
-          <div>
-            {saved && (
-              <span className="btn border-0">
-                <i className="bi bi-floppy2"></i>
-              </span>
-            )}
-            <div className="my-auto me-1">
-              <span className="badge">#{item.id}</span>
-            </div>
-          </div>
-          <Dropdown
-            target="edit-tags"
-            classNameBtn="btn border-0"
-            icon="tabler:tag-filled"
-            text={item.tag}>
-            {multiCtx.tags.map((x) => (
-              <a
-                key={x.id}
-                onClick={() =>
-                  multiCtx.editTodo(
-                    null,
-                    item.id,
-                    name,
-                    x.label,
-                    item.status,
-                    description,
-                  )
-                }
-                className="dropdown-item">
-                <Icon name="tabler:tag-filled" className="me-2" />
-                {x.label}
-              </a>
-            ))}
-          </Dropdown>
+      className={
+        "todo-item2" + (item.status === "completed" ? " opacity-25" : "")
+      }>
+      <div className="d-flex gap-1">
+        <div className="px-1">
+          <Button
+            icon="mdi:check-bold"
+            onClick={() => multiCtx.toggleTodo(item.id)}
+            className={
+              "border-0" + (item.status === "completed" ? " green" : "")
+            }
+          />
         </div>
-        <div>
+        <textarea onChange={onChangeName} value={name}></textarea>
+        <div className="px-1">
+          <Button
+            title="Toggle whether this TODO is actively being worked on."
+            onClick={() =>
+              multiCtx.editTodo(
+                null,
+                item.id,
+                name,
+                item.tag,
+                item.status === "open"
+                  ? "active"
+                  : item.status === "completed"
+                    ? "active"
+                    : "open",
+                description,
+              )
+            }
+            className={
+              "border-0" + (item.status === "active" ? " orange" : " ")
+            }
+            icon={
+              "bi:chevron-double-" +
+              (item.status === "active" ? "left" : "right")
+            }></Button>
+        </div>
+      </div>
+      <div className="d-flex flex-row-reverse justify-content-between mt-2 align-items-center">
+        <a
+          className={" badge"}
+          data-bs-target={`${item.id}-tags`}
+          data-bs-toggle="dropdown">
+          <Icon name="bi:tag" />
+          <span className={"ms-2"}>{item.tag}</span>
+        </a>
+        <div id={`${item.id}-tags`} className={"dropdown-menu "}>
+          {multiCtx.tags.map((x) => (
+            <a
+              key={x.id}
+              onClick={() =>
+                multiCtx.editTodo(
+                  null,
+                  item.id,
+                  name,
+                  x.label,
+                  item.status,
+                  description,
+                )
+              }
+              className="dropdown-item">
+              <Icon name="tabler:tag-filled" className="me-2" />
+              {x.label}
+            </a>
+          ))}
+        </div>
+        <div className="d-flex gap-1">
+          {item.name !== name && (
+            <Button
+              onClick={(e) =>
+                multiCtx.editTodo(
+                  e,
+                  item.id,
+                  name,
+                  item.tag,
+                  item.status,
+                  description,
+                )
+              }
+              className="orange"
+              icon="bi:floppy"
+            />
+          )}
+          <Button
+            onClick={() => setShowOptions(!showOptions)}
+            active={showOptions}
+            icon="bi:three-dots"
+          />
+
           {multiCtx.currentRepo?.diffs.length > 0 && (
             <>
               <Button
+                active={committing}
                 icon="tdesign:git-commit-filled"
                 onClick={() => setCommitting(!committing)}
                 className="border-0"
@@ -120,77 +314,32 @@ export default function TodoItem({ item, className = "" }) {
               )}
             </>
           )}
-          <Button
-            icon="mdi:check-bold"
-            onClick={() => multiCtx.toggleTodo(item.id)}
-            className="border-0"
-          />
-          <Button
-            title="Toggle whether this TODO is actively being worked on."
-            onClick={() =>
-              multiCtx.editTodo(
-                null,
-                item.id,
-                name,
-                item.tag,
-                item.status === "open"
-                  ? "active"
-                  : item.status === "completed"
-                    ? "active"
-                    : "open",
-                description,
-              )
-            }
-            className={"border-0" + (item.status === "active" ? " red" : " ")}
-            icon={
-              "ix:pin" + (item.status === "active" ? "-filled" : "")
-            }></Button>
-          <Button
-            active={branching}
-            onClick={() => setBranching(!branching)}
-            icon="famicons:git-branch-sharp"></Button>
-          <Button
-            active={showDescription}
-            className={
-              (showDescription ? "" : " border-0") +
-              (description?.length > 0 ? " purple" : "")
-            }
-            onClick={() => setShowDescription(!showDescription)}
-            icon={
-              "fluent:textbox-16" +
-              (description?.length > 0 ? "-filled" : "-regular")
-            }></Button>
-          <Button
-            icon={copied ? "mdi:check-bold" : "solar:clipboard-linear"}
-            border={false}
-            onClick={() => copyToClipboard()}
-          />
-          <Button
-            className="red"
-            icon="iwwa:delete"
-            border={false}
-            onClick={() => setDeleting(!deleting)}
-          />
-          {deleting && (
-            <Button
-              className="red"
-              icon="fluent:question-32-filled"
-              border={false}
-              onClick={() => multiCtx.deleteTodo(item.id)}
-            />
+          {showOptions && (
+            <div className="d-flex gap-1">
+              <Button
+                active={branching}
+                onClick={() => setBranching(!branching)}
+                icon="famicons:git-branch-sharp"></Button>
+              <Button
+                className="red"
+                icon="iwwa:delete"
+                border={false}
+                onClick={() => setDeleting(!deleting)}
+              />
+              {deleting && (
+                <Button
+                  className="red"
+                  icon="fluent:question-32-filled"
+                  border={false}
+                  onClick={() => multiCtx.deleteTodo(item.id)}
+                />
+              )}
+
+              <button className="d-none" type="submit"></button>
+            </div>
           )}
         </div>
-        {showDescription && (
-          <textarea
-            rows={description.split("\n")?.length + 1}
-            value={description}
-            onChange={onChangeDescription}
-            placeholder="Description"
-            className="form-control my-3 desc"></textarea>
-        )}
-
-        <button className="d-none" type="submit"></button>
-      </form>
+      </div>
       {branching && (
         <form
           onSubmit={(e) => {
